@@ -4,25 +4,22 @@ import java.io.Serializable;
 
 public class PetModel implements Serializable {
     private int id;
-    private String specie;
-    private String rasa;
-    private String nume;
-    private String locatia;
-    private int varsta;
-    private String descriere;
+    private String species;
+    private String breed;
+    private String name;
+    private String location;
+    private String age;
+    private String description;
     private String imgURL;
 
-    public PetModel() {
-    }
-
-    public PetModel(int id, String specie, String rasa, String nume, String locatia, int varsta, String descriere, String imgURL) {
+    public PetModel(int id, String species, String breed, String name, String location, String age, String description, String imgURL) {
         this.id = id;
-        this.specie = specie;
-        this.rasa = rasa;
-        this.nume = nume;
-        this.locatia = locatia;
-        this.varsta = varsta;
-        this.descriere = descriere;
+        this.species = species;
+        this.breed = breed;
+        this.name = name;
+        this.location = location;
+        this.age = age;
+        this.description = description;
         this.imgURL = imgURL;
     }
 
@@ -34,44 +31,52 @@ public class PetModel implements Serializable {
         this.id = id;
     }
 
-    public String getSpecie() {
-        return specie;
+    public String getSpecies() {
+        return species;
     }
 
-    public void setSpecie(String specie) {
-        this.specie = specie;
+    public void setSpecies(String species) {
+        this.species = species;
     }
 
-    public String getRasa() {
-        return rasa;
+    public String getBreed() {
+        return breed;
     }
 
-    public void setRasa(String rasa) {
-        this.rasa = rasa;
+    public void setBreed(String breed) {
+        this.breed = breed;
     }
 
-    public String getNume() {
-        return nume;
+    public String getName() {
+        return name;
     }
 
-    public void setNume(String nume) {
-        this.nume = nume;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLocatia() {
-        return locatia;
+    public String getLocation() {
+        return location;
     }
 
-    public void setLocatia(String locatia) {
-        this.locatia = locatia;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public int getVarsta() {
-        return varsta;
+    public String getAge() {
+        return age;
     }
 
-    public void setVarsta(int varsta) {
-        this.varsta = varsta;
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImgURL() {
@@ -80,27 +85,5 @@ public class PetModel implements Serializable {
 
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
-    }
-
-    public String getDescriere() {
-        return descriere;
-    }
-
-    public void setDescriere(String descriere) {
-        this.descriere = descriere;
-    }
-
-    @Override
-    public String toString() {
-        return "PetModel{" +
-                "id=" + id +
-                ", specie='" + specie + '\'' +
-                ", rasa='" + rasa + '\'' +
-                ", nume='" + nume + '\'' +
-                ", locatia='" + locatia + '\'' +
-                ", varsta=" + varsta +
-                ", descriere='" + descriere + '\'' +
-                ", imgURL='" + imgURL + '\'' +
-                '}';
     }
 }
