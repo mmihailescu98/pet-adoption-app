@@ -1,6 +1,6 @@
 package cloudflight.integra.backend.controller;
 
-
+import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.model.PetModel;
 import cloudflight.integra.backend.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
