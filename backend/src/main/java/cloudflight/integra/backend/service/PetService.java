@@ -1,11 +1,11 @@
-package cloudflight.integra.backend.repository;
+package cloudflight.integra.backend.service;
 
 import cloudflight.integra.backend.model.PetModel;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PetRepository {
+public interface PetService {
     PetModel savePet(PetModel petModel);
     Optional<PetModel> getPetById(int id);
     Optional<PetModel> getPetByName(String name);
