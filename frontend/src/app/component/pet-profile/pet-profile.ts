@@ -17,7 +17,7 @@ export interface Pet {
 })
 export class PetProfileComponent implements OnInit {
 
-  // Hardcoded pets list (to be replaced with service / API later)
+  // mock list
   pets: Pet[] = [
     {
       id: 1,
@@ -69,7 +69,7 @@ export class PetProfileComponent implements OnInit {
 
   selectedPet?: Pet;
 
-  @Input() petId: number = 1;
+  @Input() petId: number = 4;
 
   ngOnInit(): void {
     this.loadPet(this.petId);
