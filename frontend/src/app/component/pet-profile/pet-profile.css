@@ -1,0 +1,51 @@
+.pet-profile {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.pet-profile h2 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.pet-profile .species {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.pet-profile .description {
+  margin: 1rem 0;
+  font-style: italic;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn.adopt {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn.contact {
+  background-color: #2196F3;
+  color: white;
+}
