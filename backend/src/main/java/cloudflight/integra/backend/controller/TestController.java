@@ -1,7 +1,7 @@
 package cloudflight.integra.backend.controller;
 
 
-import cloudflight.integra.backend.SwaggerTestModel.SwagPetDTO;
+import cloudflight.integra.backend.dto.SwagPetDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
