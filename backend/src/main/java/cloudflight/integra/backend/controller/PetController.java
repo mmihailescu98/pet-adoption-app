@@ -1,7 +1,7 @@
 package cloudflight.integra.backend.controller;
 
 import cloudflight.integra.backend.dto.PetDTO;
-import cloudflight.integra.backend.model.PetModel;
+import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +13,10 @@ import java.util.List;
 
 @RequestMapping("/api")
 @RestController()
-public class TestController {
-    private PetService petService;
+public class PetController {
+    private final PetService petService;
 
-    @Autowired
-    private void setPetService(PetService petService) {
+    PetController(PetService petService) {
         this.petService = petService;
     }
 
@@ -27,7 +26,9 @@ public class TestController {
     }
 
     @GetMapping("/pets/test/{name}" )
-    public PetModel getPetByName(@PathVariable String name) {
-        return petService.getPetByName(name).orElseThrow();
+    public PetDTO getPetByName(@PathVariable String name) {
+        return PetMapper.INSTANCE.petToPetDTO(petService.getPetByName(name).orElseThrow());
+//        return petMapper.petToPetDTO(petService.getPetByName(name).orElseThrow());
     }
+
 }

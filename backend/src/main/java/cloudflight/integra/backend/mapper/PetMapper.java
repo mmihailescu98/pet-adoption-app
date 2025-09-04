@@ -2,9 +2,18 @@ package cloudflight.integra.backend.mapper;
 
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.model.PetModel;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-public class PetMapper {
-    public static PetDTO petDto(PetModel pet) {
-        return new PetDTO(pet.getId(), pet.getSpecies(), pet.getBreed(), pet.getName(), pet.getLocation(), pet.getAge(), pet.getDescription(),  pet.getImgURL());
-    }
+import java.util.List;
+
+
+@Mapper
+public interface PetMapper {
+
+    PetMapper INSTANCE = Mappers.getMapper(PetMapper.class);
+
+    List<PetDTO> petToPetDTOList(List<PetModel> petModels);
+    PetDTO petToPetDTO(PetModel pet);
 }

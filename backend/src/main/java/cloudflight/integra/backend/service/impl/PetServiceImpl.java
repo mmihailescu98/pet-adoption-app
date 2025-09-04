@@ -13,8 +13,8 @@ import java.util.Optional;
 public class PetServiceImpl implements PetService {
     PetRepository petRepository;
 
-    @Autowired
-    public void setPetRepository(PetRepository petRepository) {
+
+    PetServiceImpl (PetRepository petRepository) {
         this.petRepository = petRepository;
     }
 
