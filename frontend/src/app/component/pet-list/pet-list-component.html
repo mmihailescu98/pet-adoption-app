@@ -1,0 +1,24 @@
+
+<p-dataView #dv [value]="values" [rows]="3" [paginator]="true">
+  <ng-template #list let-items>
+    <div class="items-panel">
+      @for (pet of items; track pet.id){
+        <div class="item-panel">
+          <div class="flex">
+            <div class="thumb">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dog_Breeds.jpg/960px-Dog_Breeds.jpg" [alt]="pet.nume">
+            </div>
+            <div class="ml-2">
+              <h1 class="text-clamp">{{ pet.name }} - {{pet.breed}}</h1>
+              <p><i class="pi pi-map-marker"></i> {{pet.location}}</p>
+              <p><i class="pi pi-id-card"></i> {{pet.age}}</p>
+            </div>
+          </div>
+          <div class="buttons-panel">
+            <p-button styleClass="w-full md:w-auto">Details</p-button>
+          </div>
+        </div>
+      }
+    </div>
+  </ng-template>
+</p-dataView>
