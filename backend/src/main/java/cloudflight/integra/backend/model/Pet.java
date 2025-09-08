@@ -1,9 +1,15 @@
 package cloudflight.integra.backend.model;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 
-public class PetModel implements Serializable {
-    private int id;
+@Entity
+@Table(name = "pets")
+public class Pet implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
     private String species;
     private String breed;
     private String name;
@@ -12,7 +18,9 @@ public class PetModel implements Serializable {
     private String description;
     private String imgURL;
 
-    public PetModel(int id, String species, String breed, String name, String location, String age, String description, String imgURL) {
+    public Pet() {}
+
+    public Pet(Integer id, String species, String breed, String name, String location, String age, String description, String imgURL) {
         this.id = id;
         this.species = species;
         this.breed = breed;
@@ -23,11 +31,11 @@ public class PetModel implements Serializable {
         this.imgURL = imgURL;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -1,16 +1,13 @@
 package cloudflight.integra.backend.repository;
 
-import cloudflight.integra.backend.model.PetModel;
+import cloudflight.integra.backend.model.Pet;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface PetRepository {
-    PetModel savePet(PetModel petModel);
-    Optional<PetModel> getPetById(int id);
-    Optional<PetModel> getPetByName(String name);
-    List<PetModel> getAllPets();
+@Repository
+public interface PetRepository extends JpaRepository<Pet,Integer> {
 
-    void deletePet(PetModel petModel);
-    void updatePet(PetModel petModel);
+    List<Pet> findPetsByName(String name);
 }
