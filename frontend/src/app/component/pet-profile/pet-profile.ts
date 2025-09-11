@@ -1,82 +1,45 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-export interface Pet {
-  id: number;
-  species: string;
-  breed: string;
-  name: string;
-  location: string;
-  age: string;
-  description: string;
-}
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { PetDTO } from '../../api';
+import { loadPet } from '../../store/pet.actions';
+import { selectSelectedPet, selectPetStatus, selectPetError } from '../../store/pet.selectors';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-pet-profile',
+  standalone: true,
+  imports: [AsyncPipe],
   templateUrl: './pet-profile.html',
   styleUrls: ['./pet-profile.css']
 })
 export class PetProfileComponent implements OnInit {
+  @Input() petId?: number;
 
-  // mock list
-  pets: Pet[] = [
-    {
-      id: 1,
-      species: "Câine",
-      breed: "Golden Retriever",
-      name: "Max",
-      location: "București",
-      age: "2 ani",
-      description: "Jucăuș, blând și foarte prietenos cu copiii. Ideal pentru o familie activă."
-    },
-    {
-      id: 2,
-      species: "Câine",
-      breed: "Labrador",
-      name: "Bella",
-      location: "Cluj-Napoca",
-      age: "3 ani",
-      description: "Energică și afectuoasă, adoră plimbările lungi și compania oamenilor."
-    },
-    {
-      id: 3,
-      species: "Câine",
-      breed: "Ciobănesc German",
-      name: "Rex",
-      location: "Timișoara",
-      age: "4 ani",
-      description: "Inteligent și protector, dresat de bază, potrivit pentru curte și pază."
-    },
-    {
-      id: 4,
-      species: "Câine",
-      breed: "Beagle",
-      name: "Luna",
-      location: "Brașov",
-      age: "1 an",
-      description: "Curioasă și foarte sociabilă, se înțelege bine cu alți câini și pisici."
-    },
-    {
-      id: 5,
-      species: "Câine",
-      breed: "Bulldog Francez",
-      name: "Rocky",
-      location: "Iași",
-      age: "5 ani",
-      description: "Calm și loial, preferă liniștea și un stil de viață mai relaxat."
-    }
-  ];
+  pet$!: Observable<PetDTO | null>;
+  status$!: Observable<string>;
+  error$!: Observable<any>;
 
-
-  selectedPet?: Pet;
-
-  @Input() petId: number = 4;
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.loadPet(this.petId);
-  }
+    this.pet$ = this.store.select(selectSelectedPet);
+    this.status$ = this.store.select(selectPetStatus);
+    this.error$ = this.store.select(selectPetError);
 
-  loadPet(id: number): void {
-    this.selectedPet = this.pets.find(p => p.id === id);
+    // First try to get ID from route parameters
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        const id = parseInt(params['id'], 10);
+        this.store.dispatch(loadPet({ id }));
+      } else if (this.petId) {
+        // Fallback to input property if no route param
+        this.store.dispatch(loadPet({ id: this.petId }));
+      }
+    });
   }
-
 }

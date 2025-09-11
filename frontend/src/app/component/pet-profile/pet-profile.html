@@ -1,21 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
 <div class="pet-profile">
-  @if (selectedPet) {
-    <h2>{{ selectedPet.name }}</h2>
-    <p class="species">{{ selectedPet.species }} - {{ selectedPet.breed }}</p>
-    <p><strong>Age:</strong> {{ selectedPet.age }}</p>
-    <p><strong>Location:</strong> {{ selectedPet.location }}</p>
-    <p class="description">{{ selectedPet.description }}</p>
-
-    <div class="actions">
-      <button class="btn adopt">Adopt</button>
-      <button class="btn contact">Contact</button>
-    </div>
+  @if ((status$ | async) === 'loading') {
+    <p>Loading...</p>
   } @else {
-    <p>Pet not found.</p>
+    @if (error$ | async) {
+      <p>Pet not found.</p>
+    } @else {
+      @if (pet$ | async; as pet) {
+        <div class="pet-container">
+          <!-- Add image section -->
+          <div class="pet-image">
+            <img [src]="pet.imgURL" alt="{{ pet.name }}">
+          </div>
+          
+          <div class="pet-info">
+            <h2>{{ pet.name }}</h2>
+            <p class="species">{{ pet.species }} - {{ pet.breed }}</p>
+            <p class="pet-detail"><strong>Age:</strong> {{ pet.age }}</p>
+            <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
+            <p class="description">{{ pet.description }}</p>
+            
+            <div class="actions">
+              <button class="btn adopt">Adopt</button>
+              <button class="btn contact">Contact</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
   }
 </div>
-
-
-</html>
