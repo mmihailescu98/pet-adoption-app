@@ -1,9 +1,8 @@
 package cloudflight.integra.backend.service.impl;
 
-import cloudflight.integra.backend.model.PetModel;
+import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.repository.PetRepository;
 import cloudflight.integra.backend.service.PetService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,32 +18,32 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetModel savePet(PetModel petModel) {
-        return petRepository.savePet(petModel);
+    public Pet savePet(Pet pet) {
+        return petRepository.save(pet);
     }
 
     @Override
-    public PetModel getPetById(int id) {
-        return petRepository.getPetById(id).orElseThrow();
+    public Optional<Pet> getPetById(int id) {
+        return petRepository.findById(id);
     }
 
     @Override
-    public Optional<PetModel> getPetByName(String name) {
-        return petRepository.getPetByName(name);
+    public List<Pet> getPetByName(String name) {
+        return petRepository.findPetsByName(name);
     }
 
     @Override
-    public List<PetModel> getAllPets() {
-        return petRepository.getAllPets();
+    public List<Pet> getAllPets() {
+        return petRepository.findAll();
     }
 
     @Override
-    public void deletePet(PetModel petModel) {
-        petRepository.deletePet(petModel);
+    public void deletePet(Pet pet) {
+        petRepository.delete(pet);
     }
 
     @Override
-    public void updatePet(PetModel petModel) {
-        petRepository.updatePet(petModel);
+    public void updatePet(Pet pet) {
+        petRepository.save(pet);
     }
 }
