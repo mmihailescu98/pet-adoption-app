@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
+@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api")
 @RestController()
 public class PetController {
@@ -28,5 +30,17 @@ public class PetController {
     public List<PetDTO> getPetByName(@PathVariable String name) {
         return PetMapper.INSTANCE.petToPetDTOList(petService.getPetByName(name));
     }
+
+    @GetMapping("/pets")
+    public List<PetDTO> getAllPets() {
+        return PetMapper.INSTANCE.petToPetDTOList(petService.getAllPets());
+    }
+
+    @GetMapping("/pets/{id}")
+    public PetDTO getPetById(@PathVariable Integer id) {
+        return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
+    }
+
+
 
 }
