@@ -26,7 +26,7 @@ public class PetController {
         return List.of("hello", "world");
     }
 
-    @GetMapping("/pets/{name}" )
+    @GetMapping("/pets/test/{name}" )
     public List<PetDTO> getPetByName(@PathVariable String name) {
         return PetMapper.INSTANCE.petToPetDTOList(petService.getPetByName(name));
     }

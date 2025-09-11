@@ -23,8 +23,9 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Optional<Pet> getPetById(int id) {
-        return petRepository.findById(id);
+    public Pet getPetById(int id) {
+        Optional<Pet> pet = petRepository.findById(id);
+        return pet.orElse(null);
     }
 
     @Override
