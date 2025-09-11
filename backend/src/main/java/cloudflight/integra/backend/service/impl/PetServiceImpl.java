@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PetServiceImpl implements PetService {
@@ -24,13 +23,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Optional<Pet> getPetById(int id) {
-        return petRepository.findById(id);
-    }
-
-    @Override
-    public List<Pet> getPetByName(String name) {
-        return petRepository.findPetsByName(name);
+    public Pet getPetById(int id) {
+        return petRepository.findById(id).orElse(null);
     }
 
     @Override
