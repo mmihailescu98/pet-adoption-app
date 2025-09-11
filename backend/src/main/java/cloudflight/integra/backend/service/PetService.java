@@ -8,7 +8,6 @@ public interface PetService {
   
     Pet savePet(Pet pet);
     Pet getPetById(int id);
-    List<Pet> getPetByName(String name);
     List<Pet> getAllPets();
 
     void deletePet(Pet pet);
