@@ -1,12 +1,32 @@
+@if ((status$ | async) === 'loading') {
+  <div class="p-mb-3">
+    Loading...
+  </div>
+}
+@else if ((status$ | async) === 'error') {
+  <div class="p-mb-3 p-error">
+    Error!
+  </div>
+}
+@else if (((status$ | async) === 'success') && ((pets$ | async)?.length === 0)) {
+  <div class="p-mb-3">
+    No pets found.
+  </div>
+}
 
-<p-dataView #dv [value]="values" [rows]="3" [paginator]="true">
+<div class="filter-bar">
+  <input pInputText [(ngModel)]="searchTerm" placeholder="Search by species or breed" />
+  <button pButton type="button" pButtonLabel="Search" (click)="onFilter($event)" icon="pi pi-search"></button>
+</div>
+
+<p-dataView #dv [value]="(pets$ | async ) || []" [rows]="3" [paginator]="true">
   <ng-template #list let-items>
     <div class="items-panel">
       @for (pet of items; track pet.id){
         <div class="item-panel">
           <div class="flex">
             <div class="thumb">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dog_Breeds.jpg/960px-Dog_Breeds.jpg" [alt]="pet.nume">
+              <img [src]="pet.imgURL" alt="{{ pet.name }}" />
             </div>
             <div class="ml-2">
               <h1 class="text-clamp">{{ pet.name }} - {{pet.breed}}</h1>
