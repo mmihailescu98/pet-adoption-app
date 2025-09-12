@@ -20,7 +20,7 @@ export class PetEffects {
   loadPets$ = createEffect(() =>
     this.actions$.pipe(ofType(PetActions.loadPets),
     mergeMap(() =>
-      (this.petService.getAllPets() as unknown as Observable<Blob>).pipe(
+      (this.petService.getPets() as unknown as Observable<Blob>).pipe(
         switchMap(blob => this.blobToPets(blob)),
         map(pets => PetActions.loadPetsSuccess({ pets })),
         catchError(error => of(PetActions.loadPetsFailure({ error })))
@@ -32,7 +32,7 @@ export class PetEffects {
     this.actions$.pipe(
       ofType(PetActions.searchPets),
       mergeMap(action =>
-        (this.petService.filterPets(action.species, action.breed) as unknown as Observable<Blob>).pipe(
+        (this.petService.getPets(action.species, action.breed) as unknown as Observable<Blob>).pipe(
           switchMap(blob => this.blobToPets(blob)),
           map(pets => PetActions.searchPetsSuccess({ pets })),
           catchError(error => of(PetActions.searchPetsFailure({ error })))

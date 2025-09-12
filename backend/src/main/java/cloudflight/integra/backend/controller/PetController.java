@@ -4,7 +4,6 @@ import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.service.PetService;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,34 +24,27 @@ public class PetController {
     }
 
     @GetMapping("/pets")
-    public List<PetDTO> getAllPets() {
-        return PetMapper.INSTANCE.petToPetDTOList(petService.getAllPets());
+    public List<PetDTO> getPets(@RequestParam(required = false) String species, @RequestParam(required = false) String breed) {
+        return PetMapper.INSTANCE.petToPetDTOList(petService.getPets(species, breed));
     }
 
     @GetMapping("/pets/{id}")
     public PetDTO getPetById(@PathVariable Integer id) {
-        return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id).orElseThrow());
+        return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
     }
 
-    @GetMapping("/pets/filter")
-    public List<PetDTO> filterPets(@RequestParam String species, @RequestParam String breed) {
-        return PetMapper.INSTANCE.petToPetDTOList(petService.filterPets(species, breed, Sort.by("name").ascending()));
-    }
-
-    @PostMapping("/pets/add")
+    @PostMapping("/pets")
     public PetDTO addPet(@RequestBody Pet pet) {
         return PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet));
     }
 
-    @DeleteMapping("/pets/delete/{id}")
+    @DeleteMapping("/pets/{id}")
     public void deletePet(@PathVariable Integer id) {
-        Pet pet = petService.getPetById(id).orElseThrow();
-        petService.deletePet(pet);
+        petService.deletePetById(id);
     }
 
-    @DeleteMapping("/pets/delete")
+    @DeleteMapping("/pets")
     public void deleteAllPets() {
-        petService.getAllPets().forEach(petService::deletePet);
+        petService.deleteAllPets();
     }
-
 }

@@ -12,7 +12,6 @@ import java.util.List;
 public class PetServiceImpl implements PetService {
     PetRepository petRepository;
 
-
     PetServiceImpl (PetRepository petRepository) {
         this.petRepository = petRepository;
     }
@@ -28,13 +27,13 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> getAllPets() {
-        return petRepository.findAll();
+    public void deletePetById(int id) {
+        petRepository.deleteById(id);
     }
 
     @Override
-    public void deletePet(Pet pet) {
-        petRepository.delete(pet);
+    public void deleteAllPets() {
+        petRepository.deleteAll();
     }
 
     @Override
@@ -43,7 +42,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> filterPets(String species, String breed, Sort sort) {
-        return petRepository.findPetsBySpeciesIgnoreCaseOrBreedIgnoreCase(species, breed, sort);
+    public List<Pet> getPets(String species, String breed) {
+        Sort sort = Sort.by("name").ascending();
+        return petRepository.filterPets(species, breed, sort);
     }
 }

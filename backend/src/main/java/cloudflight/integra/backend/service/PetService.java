@@ -8,10 +8,11 @@ import java.util.List;
 public interface PetService {
     Pet savePet(Pet pet);
     Pet getPetById(int id);
-    List<Pet> getAllPets();
 
-    void deletePet(Pet pet);
+    void deletePetById(int id);
+    void deleteAllPets();
+
     void updatePet(Pet pet);
 
-    List<Pet> filterPets(String species, String breed, Sort sort);
+    List<Pet> getPets(String species, String breed);
 }
