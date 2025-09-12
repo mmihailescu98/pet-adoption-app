@@ -1,0 +1,17 @@
+<div id="container" class="flex fixed top-0">
+  <div class="left">
+    <div class="welcome-panel">
+      <h1>Welcome!</h1>
+      <div class="form-selection-container">
+        <button (click)="toLoginForm()">Login</button>
+        <button (click)="toRegisterForm()">Sign Up</button>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+      <div class="form-panel">
+        <login-form [hidden]="tab !== 'login'"></login-form>
+        <register-form [hidden]="tab !== 'registration'" (signedUp)="toLoginForm()"></register-form>
+      </div>
+  </div>
+</div>

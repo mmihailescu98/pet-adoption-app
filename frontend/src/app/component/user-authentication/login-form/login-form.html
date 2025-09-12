@@ -1,0 +1,21 @@
+<form class="container" [formGroup]="loginForm" (ngSubmit)="handleLogin()">
+  <h1>Login</h1>
+  <p>Enter your credentials to enter the site</p>
+  <div class="flex flex-column m-3 inputSize">
+    <p-float-label class="pl-2">Username</p-float-label>
+    <p-icon-field>
+      <p-inputicon class="pi pi-user inputStyle"></p-inputicon>
+      <input type="text" class="w-full" pInputText placeholder="ex: CarlJohnson45"
+              formControlName="username">
+    </p-icon-field>
+  </div>
+  <div class="flex flex-column mb-5 inputSize">
+    <p-float-label class="pl-2">Password</p-float-label>
+    <p-icon-field>
+      <p-inputicon class="pi pi-user"></p-inputicon>
+      <input type="password" class="w-full inputSize inputStyle" pInputText placeholder="**************"
+              formControlName="password">
+    </p-icon-field>
+  </div>
+  <button pButton severity="contrast" type="submit" [disabled]="loginForm.invalid">Login</button>
+</form>

@@ -1,0 +1,68 @@
+<form class="container" [formGroup]="registrationForm" (ngSubmit)="handleRegistration()">
+  <h1>Sign up</h1>
+  <p>Enter your information to register now</p>
+
+  <!-- First + Last Name -->
+  <div class="flex flex-row w-full column-gap-2 mb-2">
+    <div class="flex flex-column ml-2">
+      <p-float-label class="pl-2">First name</p-float-label>
+      <p-icon-field>
+        <p-inputicon class="pi pi-user"></p-inputicon>
+        <input type="text" class="w-full" pInputText placeholder="John"
+               formControlName="first_name">
+      </p-icon-field>
+    </div>
+
+    <div class="flex flex-column mr-1">
+      <p-float-label class="pl-2">Last name</p-float-label>
+      <p-icon-field>
+        <p-inputicon class="pi pi-user"></p-inputicon>
+        <input type="text" class="w-full" pInputText placeholder="Smith"
+               formControlName="last_name">
+      </p-icon-field>
+    </div>
+  </div>
+
+  <!-- Username + Email -->
+  <div class="flex flex-row w-full column-gap-2 mb-2">
+    <div class="flex flex-column ml-2">
+      <p-float-label class="pl-2">Username</p-float-label>
+      <p-icon-field>
+        <p-inputicon class="pi pi-id-card"></p-inputicon>
+        <input type="text" class="w-full" pInputText placeholder="JohnSmith15"
+               formControlName="username">
+      </p-icon-field>
+    </div>
+
+    <div class="flex flex-column mr-1">
+      <p-float-label class="pl-2">Email</p-float-label>
+      <p-icon-field>
+        <p-inputicon class="pi pi-envelope"></p-inputicon>
+        <input type="email" class="w-full" pInputText placeholder="johnsmith42@example.com"
+               formControlName="email">
+      </p-icon-field>
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="flex flex-column w-full align-items-center pl-2 pr-1 mb-2">
+    <p-float-label class="align-self-start pl-2">Password</p-float-label>
+    <p-icon-field class="w-full">
+      <p-inputicon class="pi pi-lock"></p-inputicon>
+      <input type="password" class="w-full" pInputText placeholder="*************"
+             formControlName="password">
+    </p-icon-field>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="flex flex-column w-full align-items-center pl-2 pr-1 mb-2">
+    <p-float-label class="align-self-start pl-2">Confirm Password</p-float-label>
+    <p-icon-field class="w-full">
+      <p-inputicon class="pi pi-lock"></p-inputicon>
+      <input type="password" class="w-full" pInputText placeholder="*************"
+             formControlName="password_check">
+    </p-icon-field>
+  </div>
+
+  <button pButton severity="contrast" type="submit" [disabled]="registrationForm.invalid">Sign Up</button>
+</form>
