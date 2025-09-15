@@ -36,6 +36,4 @@ public class PetController {
         return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
     }
 
-
-
 }
