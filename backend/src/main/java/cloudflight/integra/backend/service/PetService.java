@@ -1,16 +1,15 @@
 package cloudflight.integra.backend.service;
 
-import cloudflight.integra.backend.model.PetModel;
+import cloudflight.integra.backend.model.Pet;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PetService {
-    PetModel savePet(PetModel petModel);
-    Optional<PetModel> getPetById(int id);
-    Optional<PetModel> getPetByName(String name);
-    List<PetModel> getAllPets();
+  
+    Pet savePet(Pet pet);
+    Pet getPetById(int id);
+    List<Pet> getAllPets();
 
-    void deletePet(PetModel petModel);
-    void updatePet(PetModel petModel);
+    void deletePet(Pet pet);
+    void updatePet(Pet pet);
 }
