@@ -3,6 +3,7 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.service.PetService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api")
@@ -32,8 +34,14 @@ public class PetController {
     }
 
     @GetMapping("/pets/{id}")
-    public PetDTO getPetById(@PathVariable Integer id) {
-        return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
+    public ResponseEntity<PetDTO> getPetById(@PathVariable Integer id) {
+        try {
+            ResponseEntity.notFound().build();
+            PetDTO pet = PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
+            return ResponseEntity.ok(pet);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
