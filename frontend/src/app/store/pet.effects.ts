@@ -42,4 +42,20 @@ export class PetEffects {
   );
 
 
+
+  loadPet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.loadPet),
+      mergeMap(({ id }) =>
+        (this.petService.getPetById(id) as unknown as Observable<Blob>).pipe(
+          switchMap(blob =>
+            from(blob.text()).pipe(map(text => JSON.parse(text) as PetDTO))
+          ),
+          map(pet => PetActions.loadPetSuccess({ pet })),
+          catchError(error => of(PetActions.loadPetFailure({ error })))
+        )
+      )
+    )
+  );
+
 }

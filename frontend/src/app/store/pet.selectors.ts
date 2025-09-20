@@ -17,3 +17,10 @@ export const selectPetError = createSelector(
   selectPetState,
   (state: PetState) => state.error
 );
+
+export const selectSelectedPet = createSelector(
+  selectPetState,
+  (state: PetState) => state.selectedPet
+);
+
+
