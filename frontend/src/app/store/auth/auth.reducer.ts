@@ -50,9 +50,18 @@ export const authReducer = createReducer(
     registrationError: error,
   })),
 
-  on(AuthActions.resetRegister, (state) => ({
+  on(AuthActions.resetHasRegisteredState, (state) => ({
     ...state,
     hasRegistered: false,
   })),
 
+  on(AuthActions.clearRegisterError, (state) => ({
+    ...state,
+    registrationError: null,
+  })),
+
+  on(AuthActions.clearLoginError, (state) => ({
+    ...state,
+    loginError: null,
+  }))
 );

@@ -9,9 +9,15 @@
     </div>
   </div>
   <div class="right">
-      <div class="form-panel">
-        <login-form [hidden]="tab !== 'login'"></login-form>
-        <register-form [hidden]="tab !== 'registration'" (signedUp)="toLoginForm()"></register-form>
+    <div class="form-panel">
+      @switch (tab){
+        @case ('login'){
+          <login-form></login-form>
+        }
+        @case ('registration'){
+          <register-form (onRegister)="toLoginForm()"></register-form>
+        }
+      }
       </div>
   </div>
 </div>

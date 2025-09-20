@@ -30,6 +30,14 @@ export const registerFailure = createAction(
 )
 
 
-export const resetRegister = createAction(
+export const resetHasRegisteredState = createAction(
   '[Auth] Register Reset',
+)
+
+export const clearLoginError = createAction(
+  '[Auth] Clear Login Error',
+)
+
+export const clearRegisterError = createAction(
+  '[Auth] Clear Register Error',
 )

@@ -8,7 +8,8 @@ import {Observable, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoginError, selectIsLoggedIn, selectLoading} from '../../../store/auth/auth.selector';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {login} from '../../../store/auth/auth.actions';
+import {clearLoginError, login} from '../../../store/auth/auth.actions';
+
 
 @Component({
   selector: 'login-form',
@@ -40,6 +41,7 @@ export class LoginForm implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     this.initSubscriptions();
     this.initLoginForm();
   }
@@ -52,7 +54,8 @@ export class LoginForm implements OnInit, OnDestroy {
     this.subscriptionArray = Array.of(
       this.hasLoggedIn$.subscribe((value) => {
         if (value) {
-          alert('Login successful!');  // or use a toast notification
+          alert('Login successful!');
+          //should also route to another page, until then after a login is succesful the alert will be triggered each time we come to the login form
         }
       }),
 
@@ -60,6 +63,8 @@ export class LoginForm implements OnInit, OnDestroy {
         if (error) {
           alert(`Login failed: \n${error}`);
           this.clearFields();
+
+          this.store.dispatch(clearLoginError());
         }
       }),
     );
@@ -84,7 +89,6 @@ export class LoginForm implements OnInit, OnDestroy {
       return
     }
 
-    console.log(username,password);
     this.store.dispatch(login({username:username, password:password}));
   }
 

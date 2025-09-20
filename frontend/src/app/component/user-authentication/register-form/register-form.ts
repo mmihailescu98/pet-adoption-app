@@ -12,7 +12,7 @@ import {
   Validators
 } from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {resetRegister, register} from '../../../store/auth/auth.actions';
+import {resetHasRegisteredState, register, clearRegisterError} from '../../../store/auth/auth.actions';
 import {selectRegistrationError, selectHasRegistered} from '../../../store/auth/auth.selector';
 import {Observable, Subscription} from 'rxjs';
 
@@ -31,7 +31,7 @@ import {Observable, Subscription} from 'rxjs';
   styleUrl: './register-form.css',
 })
 export class RegisterForm implements OnInit, OnDestroy {
-  @Output() signedUp = new EventEmitter<void>();
+  @Output() onRegister = new EventEmitter<void>();
 
   hasRegistered$: Observable<boolean>;
   registrationError$ : Observable<string | null>;
@@ -72,10 +72,10 @@ export class RegisterForm implements OnInit, OnDestroy {
       {
         if (value) {
           alert('Registration successful!');
-          this.store.dispatch(resetRegister());
+          this.store.dispatch(resetHasRegisteredState());
 
           //in order to change to log-in tab
-          this.signedUp.emit();
+          this.onRegister.emit();
         }
       }),
 
@@ -83,6 +83,8 @@ export class RegisterForm implements OnInit, OnDestroy {
       {
         if (error) {
           alert(`Registration failed: \n${error}`);
+
+          this.store.dispatch(clearRegisterError());
         }
       }),
     )
@@ -93,8 +95,6 @@ export class RegisterForm implements OnInit, OnDestroy {
   }
 
   handleRegistration() {
-    this.registrationForm.markAllAsTouched();
-
     let username: string = this.registrationForm.get('username')?.value;
     let password: string = this.registrationForm.get('password')?.value;
     let password_check: string = this.registrationForm.get('password_check')?.value;
@@ -106,7 +106,6 @@ export class RegisterForm implements OnInit, OnDestroy {
       alert("Passwords do not match!");
       return;
     }
-    console.log(username, password);
     this.store.dispatch(register({ username:username, password:password }));
   }
 }
