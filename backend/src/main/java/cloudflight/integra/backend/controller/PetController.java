@@ -35,7 +35,4 @@ public class PetController {
     public PetDTO getPetById(@PathVariable Integer id) {
         return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
     }
-
-
-
 }

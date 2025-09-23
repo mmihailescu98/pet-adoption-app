@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v3/**","/swagger-ui/**").permitAll()
                         .requestMatchers("/auth/login","/auth/register").permitAll()
                         .anyRequest().authenticated()
                 )
