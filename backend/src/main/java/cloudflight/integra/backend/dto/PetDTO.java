@@ -1,7 +1,7 @@
 package cloudflight.integra.backend.dto;
 
 public record PetDTO(
-        int id,
+        Integer id,
         String species,
         String breed,
         String name,
