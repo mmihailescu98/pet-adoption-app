@@ -33,6 +33,8 @@
     "@ngrx/store": "^20.0.1",
     "@ngrx/store-devtools": "^20.0.1",
     "@primeuix/themes": "^1.2.3",
+    "apexcharts": "^5.3.5",
+    "ng-apexcharts": "^2.0.1",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^20.0.1",
