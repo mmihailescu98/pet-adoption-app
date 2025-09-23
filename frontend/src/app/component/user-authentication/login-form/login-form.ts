@@ -1,16 +1,18 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FloatLabel} from 'primeng/floatlabel';
 import {IconField} from 'primeng/iconfield';
 import {InputIcon} from 'primeng/inputicon';
 import {InputText} from 'primeng/inputtext';
 import { ButtonDirective } from 'primeng/button';
-import {Observable, Subscription} from 'rxjs';
+import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {selectLoginError, selectIsLoggedIn, selectLoading} from '../../../store/auth/auth.selector';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {clearLoginError, login} from '../../../store/auth/auth.actions';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 
+@UntilDestroy()
 @Component({
   selector: 'login-form',
   imports: [
@@ -25,12 +27,10 @@ import {clearLoginError, login} from '../../../store/auth/auth.actions';
   templateUrl: './login-form.html',
   styleUrl: './login-form.css',
 })
-export class LoginForm implements OnInit, OnDestroy {
+export class LoginForm implements OnInit {
   isLoading$: Observable<boolean>;
   hasLoggedIn$: Observable<boolean>;
   loginError$: Observable<string | null>;
-
-  subscriptionArray: Array<Subscription> = [];
 
   loginForm!: FormGroup;
 
@@ -46,32 +46,26 @@ export class LoginForm implements OnInit, OnDestroy {
     this.initLoginForm();
   }
 
-  ngOnDestroy() {
-    this.endSubscriptions();
-  }
-
   initSubscriptions(){
-    this.subscriptionArray = Array.of(
-      this.hasLoggedIn$.subscribe((value) => {
-        if (value) {
-          alert('Login successful!');
-          //should also route to another page, until then after a login is succesful the alert will be triggered each time we come to the login form
-        }
-      }),
+    this.hasLoggedIn$
+      .pipe(untilDestroyed(this))
+      .subscribe((value) => {
+      if (value) {
+        alert('Login successful!');
+        //should also route to another page, until then after a login is succesful the alert will be triggered each time we come to the login form
+      }
+    })
 
-      this.loginError$.subscribe((error) => {
-        if (error) {
-          alert(`Login failed: \n${error}`);
-          this.clearFields();
+    this.loginError$
+      .pipe(untilDestroyed(this))
+      .subscribe((error) => {
+      if (error) {
+        alert(`Login failed: \n${error}`);
+        this.clearFields();
 
-          this.store.dispatch(clearLoginError());
-        }
-      }),
-    );
-  }
-
-  endSubscriptions(){
-    this.subscriptionArray.forEach((sub) => sub.unsubscribe());
+        this.store.dispatch(clearLoginError());
+      }
+    })
   }
 
   initLoginForm() {

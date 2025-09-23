@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ButtonDirective} from 'primeng/button';
 import {FloatLabel} from 'primeng/floatlabel';
 import {IconField} from 'primeng/iconfield';
@@ -14,8 +14,11 @@ import {
 import {Store} from '@ngrx/store';
 import {resetHasRegisteredState, register, clearRegisterError} from '../../../store/auth/auth.actions';
 import {selectRegistrationError, selectHasRegistered} from '../../../store/auth/auth.selector';
-import {Observable, Subscription} from 'rxjs';
+import {Observable} from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy'
 
+
+@UntilDestroy()
 @Component({
   selector: 'register-form',
   imports: [
@@ -30,13 +33,11 @@ import {Observable, Subscription} from 'rxjs';
   templateUrl: './register-form.html',
   styleUrl: './register-form.css',
 })
-export class RegisterForm implements OnInit, OnDestroy {
+export class RegisterForm implements OnInit {
   @Output() onRegister = new EventEmitter<void>();
 
   hasRegistered$: Observable<boolean>;
   registrationError$ : Observable<string | null>;
-
-  subscriptionArray : Array<Subscription> = [];
 
   registrationForm!: FormGroup;
 
@@ -48,10 +49,6 @@ export class RegisterForm implements OnInit, OnDestroy {
   ngOnInit() {
     this.initRegistrationForm();
     this.initSubscriptions();
-  }
-
-  ngOnDestroy(): void {
-    this.endSubscriptions();
   }
 
   initRegistrationForm() {
@@ -66,33 +63,31 @@ export class RegisterForm implements OnInit, OnDestroy {
   }
 
   initSubscriptions() {
-    this.subscriptionArray = Array.of
-    (
-      this.hasRegistered$.subscribe((value) =>
-      {
-        if (value) {
-          alert('Registration successful!');
-          this.store.dispatch(resetHasRegisteredState());
+    this.hasRegistered$
+      .pipe(untilDestroyed(this))
+      .subscribe((value) =>
+    {
+      if (value) {
+        alert('Registration successful!');
+        this.store.dispatch(resetHasRegisteredState());
 
-          //in order to change to log-in tab
-          this.onRegister.emit();
-        }
-      }),
+        //in order to change to log-in tab
+        this.onRegister.emit();
+      }
+    })
 
-      this.registrationError$.subscribe((error) =>
-      {
-        if (error) {
-          alert(`Registration failed: \n${error}`);
+    this.registrationError$
+      .pipe(untilDestroyed(this))
+      .subscribe((error) =>
+    {
+      if (error) {
+        alert(`Registration failed: \n${error}`);
 
-          this.store.dispatch(clearRegisterError());
-        }
-      }),
-    )
+        this.store.dispatch(clearRegisterError());
+      }
+    })
   }
 
-  endSubscriptions(){
-    this.subscriptionArray.forEach((sub)=>sub.unsubscribe());
-  }
 
   handleRegistration() {
     let username: string = this.registrationForm.get('username')?.value;
