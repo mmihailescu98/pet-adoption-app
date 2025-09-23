@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static cloudflight.integra.backend.service.validators.PetValidator.validatePet;
+
 @Service
 public class PetServiceImpl implements PetService {
     PetRepository petRepository;
@@ -38,6 +40,8 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public void updatePet(Pet pet) {
+        validatePet(pet.getBreed());
+
         petRepository.save(pet);
     }
 
