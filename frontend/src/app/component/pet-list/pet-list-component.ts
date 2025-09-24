@@ -7,13 +7,15 @@
   import {PetDTO} from '../../api/model/petDTO';
   import {Observable} from 'rxjs';
   import {AsyncPipe} from '@angular/common';
+  import {PetAddComponent} from '../pet-add/pet-add-component';
 
   @Component({
     selector: 'pet-list-component',
     imports: [
       DataViewModule,
       Button,
-      AsyncPipe
+      AsyncPipe,
+      PetAddComponent
     ],
     templateUrl: './pet-list-component.html',
     styleUrl: './pet-list-component.css'
@@ -24,6 +26,7 @@
     public status$: Observable<string>;
     public error$: Observable<any>;
 
+    showAddDialog = false;
 
     constructor(private store: Store) {
       this.pets$ = this.store.select(selectAllPets);
@@ -35,4 +38,11 @@
       this.store.dispatch(loadPets());
     }
 
+    openDialog() {
+      this.showAddDialog = true;
+    }
+
+    saveNewPet(pet: PetDTO) {
+      console.log('New Pet:', pet);
+    }
   }

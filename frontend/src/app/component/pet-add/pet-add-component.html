@@ -1,0 +1,49 @@
+<p-dialog
+  [(visible)]="display"
+  (onHide)="hideDialog()"
+  header="Add a New Pet"
+  [modal]="true"
+  [style]="{width: '40vw'}">
+
+  <form [formGroup]="petForm" class="p-fluid">
+    <div class="p-field">
+      <label>Species</label>
+      <input pInputText formControlName="species" />
+    </div>
+
+    <div class="p-field">
+      <label>Breed</label>
+      <input pInputText formControlName="breed" />
+    </div>
+
+    <div class="p-field">
+      <label>Name</label>
+      <input pInputText formControlName="name" />
+    </div>
+
+    <div class="p-field">
+      <label>Location</label>
+      <input pInputText formControlName="location" />
+    </div>
+
+    <div class="p-field">
+      <label>Age</label>
+      <input pInputText type="number" formControlName="age" />
+    </div>
+
+    <div class="p-field">
+      <label>Description</label>
+      <textarea pInputTextarea rows="3" formControlName="description"></textarea>
+    </div>
+
+    <div class="p-field">
+      <label>Image URL</label>
+      <input pInputText formControlName="imgURL" />
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="petForm.invalid"></p-button>
+    <p-button label="Cancel" icon="pi pi-times" class="p-button-secondary" (onClick)="hideDialog()"></p-button>
+  </ng-template>
+</p-dialog>

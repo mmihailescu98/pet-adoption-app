@@ -1,3 +1,19 @@
+<div class="add-panel">
+  <p-button
+    styleClass="w-full md:w-auto"
+    label="Add Pet"
+    (onClick)="openDialog()">
+  </p-button>
+</div>
+
+<!-- two-way bind parent <-> child -->
+<!-- Pass state and handle save -->
+<pet-add-component
+  [(display)]="showAddDialog"
+  (savePet)="saveNewPet($event)">
+</pet-add-component>
+
+
 @if ((status$ | async) === 'loading') {
   <div class="p-mb-3">
     Loading...
