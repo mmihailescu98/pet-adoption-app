@@ -1,20 +1,22 @@
 package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionStatsDTO;
+import cloudflight.integra.backend.dto.CountStatsDTO;
 import cloudflight.integra.backend.dto.PercentageStatsDTO;
-import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.StatsType;
 import cloudflight.integra.backend.repository.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class DashboardServiceImplTest {
+
+    // These are unit tests using mocks and do not interact with a database.
+    // For full validation of queries and data, integration tests with a DB are required.
 
     private PetRepository petRepository;
     private DashboardServiceImpl dashboardService;
@@ -68,11 +70,11 @@ class DashboardServiceImplTest {
 
     @Test
     void getSpeciesPercentages() {
-        List<PercentageStatsDTO> mockStats = List.of(
-                new PercentageStatsDTO(StatsType.SPECIES, "Cat", 40.0),
-                new PercentageStatsDTO(StatsType.SPECIES, "Dog", 60.0)
-        );
-        when(petRepository.getSpeciesPercentageStats()).thenReturn(mockStats);
+        when(petRepository.getSpeciesCountStats()).thenReturn(List.of(
+                new CountStatsDTO(StatsType.SPECIES, "Cat", 4),
+                new CountStatsDTO(StatsType.SPECIES, "Dog", 6)
+        ));
+        when(petRepository.count()).thenReturn(10L);
 
         List<PercentageStatsDTO> result = dashboardService.getSpeciesPercentages();
 
@@ -81,16 +83,17 @@ class DashboardServiceImplTest {
         assertEquals(40.0, result.get(0).percentage());
         assertEquals("Dog", result.get(1).name());
         assertEquals(60.0, result.get(1).percentage());
-        verify(petRepository).getSpeciesPercentageStats();
+        verify(petRepository).getSpeciesCountStats();
+        verify(petRepository).count();
     }
 
     @Test
     void getBreedPercentages() {
-        List<PercentageStatsDTO> mockStats = List.of(
-                new PercentageStatsDTO(StatsType.BREED, "Siamese", 0.0),
-                new PercentageStatsDTO(StatsType.BREED, "Persian", 100.0)
-        );
-        when(petRepository.getBreedPercentageStats()).thenReturn(mockStats);
+        when(petRepository.getBreedCountStats()).thenReturn(List.of(
+                new CountStatsDTO(StatsType.BREED, "Siamese", 0),
+                new CountStatsDTO(StatsType.BREED, "Persian", 2)
+        ));
+        when(petRepository.count()).thenReturn(2L);
 
         List<PercentageStatsDTO> result = dashboardService.getBreedPercentages();
 
@@ -99,20 +102,21 @@ class DashboardServiceImplTest {
         assertEquals(0.0, result.get(0).percentage());
         assertEquals("Persian", result.get(1).name());
         assertEquals(100.0, result.get(1).percentage());
-        verify(petRepository).getBreedPercentageStats();
+        verify(petRepository).getBreedCountStats();
+        verify(petRepository).count();
     }
 
     @Test
-    void getTotalAdoptedPets() {
+    void getTotalAdoptedPetsNumber() {
         when(petRepository.countAdoptedPets()).thenReturn(7L);
-        assertEquals(7L, dashboardService.getTotalAdoptedPets());
+        assertEquals(7L, dashboardService.getTotalAdoptedPetsNumber());
         verify(petRepository).countAdoptedPets();
     }
 
     @Test
-    void getTotalPets() {
+    void getTotalPetsNumber() {
         when(petRepository.count()).thenReturn(20L);
-        assertEquals(20L, dashboardService.getTotalPets());
+        assertEquals(20L, dashboardService.getTotalPetsNumber());
         verify(petRepository).count();
     }
 

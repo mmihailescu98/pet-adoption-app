@@ -42,12 +42,12 @@ public class DashboardController {
 
     @GetMapping("/total-adopted-pets")
     public Long getTotalAdoptedPets() {
-        return dashboardService.getTotalAdoptedPets();
+        return dashboardService.getTotalAdoptedPetsNumber();
     }
 
     @GetMapping("/total-pets")
     public Long getTotalPets() {
-        return dashboardService.getTotalPets();
+        return dashboardService.getTotalPetsNumber();
     }
 
     @GetMapping("/adoption-rate")

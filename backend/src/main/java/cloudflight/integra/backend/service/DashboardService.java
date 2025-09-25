@@ -16,9 +16,9 @@ public interface DashboardService {
 
     List<PercentageStatsDTO> getBreedPercentages();
 
-    Long getTotalAdoptedPets();
+    Long getTotalAdoptedPetsNumber();
 
-    Long getTotalPets();
+    Long getTotalPetsNumber();
 
     float getAdoptionRate();
 

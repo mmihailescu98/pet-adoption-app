@@ -1,17 +1,14 @@
 package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionStatsDTO;
+import cloudflight.integra.backend.dto.CountStatsDTO;
 import cloudflight.integra.backend.dto.PercentageStatsDTO;
-import cloudflight.integra.backend.dto.PetDTO;
-import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.StatsType;
 import cloudflight.integra.backend.repository.PetRepository;
 import cloudflight.integra.backend.service.DashboardService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -33,32 +30,45 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<PercentageStatsDTO> getSpeciesPercentages() {
-        return petRepository.getSpeciesPercentageStats().stream().toList();
+        List<CountStatsDTO> countStats = petRepository.getSpeciesCountStats();
+        long totalPetsNumber = getTotalPetsNumber();
+        return countStats.stream()
+                .map(stat -> new PercentageStatsDTO(
+                        StatsType.SPECIES,
+                        stat.name(),
+                        totalPetsNumber == 0 ? 0 : (stat.count() * 100.0 / totalPetsNumber)
+                ))
+                .toList();
     }
 
     @Override
     public List<PercentageStatsDTO> getBreedPercentages() {
-        return petRepository.getBreedPercentageStats().stream().toList();
+        List<CountStatsDTO> countStats = petRepository.getBreedCountStats();
+        long totalPetsNumber = getTotalPetsNumber();
+        return countStats.stream()
+                .map(stat -> new PercentageStatsDTO(
+                        StatsType.BREED,
+                        stat.name(),
+                        totalPetsNumber == 0 ? 0 : (stat.count() * 100.0 / totalPetsNumber)
+                ))
+                .toList();
     }
 
     @Override
-    public Long getTotalAdoptedPets() {
+    public Long getTotalAdoptedPetsNumber() {
         return petRepository.countAdoptedPets();
     }
 
     @Override
-    public Long getTotalPets() {
+    public Long getTotalPetsNumber() {
         return petRepository.count();
     }
 
     @Override
     public float getAdoptionRate() {
-        long totalPets = getTotalPets();
-        long adoptedPets = getTotalAdoptedPets();
-        if (totalPets == 0) {
-            return 0;
-        }
-        return (adoptedPets * 100.0f) / totalPets;
+        long totalPetsNumber = getTotalPetsNumber();
+        long adoptedPetsNumber = getTotalAdoptedPetsNumber();
+        return totalPetsNumber == 0 ? 0 : (adoptedPetsNumber * 100.0f / totalPetsNumber);
     }
 
     @Override
