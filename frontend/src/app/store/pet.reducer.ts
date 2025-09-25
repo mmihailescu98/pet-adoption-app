@@ -57,6 +57,25 @@ export const petReducer = createReducer(
     status: 'error',
   })),
 
+  on(PetActions.searchPets, state => ({
+    ...state,
+    error: null,
+    status: 'loading',
+  })),
+
+  on(PetActions.searchPetsSuccess, (state, { pets }) => ({
+    ...state,
+    pets,
+    error: null,
+    status: 'success',
+  })),
+
+  on(PetActions.searchPetsFailure, (state, { error }) => ({
+    ...state,
+    error: error,
+    status: 'error',
+  })),
+
   on(PetActions.adoptPet, state => ({
   ...state,
   error: null,

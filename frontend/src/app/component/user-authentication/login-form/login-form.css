@@ -1,0 +1,43 @@
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+h1 {
+  text-align: center;
+  margin: 0 auto;
+}
+
+p {
+  text-align: center;
+  color: darkgrey;
+}
+
+.inputSize {
+  width: 70%;
+}
+
+.inputStyle {
+  color: darkgrey;
+}
+
+::ng-deep .p-inputtext {
+  border: 2px solid transparent;
+  border-radius: 10px;
+}
+
+::ng-deep .p-inputtext:focus:enabled
+{
+  box-shadow: none;
+  border: 2px solid white;
+}
+
+input.ng-invalid.ng-touched {
+  border: 2px solid red;
+}

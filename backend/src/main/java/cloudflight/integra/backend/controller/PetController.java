@@ -2,13 +2,9 @@ package cloudflight.integra.backend.controller;
 
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
+import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.service.PetService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,8 +24,8 @@ public class PetController {
     }
 
     @GetMapping("/pets")
-    public List<PetDTO> getAllPets() {
-        return PetMapper.INSTANCE.petToPetDTOList(petService.getAllPets());
+    public List<PetDTO> getPets(@RequestParam(required = false) String species, @RequestParam(required = false) String breed) {
+        return PetMapper.INSTANCE.petToPetDTOList(petService.getPets(species, breed));
     }
 
     @GetMapping("/pets/{id}")
@@ -42,4 +38,18 @@ public class PetController {
         return PetMapper.INSTANCE.petToPetDTO(petService.adoptPet(id));
     }
 
+    @PostMapping("/pets")
+    public PetDTO addPet(@RequestBody Pet pet) {
+        return PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet));
+    }
+
+    @DeleteMapping("/pets/{id}")
+    public void deletePet(@PathVariable Integer id) {
+        petService.deletePetById(id);
+    }
+
+    @DeleteMapping("/pets")
+    public void deleteAllPets() {
+        petService.deleteAllPets();
+    }
 }

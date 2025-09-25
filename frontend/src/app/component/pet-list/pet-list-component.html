@@ -2,31 +2,68 @@
   <div class="p-mb-3">
     Loading...
   </div>
-}
-@else if ((status$ | async) === 'error') {
+} @else if ((status$ | async) === 'error') {
   <div class="p-mb-3 p-error">
     Error!
   </div>
-}
-@else if (((status$ | async) === 'success') && ((pets$ | async)?.length === 0)) {
+} @else if (((status$ | async) === 'success') && ((pets$ | async)?.length === 0)) {
   <div class="p-mb-3">
     No pets found.
   </div>
 }
 
+<form class="filter-bar search-bar-right" [formGroup]="filterForm">
+
+  <div class="relative">
+    <input
+      formControlName="species"
+      placeholder="Search by species"
+      class="search-input"/>
+
+    @if (((filteredSpecies$ | async)?.length)) {
+      <ul class="suggestions-list">
+        @for (suggestion of (filteredSpecies$ | async) || []; track suggestion) {
+          <li (click)="selectSuggestion('species', suggestion)">
+            {{ suggestion }}
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="relative">
+    <input
+      formControlName="breed"
+      placeholder="Search by breed"
+      class="search-input"/>
+
+    @if (((filteredBreeds$ | async)?.length)) {
+      <ul class="suggestions-list">
+        @for (suggestion of (filteredBreeds$ | async) || []; track suggestion) {
+          <li (click)="selectSuggestion('breed', suggestion)">
+            {{ suggestion }}
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <button pButton type="button" class="reset-search-button" (click)="onReset($event)"> Reset</button>
+</form>
+
 <p-dataView #dv [value]="(pets$ | async ) || []" [rows]="3" [paginator]="true">
   <ng-template #list let-items>
     <div class="items-panel">
-      @for (pet of items; track pet.id){
+      @for (pet of items; track pet.id) {
         <div class="item-panel">
           <div class="flex">
             <div class="thumb">
-              <img [src]="pet.imgURL" alt="{{ pet.name }}" />
+              <img [src]="pet.imgURL" alt="{{ pet.name }}"/>
             </div>
             <div class="ml-2">
-              <h1 class="text-clamp">{{ pet.name }} - {{pet.breed}}</h1>
-              <p><i class="pi pi-map-marker"></i> {{pet.location}}</p>
-              <p><i class="pi pi-id-card"></i> {{pet.age}}</p>
+              <h1 class="text-clamp">{{ pet.name }} - {{ pet.breed }}</h1>
+              <p><i class="pi pi-map-marker"></i> {{ pet.location }}</p>
+              <p><i class="pi pi-id-card"></i> {{ pet.age }}</p>
             </div>
           </div>
           <div class="buttons-panel">

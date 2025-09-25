@@ -1,6 +1,7 @@
 package cloudflight.integra.backend.service;
 
 import cloudflight.integra.backend.model.Pet;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -8,10 +9,13 @@ public interface PetService {
   
     Pet savePet(Pet pet);
     Pet getPetById(int id);
-    List<Pet> getAllPets();
 
-    void deletePet(Pet pet);
+    void deletePetById(int id);
+    void deleteAllPets();
+
     void updatePet(Pet pet);
 
     Pet adoptPet(int id);
+
+    List<Pet> getPets(String species, String breed);
 }
