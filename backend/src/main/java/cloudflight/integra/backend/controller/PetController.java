@@ -5,6 +5,7 @@ import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.service.PetService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +37,9 @@ public class PetController {
         return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
     }
 
-
+    @PostMapping("/pets/{id}/adopt")
+    public PetDTO adoptPet(@PathVariable Integer id) {
+        return PetMapper.INSTANCE.petToPetDTO(petService.adoptPet(id));
+    }
 
 }

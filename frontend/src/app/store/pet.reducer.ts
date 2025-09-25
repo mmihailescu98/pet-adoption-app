@@ -55,6 +55,25 @@ export const petReducer = createReducer(
     selectedPet: null,
     error,
     status: 'error',
+  })),
+
+  on(PetActions.adoptPet, state => ({
+  ...state,
+  error: null,
+  status: 'loading',
+  })),
+  on(PetActions.adoptPetSuccess, (state, { pet }) => ({
+    ...state,
+    selectedPet: pet,
+    error: null,
+    status: 'success',
+    // Update the pet in the pets array too
+    pets: state.pets.map(p => p.id === pet.id ? pet : p)
+  })),
+  on(PetActions.adoptPetFailure, (state, { error }) => ({
+    ...state,
+    error,
+    status: 'error',
   }))
 );
 

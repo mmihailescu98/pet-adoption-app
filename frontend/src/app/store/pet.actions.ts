@@ -19,3 +19,18 @@ export const loadPetFailure = createAction(
   '[Pet Profile] Load Pet Failure',
   props<{ error: any }>()
 );
+
+export const adoptPet = createAction(
+  '[Pet Profile] Adopt Pet',
+  props<{ id: number }>()
+);
+
+export const adoptPetSuccess = createAction(
+  '[Pet Profile] Adopt Pet Success',
+  props<{ pet: PetDTO }>()
+);
+
+export const adoptPetFailure = createAction(
+  '[Pet Profile] Adopt Pet Failure',
+  props<{ error: any }>()
+);

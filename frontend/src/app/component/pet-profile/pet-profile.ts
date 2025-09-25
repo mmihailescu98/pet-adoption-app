@@ -1,16 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
-import { PetDTO } from '../../api';
-import { loadPet } from '../../store/pet.actions';
+import { Observable } from 'rxjs';import { PetDTO } from '../../api';
+import { loadPet, adoptPet } from '../../store/pet.actions';
 import { selectSelectedPet, selectPetStatus, selectPetError } from '../../store/pet.selectors';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-pet-profile',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, NgClass],
   templateUrl: './pet-profile.html',
   styleUrls: ['./pet-profile.css']
 })
@@ -42,4 +41,8 @@ export class PetProfileComponent implements OnInit {
       }
     });
   }
+
+  adoptPet(id: number): void {
+  this.store.dispatch(adoptPet({ id }));
+}
 }

@@ -12,4 +12,6 @@ public interface PetService {
 
     void deletePet(Pet pet);
     void updatePet(Pet pet);
+
+    Pet adoptPet(int id);
 }
