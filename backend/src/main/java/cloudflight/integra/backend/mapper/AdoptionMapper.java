@@ -1,6 +1,7 @@
 package cloudflight.integra.backend.mapper;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
+import cloudflight.integra.backend.dto.AdoptionListItemDTO;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -9,13 +10,14 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Mapper
+@Mapper(uses = {PetMapper.class})
 public interface AdoptionMapper {
     AdoptionMapper INSTANCE = Mappers.getMapper(AdoptionMapper.class);
 
     /**
-     * Maps an AdoptionListingAddRequestDTO to a AdoptionListing from the model ,
+     * Maps an AdoptionAddRequestDTO to an Adoption from the model ,
      *  and afterward sets default values to missing values
      * @param dto Source
      * @return Target
@@ -23,10 +25,22 @@ public interface AdoptionMapper {
     @Mapping(target = "adopter", ignore = true)
     AdoptionEntry toModelFromAddRequest(AdoptionAddRequestDTO dto);
 
+    /**
+     * Maps an AdoptionEntry list to a AdoptionGetRequestDTO list
+     * @param models list with the model entities
+     * @return items for showcase of adoptions
+     */
+    @Mapping(target = "pet",source = "pet")//needed because it goes from model to dto
+    List<AdoptionListItemDTO> toGetRequestsFromModels(List<AdoptionEntry> models);
+
+
     @AfterMapping
-    default void setDefaults(@MappingTarget AdoptionEntry listing){
-        listing.setCreatedAt(LocalDateTime.now());
-        listing.setAdopter(null);
+    default void setDefaults(@MappingTarget AdoptionEntry adotpion){
+        adotpion.setCreatedAt(LocalDateTime.now());
+        adotpion.setAdoptedAt(null);
+        adotpion.setAdopter(null);
     }
+
+
 
 }

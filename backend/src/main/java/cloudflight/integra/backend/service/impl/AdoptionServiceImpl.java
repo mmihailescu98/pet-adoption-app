@@ -9,6 +9,8 @@ import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.AdoptionService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdoptionServiceImpl implements AdoptionService {
     AdoptionRepository adoptionRepository;
@@ -36,11 +38,21 @@ public class AdoptionServiceImpl implements AdoptionService {
         Pet toBePublished = adoptionEntry.getPet();
         UserModel publisher = adoptionEntry.getPublisher();
 
-        //searches if pet already exists , otherwise adds it
+        boolean existingPet = false;
+
         try {
             toBePublished = petRepository.findById(toBePublished.getId()).orElseThrow();
+            existingPet = true;
         }catch (Exception _){
             toBePublished = petRepository.save(toBePublished);
+        }
+
+        if (existingPet) {
+            //if the pet exists , we check for it to not be in an already pending adoption
+            adoptionRepository.findByPetAndAdopterIsNull(toBePublished)
+                    .ifPresent((_)->{
+                        throw(new RuntimeException("This pet is already in a pending adoption"));
+                    });
         }
 
         publisher = userRepository.findByUsername(publisher.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
@@ -50,4 +62,11 @@ public class AdoptionServiceImpl implements AdoptionService {
 
         return adoptionRepository.save(adoptionEntry);
     }
+
+    @Override
+    public List<AdoptionEntry> getPendingAdoptions() {
+        return adoptionRepository.findByAdopterIsNull();
+    }
+
+
 }

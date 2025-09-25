@@ -3,6 +3,7 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.service.PetService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,12 @@ public class PetController {
         return List.of("hello", "world");
     }
 
-    @GetMapping("/pets")
+    @GetMapping(value = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PetDTO> getAllPets() {
         return PetMapper.INSTANCE.petToPetDTOList(petService.getAllPets());
     }
 
-    @GetMapping("/pets/{id}")
+    @GetMapping(value = "/pets/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PetDTO getPetById(@PathVariable Integer id) {
         return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
     }

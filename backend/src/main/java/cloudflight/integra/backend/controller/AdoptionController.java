@@ -1,13 +1,17 @@
 package cloudflight.integra.backend.controller;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
+import cloudflight.integra.backend.dto.AdoptionListItemDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
 import cloudflight.integra.backend.service.AdoptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api")
@@ -17,13 +21,18 @@ public class AdoptionController {
     @Autowired
     AdoptionService adoptionService;
 
-// will work on later
-//    @GetMapping("/adoptionlistings")
-//    public ResponseEntity<List<AdoptionListing>> getAdoptionListings() {
-//
-//    }
 
-    @PostMapping("/adoptionlistings")
+    @GetMapping(value="/adoptions",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AdoptionListItemDTO>> getAdoptions(@RequestParam(required = false) Integer adopterId) {
+        if(adopterId == null) {
+            var dtos = AdoptionMapper.INSTANCE.toGetRequestsFromModels(adoptionService.getPendingAdoptions());
+            return ResponseEntity.ok(dtos);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        }
+    }
+
+    @PostMapping("/adoptions")
     public ResponseEntity<?> createAdoptionListing(@RequestBody AdoptionAddRequestDTO addRequestListing) {
         try{
             var mappedEntity = AdoptionMapper.INSTANCE.toModelFromAddRequest(addRequestListing);

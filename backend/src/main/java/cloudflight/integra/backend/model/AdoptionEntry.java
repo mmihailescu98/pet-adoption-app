@@ -29,14 +29,15 @@ public class AdoptionEntry {
     @JoinColumn(name = "publisher_id")
     private UserModel publisher;
 
+    private List<String> additionalImages;
+    private String contactNumber;
+
     // The user who adopts it (nullable until adopted)
     @ManyToOne(optional = true)
     @JoinColumn(name = "adopter_id")
     private UserModel adopter;
 
-    private List<String> additionalImages;
-    private String contactNumber;
-
     private LocalDateTime createdAt;
+    private LocalDateTime adoptedAt;
 }
 
