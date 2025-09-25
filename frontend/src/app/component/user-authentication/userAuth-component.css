@@ -1,0 +1,81 @@
+#container {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;      /* Full viewport width */
+  height: 100vh;
+
+}
+
+h1 {
+  margin: 10px auto;
+}
+
+.left {
+  width: 47%;
+  height: 100%;
+
+  align-content: center;
+}
+
+.left:before {
+  width: 47%;
+  height: 100%;
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url("../../resources/images/signupCat.jpg");
+  background-size: cover;
+  transform: scaleX(-1);
+  z-index: -1;
+}
+
+.welcome-panel {
+  justify-self: flex-end;
+  width: 45%;
+  height: 50%;
+
+  border: rgba(157, 157, 157, 0.04) solid;
+  border-radius: 15px 0 0 15px;
+  border-width: 10px 0 10px 10px;
+  background: transparent;
+  backdrop-filter: blur(30px);
+
+  justify-items: center;
+  box-shadow: -3px 3px 15px 2px black;
+}
+
+.form-selection-container {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  row-gap: 16px;
+
+}
+
+.right {
+  width: 53%;
+  height: 100%;
+
+  background: linear-gradient(to right, #4f4b49, #35312e);
+  align-content: center;
+}
+
+.form-panel {
+  width: 50%;
+  height: 50%;
+
+  border: rgba(145, 145, 145, 0.07) solid;
+  border-width: 10px 10px 10px 0;
+  border-radius: 0 15px 15px 0;
+
+  background: rgba(255, 255, 255, 0.22);
+
+  box-shadow: 3px 3px 15px 2px black;
+}

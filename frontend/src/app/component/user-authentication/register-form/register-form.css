@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  justify-self: flex-start;
+
+  flex-direction: column;
+  align-items: center;     /* horizontal centering */
+  gap: 10px;
+}
+
+.signup-button {
+  padding-top: 23px;
+}
+
+h1 , p {
+  margin: 0 auto
+}
+
+p  {
+  color: darkgrey;
+  margin-bottom: 7px;
+}
+
+.p-button1 {
+  background-color: darkgrey;
+}
