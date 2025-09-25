@@ -1,26 +1,75 @@
-<div style="margin: 10px; padding: 10px; border-radius: 8px;">
-  <apx-chart #chart
-    [series]="chartOptions.series!"
-    [chart]="chartOptions.chart!"
-    [dataLabels]="chartOptions.dataLabels!"
-    [plotOptions]="chartOptions.plotOptions!"
-    [yaxis]="chartOptions.yaxis!"
-    [xaxis]="chartOptions.xaxis!"
-    [fill]="chartOptions.fill!"
-    [title]="chartOptions.title!"
-    [theme]="chartOptions.theme!"
-  ></apx-chart>
-  <apx-chart
-             [series]="chartOptions2.series!"
-             [chart]="chartOptions2.chart!"
-             [dataLabels]="chartOptions2.dataLabels!"
-             [plotOptions]="chartOptions2.plotOptions!"
-             [yaxis]="chartOptions2.yaxis!"
-             [xaxis]="chartOptions2.xaxis!"
-             [fill]="chartOptions2.fill!"
-             [title]="chartOptions2.title!"
-             [theme]="chartOptions2.theme!"
-             [tooltip]="chartOptions2.tooltip!"
-             [grid]="chartOptions2.grid!"
-  ></apx-chart>
+<app-nav-bar></app-nav-bar>
+<div class="grid">
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card header="Pets" [style.text-align]="'center'" class="mb-3">
+      <div class="pet-card-content">
+        <span class="material-icons">pets</span>
+        <h2>156</h2>
+      </div>
+    </p-card>
+    </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card header="Breeds" class="mb-3">
+      <apx-chart #breedPercentages
+        [series]="breedPercentagesData.series!"
+        [chart]="breedPercentagesData.chart!"
+        [labels]="breedPercentagesData.labels!"
+        [responsive]="breedPercentagesData.responsive!"
+        [colors]="breedPercentagesData.colors!"
+        [legend]="breedPercentagesData.legend!"
+        [tooltip]="breedPercentagesData.tooltip!"
+        [theme]="breedPercentagesData.theme!"
+        [stroke]="breedPercentagesData.stroke!"
+      ></apx-chart>
+    </p-card>
+    </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card header="Species">
+      <apx-chart #speciesPercentages
+        [series]="speciesPercentagesData.series!"
+        [chart]="speciesPercentagesData.chart!"
+        [labels]="speciesPercentagesData.labels!"
+        [responsive]="speciesPercentagesData.responsive!"
+        [colors]="speciesPercentagesData.colors!"
+        [legend]="speciesPercentagesData.legend!"
+        [tooltip]="speciesPercentagesData.tooltip!"
+        [theme]="speciesPercentagesData.theme!"
+        [stroke]="speciesPercentagesData.stroke!"
+      ></apx-chart>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card header="Most adopted breeds">
+        <apx-chart #mostAdoptedBreed
+                   [series]="breedMAdoptedData.series!"
+                   [chart]="breedMAdoptedData.chart!"
+                   [dataLabels]="breedMAdoptedData.dataLabels!"
+                   [plotOptions]="breedMAdoptedData.plotOptions!"
+                   [yaxis]="breedMAdoptedData.yaxis!"
+                   [xaxis]="breedMAdoptedData.xaxis!"
+                   [fill]="breedMAdoptedData.fill!"
+                   [title]="breedMAdoptedData.title!"
+                   [theme]="breedMAdoptedData.theme!"
+                   [tooltip]="breedMAdoptedData.tooltip!"
+                   [grid]="breedMAdoptedData.grid!"
+        ></apx-chart>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card header="Most adopted species">
+        <apx-chart #mostAdoptedSpecies
+                   [series]="speciesMAdoptedData.series!"
+                   [chart]="breedMAdoptedData.chart!"
+                   [dataLabels]="breedMAdoptedData.dataLabels!"
+                   [plotOptions]="breedMAdoptedData.plotOptions!"
+                   [yaxis]="breedMAdoptedData.yaxis!"
+                   [xaxis]="breedMAdoptedData.xaxis!"
+                   [fill]="breedMAdoptedData.fill!"
+                   [title]="breedMAdoptedData.title!"
+                   [theme]="breedMAdoptedData.theme!"
+                   [tooltip]="breedMAdoptedData.tooltip!"
+                   [grid]="breedMAdoptedData.grid!"
+        ></apx-chart>
+    </p-card>
+  </div>
 </div>

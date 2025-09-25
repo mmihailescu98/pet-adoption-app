@@ -1,3 +1,10 @@
-/*::ng-deep .apexcharts-menu {*/
-/*  background: #333 !important;*/
-/*}*/
+.pet-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pet-card-content h2 {
+  margin: 0;
+}

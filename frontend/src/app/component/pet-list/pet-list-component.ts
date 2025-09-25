@@ -8,6 +8,8 @@ import {PetDTO} from '../../api/model/petDTO';
 import {Observable, startWith, Subject, takeUntil, map, switchMap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
+import {NavBar} from '../nav-bar/nav-bar';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'pet-list-component',
@@ -17,6 +19,8 @@ import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
     AsyncPipe,
     ReactiveFormsModule,
     ButtonDirective,
+    NavBar,
+    RouterLink,
   ],
   templateUrl: './pet-list-component.html',
   styleUrl: './pet-list-component.css'
