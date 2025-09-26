@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as PetActions from './pet.actions';
-import { PetDTO } from '../api';
+import { PetDTO } from '../../api';
 
 export interface PetState {
   pets: PetDTO[];

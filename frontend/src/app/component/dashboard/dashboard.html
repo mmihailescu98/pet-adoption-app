@@ -1,5 +1,20 @@
+<!--Navbar-->
 <app-nav-bar></app-nav-bar>
+<!--Loading icon-->
+@if (dashboardStore.status() === 'loading') {
+  <div class="flex justify-content-center p-mb-3">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+  </div>
+} @else if (dashboardStore.status() === 'error') {
+  <!--Error icon and message-->
+  <div class="flex justify-content-center p-mb-3">
+    <i class="pi pi-exclamation-triangle" style="font-size: 2rem"> Error!</i>
+  </div>
+} @else if (dashboardStore.status() === 'success')
+{
+<!--The dashboard appears if all data has been uploaded to the store-->
 <div class="grid">
+<!--  Available pets number-->
   <div class="col-12 md:col-6 lg:col-4">
     <p-card header="Pets" [style.text-align]="'center'" class="mb-3">
       <div class="pet-card-content">
@@ -8,8 +23,14 @@
       </div>
     </p-card>
     </div>
+  <!--Donut chart with breeds percentage-->
   <div class="col-12 md:col-6 lg:col-4">
     <p-card header="Breeds" class="mb-3">
+      @if(this.dashboardStore.breedsPercentages().length === 0){
+        <div class="flex justify-content-center p-mb-3 m-8">
+          <i class="pi pi-exclamation-triangle" style="font-size: 2rem"> No pets for adoption</i>
+        </div>
+      } @else {
       <apx-chart #breedPercentages
         [series]="breedPercentagesData.series!"
         [chart]="breedPercentagesData.chart!"
@@ -21,10 +42,17 @@
         [theme]="breedPercentagesData.theme!"
         [stroke]="breedPercentagesData.stroke!"
       ></apx-chart>
+      }
     </p-card>
     </div>
+  <!--Donut chart with species percentage-->
   <div class="col-12 md:col-6 lg:col-4">
     <p-card header="Species">
+      @if(this.dashboardStore.speciesPercentages().length === 0){
+        <div class="flex justify-content-center p-mb-3 m-8">
+          <i class="pi pi-exclamation-triangle" style="font-size: 2rem"> No pets for adoption</i>
+        </div>
+      } @else {
       <apx-chart #speciesPercentages
         [series]="speciesPercentagesData.series!"
         [chart]="speciesPercentagesData.chart!"
@@ -36,10 +64,17 @@
         [theme]="speciesPercentagesData.theme!"
         [stroke]="speciesPercentagesData.stroke!"
       ></apx-chart>
+      }
     </p-card>
   </div>
+  <!--Bar chart with most adopted breeds-->
   <div class="col-12 md:col-6 lg:col-4">
     <p-card header="Most adopted breeds">
+      @if(this.dashboardStore.mostAdoptedBreeds().length === 0){
+        <div class="flex justify-content-center p-mb-3 m-8">
+          <i class="pi pi-exclamation-triangle" style="font-size: 2rem"> No pet was adopted</i>
+        </div>
+      } @else {
         <apx-chart #mostAdoptedBreed
                    [series]="breedMAdoptedData.series!"
                    [chart]="breedMAdoptedData.chart!"
@@ -53,10 +88,17 @@
                    [tooltip]="breedMAdoptedData.tooltip!"
                    [grid]="breedMAdoptedData.grid!"
         ></apx-chart>
+      }
     </p-card>
   </div>
+  <!--Bar chart with most adopted species-->
   <div class="col-12 md:col-6 lg:col-4">
     <p-card header="Most adopted species">
+      @if(this.dashboardStore.mostAdoptedSpecies().length === 0){
+        <div class="flex justify-content-center p-mb-3 m-8">
+          <i class="pi pi-exclamation-triangle" style="font-size: 2rem"> No pet was adopted</i>
+        </div>
+      } @else {
         <apx-chart #mostAdoptedSpecies
                    [series]="speciesMAdoptedData.series!"
                    [chart]="breedMAdoptedData.chart!"
@@ -70,6 +112,8 @@
                    [tooltip]="breedMAdoptedData.tooltip!"
                    [grid]="breedMAdoptedData.grid!"
         ></apx-chart>
+      }
     </p-card>
   </div>
 </div>
+}
