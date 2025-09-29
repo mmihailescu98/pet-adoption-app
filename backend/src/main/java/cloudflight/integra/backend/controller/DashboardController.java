@@ -3,6 +3,7 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.AdoptionStatsDTO;
 import cloudflight.integra.backend.dto.PercentageStatsDTO;
 import cloudflight.integra.backend.service.DashboardService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,42 +21,42 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    @GetMapping("/species/adopted")
+    @GetMapping(value = "/species/adopted", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AdoptionStatsDTO> getMostAdoptedSpecies() {
         return dashboardService.getMostAdoptedSpecies();
     }
 
-    @GetMapping("/breeds/adopted")
+    @GetMapping(value = "/breeds/adopted", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AdoptionStatsDTO> getMostAdoptedBreeds() {
         return dashboardService.getMostAdoptedBreeds();
     }
 
-    @GetMapping("/species/percentages")
+    @GetMapping(value = "/species/percentages", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PercentageStatsDTO> getSpeciesPercentages() {
         return dashboardService.getSpeciesPercentages();
     }
 
-    @GetMapping("/breeds/percentages")
+    @GetMapping( value = "/breeds/percentages", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PercentageStatsDTO> getBreedPercentages() {
         return dashboardService.getBreedPercentages();
     }
 
-    @GetMapping("/total-adopted-pets")
+    @GetMapping(value = "/adopted-pets/total", produces = MediaType.APPLICATION_JSON_VALUE)
     public Long getTotalAdoptedPets() {
         return dashboardService.getTotalAdoptedPetsNumber();
     }
 
-    @GetMapping("/total-pets")
+    @GetMapping(value = "/pets/total", produces = MediaType.APPLICATION_JSON_VALUE)
     public Long getTotalPets() {
         return dashboardService.getTotalPetsNumber();
     }
 
-    @GetMapping("/adoption-rate")
+    @GetMapping(value = "/adoptions/rate", produces = MediaType.APPLICATION_JSON_VALUE)
     public float getAdoptionRate() {
         return dashboardService.getAdoptionRate();
     }
 
-    @GetMapping("/locations/most-popular")
+    @GetMapping(value = "/locations/most-popular", produces = MediaType.APPLICATION_JSON_VALUE)
     public String mostPopularPetLocation() {
         return dashboardService.mostPopularPetLocation();
     }
