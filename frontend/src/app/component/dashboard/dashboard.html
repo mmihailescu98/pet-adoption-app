@@ -14,15 +14,49 @@
 {
 <!--The dashboard appears if all data has been uploaded to the store-->
 <div class="grid">
-<!--  Available pets number-->
   <div class="col-12 md:col-6 lg:col-4">
+    <!--  Available pets number-->
     <p-card header="Pets" [style.text-align]="'center'" class="mb-3">
       <div class="pet-card-content">
         <span class="material-icons">pets</span>
-        <h2>156</h2>
+        @if(dashboardStore.totalPets() === -1){
+          <h2>No pets</h2>
+        } @else {
+          <h2>{{dashboardStore.totalPets()}}</h2>
+        }
       </div>
     </p-card>
-    </div>
+<!--    Adopted pets number-->
+    <p-card header="Pets adopted" [style.text-align]="'center'" class="mb-3">
+      <div class="pet-card-content">
+        <span class="material-icons">pets</span>
+        @if(dashboardStore.totalAdoptedPets() === -1){
+          <h2>No pets</h2>
+        } @else {
+          <h2>{{dashboardStore.totalAdoptedPets()}}</h2>
+        }
+      </div>
+    </p-card>
+<!--    Adoption rate-->
+    <p-card header="Adoption rate" [style.text-align]="'center'" class="mb-3">
+      <div class="pet-card-content">
+        <span class="material-icons">trending_up</span>
+        @if(dashboardStore.adoptionRate() === -1){
+          <h2>No pets were adopted</h2>
+        } @else {
+          <h2>{{dashboardStore.adoptionRate()}}</h2>
+        }
+      </div>
+    </p-card>
+<!--    Most popular location-->
+    <p-card header="Most popular location" [style.text-align]="'center'" class="mb-3">
+      <div class="pet-card-content">
+        <span class="material-icons">location_on</span>
+        <h2>{{dashboardStore.mostPopularPetLocation()}}</h2>
+      </div>
+    </p-card>
+
+  </div>
   <!--Donut chart with breeds percentage-->
   <div class="col-12 md:col-6 lg:col-4">
     <p-card header="Breeds" class="mb-3">
