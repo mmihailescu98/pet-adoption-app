@@ -34,7 +34,7 @@ public class DashboardController {
         return dashboardService.getSpeciesPercentages();
     }
 
-    @GetMapping( value = "/breeds/percentages", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/breeds/percentages", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PercentageStatsDTO> getBreedPercentages() {
         return dashboardService.getBreedPercentages();
     }
