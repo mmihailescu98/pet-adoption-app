@@ -1,0 +1,23 @@
+<div id="container" class="flex fixed top-0">
+  <div class="left">
+    <div class="welcome-panel">
+      <h1>Welcome!</h1>
+      <div class="form-selection-container">
+        <button (click)="toLoginForm()">Login</button>
+        <button (click)="toRegisterForm()">Sign Up</button>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="form-panel">
+      @switch (tab){
+        @case ('login'){
+          <login-form></login-form>
+        }
+        @case ('registration'){
+          <register-form (onRegister)="toLoginForm()"></register-form>
+        }
+      }
+      </div>
+  </div>
+</div>

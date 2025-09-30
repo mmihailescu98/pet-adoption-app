@@ -5,6 +5,8 @@ import {providePrimeNG} from 'primeng/config';
 import LaraLightBlue from '@primeuix/themes/aura';
 import {petReducer} from './store/pet-store/pet.reducer';
 import {PetEffects} from './store/pet-store/pet.effects';
+import {authReducer} from './store/auth/auth.reducer';
+import {AuthEffects} from './store/auth/auth.effects';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
 import {provideHttpClient} from '@angular/common/http';
@@ -23,8 +25,14 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
 
-    provideStore({ pet: petReducer }),
-    provideEffects([PetEffects]),
+    provideStore({
+      auth: authReducer,
+      pet: petReducer
+    }),
+    provideEffects([
+      AuthEffects,
+      PetEffects
+    ]),
 
     provideHttpClient()
   ]

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import {TestComponent} from './component/test-component/test-component';
 import {PetListComponent} from './component/pet-list/pet-list-component';
+import {UserAuthComponent} from './component/user-authentication/userAuth-component';
 import { PetProfileComponent } from './component/pet-profile/pet-profile';
 import {Dashboard} from './component/dashboard/dashboard';
 
@@ -12,6 +13,10 @@ export const routes: Routes = [
   {
     path: 'pet-list',
     component: PetListComponent
+  },
+  {
+    path: 'user-registration',
+    component: UserAuthComponent
   },
   {
     path: 'pet-profile/:id',
