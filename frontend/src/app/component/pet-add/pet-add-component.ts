@@ -40,12 +40,14 @@ export class PetAddComponent {
 
   onSave() {
     if (this.petForm.valid) {
-      this.savePet.emit(this.petForm.value);  // send data to parent
+      this.savePet.emit(this.petForm.value);
       this.hideDialog();
-      this.petForm.reset(); // clear form after save
+      this.petForm.reset();
     }
   }
 
-
+  onCancel() {
+    this.display = false;
+  }
 
 }
