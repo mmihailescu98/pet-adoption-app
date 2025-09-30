@@ -23,6 +23,9 @@ public interface AdoptionMapper {
      * @return Target
      */
     @Mapping(target = "adopter", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "adoptedAt", ignore = true)
     AdoptionEntry toModelFromAddRequest(AdoptionAddRequestDTO dto);
 
     /**
@@ -31,16 +34,17 @@ public interface AdoptionMapper {
      * @return items for showcase of adoptions
      */
     @Mapping(target = "pet",source = "pet")//needed because it goes from model to dto
-    List<AdoptionListItemDTO> toGetRequestsFromModels(List<AdoptionEntry> models);
+    List<AdoptionListItemDTO> toListItemsFromModels(List<AdoptionEntry> models);
+
+
+    @Mapping(target = "pet",source = "pet")
+    AdoptionListItemDTO toListItemFromModel(AdoptionEntry model);
 
 
     @AfterMapping
-    default void setDefaults(@MappingTarget AdoptionEntry adotpion){
-        adotpion.setCreatedAt(LocalDateTime.now());
-        adotpion.setAdoptedAt(null);
-        adotpion.setAdopter(null);
+    default void setDefaults(@MappingTarget AdoptionEntry adoption) {
+        adoption.setCreatedAt(LocalDateTime.now());
+        adoption.setAdoptedAt(null);
+        adoption.setAdopter(null);
     }
-
-
-
 }

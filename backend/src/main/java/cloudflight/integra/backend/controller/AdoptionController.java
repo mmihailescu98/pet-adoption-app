@@ -10,10 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
-@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api")
 @RestController()
 public class AdoptionController {
@@ -25,7 +23,7 @@ public class AdoptionController {
     @GetMapping(value="/adoptions",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AdoptionListItemDTO>> getAdoptions(@RequestParam(required = false) Integer adopterId) {
         if(adopterId == null) {
-            var dtos = AdoptionMapper.INSTANCE.toGetRequestsFromModels(adoptionService.getPendingAdoptions());
+            List<AdoptionListItemDTO> dtos = AdoptionMapper.INSTANCE.toListItemsFromModels(adoptionService.getPendingAdoptions());
             return ResponseEntity.ok(dtos);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
@@ -37,9 +35,7 @@ public class AdoptionController {
         try{
             var mappedEntity = AdoptionMapper.INSTANCE.toModelFromAddRequest(addRequestListing);
             var addedEntity = adoptionService.createAdoption(mappedEntity);
-
-            URI savedPath = URI.create("/api/adoptionlistings/" + addedEntity.getId());
-            return ResponseEntity.created(savedPath).build();
+            return ResponseEntity.ok(AdoptionMapper.INSTANCE.toListItemFromModel(addedEntity));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
