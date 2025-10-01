@@ -29,7 +29,7 @@ public class InMemoryUserRepository {
                 .build());
     }
 
-    //@Override
+    //@Override i commented this because now it does not extend the actual repository , since i made it to extend JPARepository
     public Optional<UserModel> findByUsername(String username) {
         return users.values().stream().filter(user -> user.getUsername().equals(username)).findFirst();
     }

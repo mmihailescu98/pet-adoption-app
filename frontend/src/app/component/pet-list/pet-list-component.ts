@@ -1,38 +1,91 @@
-  import {Component, OnInit} from '@angular/core';
-  import {DataViewModule} from 'primeng/dataview';
-  import {Button} from 'primeng/button';
-  import {Store} from '@ngrx/store';
-  import {loadPets} from '../../store/pet.actions';
-  import {selectAllPets, selectPetError, selectPetStatus} from '../../store/pet.selectors';
-  import {PetDTO} from '../../api/model/petDTO';
-  import {Observable} from 'rxjs';
-  import {AsyncPipe} from '@angular/common';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {DataViewModule} from 'primeng/dataview';
+import {Button, ButtonDirective} from 'primeng/button';
+import {Store} from '@ngrx/store';
+import {loadPets, searchPets} from '../../store/pet.actions';
+import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet.selectors';
+import {PetDTO} from '../../api/model/petDTO';
+import {Observable, startWith, Subject, takeUntil, map, switchMap} from 'rxjs';
+import {AsyncPipe} from '@angular/common';
+import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 
-  @Component({
-    selector: 'pet-list-component',
-    imports: [
-      DataViewModule,
-      Button,
-      AsyncPipe
-    ],
-    templateUrl: './pet-list-component.html',
-    styleUrl: './pet-list-component.css'
-  })
+@Component({
+  selector: 'pet-list-component',
+  imports: [
+    DataViewModule,
+    Button,
+    AsyncPipe,
+    ReactiveFormsModule,
+    ButtonDirective,
+  ],
+  templateUrl: './pet-list-component.html',
+  styleUrl: './pet-list-component.css'
+})
 
-  export class PetListComponent implements OnInit {
-    public pets$: Observable<PetDTO[]>;
-    public status$: Observable<string>;
-    public error$: Observable<any>;
+export class PetListComponent implements OnInit, OnDestroy {
+  pets$: Observable<PetDTO[]>;
+  status$: Observable<string>;
+  error$: Observable<any>;
 
+  allSpecies$: Observable<string[]>;
+  allBreeds$: Observable<string[]>;
+  filteredSpecies$: Observable<string[]>;
+  filteredBreeds$: Observable<string[]>;
 
-    constructor(private store: Store) {
-      this.pets$ = this.store.select(selectAllPets);
-      this.status$ = this.store.select(selectPetStatus);
-      this.error$ = this.store.select(selectPetError);
-    }
+  filterForm: FormGroup;
 
-    ngOnInit() {
-      this.store.dispatch(loadPets());
-    }
+  private destroy$ = new Subject<void>();
 
+  constructor(private store: Store, private formBuilder: FormBuilder) {
+    this.pets$ = this.store.select(selectAllPets);
+    this.status$ = this.store.select(selectPetStatus);
+    this.error$ = this.store.select(selectPetError);
+
+    this.filterForm = this.formBuilder.group({species: '', breed: ''});
+
+    this.allSpecies$ = this.createLookup$(this.pets$, 'species');
+    this.allBreeds$ = this.createLookup$(this.pets$, 'breed');
+
+    this.filteredSpecies$ = this.createFiltered$(this.allSpecies$, 'species');
+    this.filteredBreeds$ = this.createFiltered$(this.allBreeds$, 'breed');
   }
+
+  ngOnInit() {
+    this.store.dispatch(loadPets());
+    this.filterForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(({species, breed}) => {this.store.dispatch(searchPets({breed, species}));});
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onReset(event: Event) {
+    this.filterForm.reset({species: '', breed: ''});
+  }
+
+  selectSuggestion(controlName: 'species' | 'breed', value: string) {
+    this.filterForm.get(controlName)?.setValue(value, { emitEvent: true });
+  }
+
+  private createLookup$(source$: Observable<PetDTO[]>, key: 'species' | 'breed'): Observable<string[]> {
+    return source$.pipe(map(pets => Array.from(new Set(pets.map(p => p[key]).filter((v): v is string => !!v)))));
+  }
+
+  private createFiltered$(list$: Observable<string[]>, controlName: 'species' | 'breed'): Observable<string[]> {
+    return list$.pipe(
+      switchMap(list =>
+        this.filterForm.get(controlName)!.valueChanges.pipe(
+          startWith(this.filterForm.get(controlName)!.value || ''),
+          map(input => {
+            if (!input) return [];
+            return list.filter(item =>
+              item.toLowerCase().includes(input.toLowerCase()) &&
+              item.toLowerCase() !== input.toLowerCase()
+            );
+          })
+        )
+      )
+    );
+  }
+}

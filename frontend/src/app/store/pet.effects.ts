@@ -2,14 +2,21 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AdoptionControllerService, PetControllerService} from '../api';
 import * as PetActions from './pet.actions';
-import { mergeMap, map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
+import { of, from, Observable } from 'rxjs';
+import { PetDTO } from '../api/model/petDTO';
 
 @Injectable()
 export class PetEffects {
   private actions$ = inject(Actions);
   private petService = inject(PetControllerService);
   private adoptionService = inject(AdoptionControllerService);
+  
+  private blobToPets(blob: Blob) {
+    return from(blob.text()).pipe(
+      map(text => JSON.parse(text) as PetDTO[])
+    );
+  }
 
   loadPets$ = createEffect(() =>
     this.actions$.pipe(
@@ -27,6 +34,21 @@ export class PetEffects {
         }
       )
   ));
+
+  searchPets$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.searchPets),
+      mergeMap(action =>
+        (this.petService.getPets(action.species, action.breed) as unknown as Observable<Blob>).pipe(
+          switchMap(blob => this.blobToPets(blob)),
+          map(pets => PetActions.searchPetsSuccess({ pets })),
+          catchError(error => of(PetActions.searchPetsFailure({ error })))
+        )
+      )
+    )
+  );
+
+
 
   loadPet$ = createEffect(() =>
     this.actions$.pipe(

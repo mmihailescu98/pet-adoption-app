@@ -45,7 +45,6 @@ public class AuthController {
         UserModel user = new UserModel();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());  // password will be encoded in UserService
-        //user.setRoles(request.getRoles());
 
         return userService.registerUser(user);
     }
