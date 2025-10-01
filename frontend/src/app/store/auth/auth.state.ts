@@ -4,4 +4,6 @@ export interface AuthState {
   hasRegistered: boolean;
   loginError: string | null ;
   registrationError: string | null ;
+  // add user model
+  userModel: UserLoginModel
 }

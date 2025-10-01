@@ -19,7 +19,7 @@ export class AuthEffects {
             password: action.password
           };
           return this.authService.login(request).pipe(
-            map(response => AuthActions.loginSuccess({ token: response.token ? response.token : 'success, but no token provided' })),
+            map(response => AuthActions.loginSuccess({ userModel: response.userModel ? response.userModel : 'success, but no token provided' })), // map here the user details
             catchError(error => of(AuthActions.loginFailure({ error: error.message })))
           );
         }

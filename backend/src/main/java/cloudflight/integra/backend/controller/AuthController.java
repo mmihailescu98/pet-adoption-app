@@ -1,5 +1,6 @@
 package cloudflight.integra.backend.controller;
 
+import cloudflight.integra.backend.model.CustomUserDetails;
 import cloudflight.integra.backend.model.UserModel;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.impl.UserServiceImpl;
@@ -28,19 +29,20 @@ public class AuthController {
     private final UserServiceImpl userServiceImpl;
 
     @PostMapping("/login")
-    public JwtResponse login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Set<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
 
         String token = jwtUtil.generateToken(userDetails.getUsername(), roles);
 
-        return new JwtResponse(token);
+        return new LoginResponse(token, new UserLoginModel(userDetails.getId(), userDetails.getUsername()));
+//        return new JwtResponse(token);
     }
 
     @PostMapping("/register")
@@ -70,5 +72,17 @@ public class AuthController {
     @Data
     public static class JwtResponse {
         private final String token;
+    }
+
+    @Data
+    public static class LoginResponse {
+        private final String token;
+        private final UserLoginModel loggedUser;
+    }
+
+    @Data
+    public static class UserLoginModel {
+        private final Long id;
+        private final String username;
     }
 }
