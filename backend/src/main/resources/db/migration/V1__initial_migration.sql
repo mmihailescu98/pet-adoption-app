@@ -47,5 +47,3 @@ VALUES
     (NEXTVAL('pets_seq'), 'Dog', 'Labrador', 'Buddy', 'New York', '3', 'Friendly Labrador', 'https://example.com/buddy.jpg'),
     (NEXTVAL('pets_seq'), 'Cat', 'Siamese', 'Mittens', 'Los Angeles', '2', 'Playful Siamese cat', 'https://example.com/mittens.jpg'),
     (NEXTVAL('pets_seq'), 'Fish', 'Goldfish', 'Goldie', 'Chicago', '1', 'Small golden fish', 'https://example.com/goldie.jpg');
-
-SELECT * FROM pets;
