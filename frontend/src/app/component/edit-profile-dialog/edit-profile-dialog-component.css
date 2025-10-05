@@ -1,0 +1,44 @@
+.edit-dialog-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  background: transparent;
+}
+
+.p-field {
+  background: #292929;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.07);
+  margin-bottom: 0;
+}
+
+.p-field label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.p-field input, .p-field textarea, .p-field p-select {
+  width: 100%;
+  font-size: 1rem;
+  background: #232323;
+  color: #e5e5e5;
+  border-radius: 7px;
+  border: none;
+  padding: 0.5rem;
+}
+
+.dialog-actions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.edit-dialog-grid .p-field:has(#bio) {
+  grid-column: span 3;
+}

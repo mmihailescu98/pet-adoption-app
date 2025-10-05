@@ -3,6 +3,7 @@ import {TestComponent} from './component/test-component/test-component';
 import {PetListComponent} from './component/pet-list/pet-list-component';
 import {UserAuthComponent} from './component/user-authentication/userAuth-component';
 import { PetProfileComponent } from './component/pet-profile/pet-profile';
+import {UserProfileComponent} from './component/user-profile/user-profile-component';
 
 export const routes: Routes = [
   {
@@ -20,5 +21,9 @@ export const routes: Routes = [
   {
     path: 'pet-profile/:id',
     component: PetProfileComponent
+  },
+  {
+    path: 'user-profile/:id',
+    component: UserProfileComponent
   }
 ];

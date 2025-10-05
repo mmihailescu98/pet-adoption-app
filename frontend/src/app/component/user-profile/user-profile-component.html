@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+<div class="item-panel">
+  <form [formGroup]="editForm" class="profile-form">
+    <section class="profile-photo-section">
+      <img [src]="editForm.value.imgURL" [alt]="editForm.value.username" class="profile-photo"/>
+    </section>
 
-</body>
-</html>
+    <section class="profile-details-section">
+      <p><i class="pi pi-user"></i> {{ editForm.value.name }}</p>
+      <p><i class="pi pi-envelope"></i> {{ editForm.value.email }}</p>
+      <p><i class="pi pi-phone"></i> {{ editForm.value.phone }}</p>
+      <p><i class="pi pi-map-marker"></i> {{ editForm.value.location }}</p>
+      <p><i class="pi pi-info-circle"></i> {{ editForm.value.bio }}</p>
+      <div class="profile-actions">
+        <p-button type="button" label="Edit Profile" (onClick)="onEdit()" styleClass="p-button-secondary"></p-button>
+        <p-button type="button" label="Add Pet" (onClick)="onAddPet()" styleClass="p-button-primary"></p-button>
+        <p-button type="button" label="Favorites" (onClick)="onOpenFavorites()" styleClass="p-button-help"></p-button>
+      </div>
+    </section>
+  </form>
+
+  <edit-profile-dialog
+    [(showEditDialog)]="showEditDialog"
+    [editForm]="editForm"
+    [locationOptions]="locationOptions"
+    (saveEdit)="onSaveEdit($event)"
+    (cancelEdit)="onCancelEdit()">
+  </edit-profile-dialog>
+
+  <adopted-pets-history [adoptedPets$]="adoptedPets$"></adopted-pets-history>
+
+</div>

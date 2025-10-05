@@ -24,8 +24,28 @@ public class UserModel  {
     @Column(nullable = false)
     private String password;
 
+    private String name;
+
+    @Column(unique = true)
+    private String phone;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String location;
+
+    private String imgURL;
+
+    @Column(length = 1000)
+    private String bio;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
+
+    // Testing for adopted pets history
+    @OneToMany
+    @JoinTable(name = "user_adopted_pets", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "pet_id"))
+    private Set<Pet> adoptedPets = new HashSet<>();
 }

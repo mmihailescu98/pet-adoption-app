@@ -1,0 +1,17 @@
+<section class="adopted-pets-section">
+  <h3>Adopted Pets History</h3>
+  <div class="items-panel">
+    @for (pet of adoptedPets$ | async; track pet.id) {
+      <div class="pet-item">
+        <div class="thumb">
+          <img [src]="pet.imgURL" [alt]="pet.name"/>
+        </div>
+        <div class="ml-2">
+          <h1 class="text-clamp">{{ pet.name }} - {{ pet.breed }}</h1>
+          <p><i class="pi pi-map-marker"></i> {{ pet.location }}</p>
+          <p><i class="pi pi-id-card"></i> {{ pet.age }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</section>

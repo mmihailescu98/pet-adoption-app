@@ -1,0 +1,28 @@
+<p-dialog [(visible)]="showEditDialog" (onHide)="onDialogHide()" modal="true" header="Edit Profile"
+          [style]="{width: '900px', borderRadius: '16px'}"
+          [contentStyle]="{background: '#232323', padding: '2rem', borderRadius: '12px', overflow: 'visible'}">
+  <form [formGroup]="editForm">
+    <div class="edit-dialog-grid">
+
+      @for (field of ['username', 'name', 'location', 'phone', 'email', 'imgURL', 'bio']; track field) {
+        <div class="p-field">
+          <label for="{{ field }}">{{ field | titlecase }}</label>
+          @if (field === 'bio') {
+            <textarea id="bio" pInputTextarea formControlName="bio" rows="3" autoResize="true"
+                      style="width: 100%"></textarea>
+          } @else if (field === 'location') {
+            <p-select id="location" [options]="locationOptions" formControlName="location"
+                      placeholder="Select a location" style="width: 100%"></p-select>
+          } @else {
+            <input id="{{ field }}" type="text" pInputText formControlName="{{ field }}"/>
+          }
+        </div>
+      }
+
+      <div class="dialog-actions" style="grid-column: span 3;">
+        <p-button type="button" label="Cancel" (onClick)="onCancelEdit()" styleClass="p-button-secondary"></p-button>
+        <p-button type="button" label="Save" (onClick)="onSaveEdit()" styleClass="p-button-primary"></p-button>
+      </div>
+    </div>
+  </form>
+</p-dialog>

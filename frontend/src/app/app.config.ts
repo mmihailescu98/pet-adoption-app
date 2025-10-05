@@ -10,9 +10,13 @@ import {PetEffects} from './store/pet.effects';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
 import {provideHttpClient} from '@angular/common/http';
+import {provideAnimations} from '@angular/platform-browser/animations';
+import {UserEffects} from './store/user/user.effects';
+import {userReducer} from './store/user/user.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAnimations(),
     provideBrowserGlobalErrorListeners(),
     providePrimeNG({
       theme: {
@@ -27,11 +31,13 @@ export const appConfig: ApplicationConfig = {
 
     provideStore({
       auth: authReducer,
-      pet: petReducer
+      pet: petReducer,
+      user: userReducer
     }),
     provideEffects([
       AuthEffects,
-      PetEffects
+      PetEffects,
+      UserEffects
     ]),
 
     provideHttpClient()

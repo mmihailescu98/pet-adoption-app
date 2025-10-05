@@ -1,13 +1,15 @@
 package cloudflight.integra.backend.controller;
 
+import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.dto.UserDTO;
 import cloudflight.integra.backend.mapper.UserMapper;
+import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.service.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api")
 @RestController
 public class UserController {
@@ -18,15 +20,23 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserDTO> getUsers() {
         return UserMapper.mapper.userToUserDTOList(userService.getAllUsers());
     }
 
-    @GetMapping("/users/{username}")
-    public UserDTO getUserByUsername(@PathVariable String username) {
-        return userService.findByUsername(username)
-                .map(UserMapper.mapper::userToUserDTO)
-                .orElse(null);
+    @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO getUser(@PathVariable Long id) {
+        return UserMapper.mapper.userToUserDTO(userService.findById(id).orElse(null));
+    }
+
+    @GetMapping(value = "/users/{id}/pets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PetDTO> getAdoptedPetsByUser(@PathVariable Long id) {
+        return PetMapper.INSTANCE.petToPetDTOList(userService.getAdoptedPetsByUser(id));
+    }
+
+    @PutMapping(value = "/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO updateUserProfile(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        return UserMapper.mapper.userToUserDTO(userService.updateUserProfile(id, userDTO));
     }
 }
