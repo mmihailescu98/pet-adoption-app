@@ -13,10 +13,12 @@ CREATE TABLE pets
     CONSTRAINT pk_pets PRIMARY KEY (id)
 );
 
+CREATE TYPE role_type AS ENUM ('ADMIN', 'USER');
+
 CREATE TABLE user_roles
 (
     user_id BIGINT NOT NULL,
-    role    VARCHAR(255)
+    role    role_type NOT NULL
 );
 
 CREATE TABLE users
@@ -33,14 +35,11 @@ ALTER TABLE users
 ALTER TABLE user_roles
     ADD CONSTRAINT fk_user_roles_on_user_model FOREIGN KEY (user_id) REFERENCES users (id);
 
-
 INSERT INTO users (username, password)
 VALUES ('DariusSopom', 'password123');
 
-
 INSERT INTO user_roles (user_id, role)
-VALUES (1, 'admin');
-
+VALUES (1, 'ADMIN');
 
 INSERT INTO pets (id, species, breed, name, location, age, description, imgurl)
 VALUES
