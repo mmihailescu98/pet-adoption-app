@@ -14,16 +14,31 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.login),
       mergeMap((action) => {
-          const request: LoginRequest = {
-            username: action.username,
-            password: action.password
-          };
-          return this.authService.login(request).pipe(
-            map(response => AuthActions.loginSuccess({ token: response.token ? response.token : 'success, but no token provided' })),
-            catchError(error => of(AuthActions.loginFailure({ error: error.message })))
-          );
-        }
-      )
+        const request: LoginRequest = {
+          username: action.username,
+          password: action.password
+        };
+        return this.authService.login(request).pipe(
+          map(response => {
+            if (!response.loggedUser) {
+              return AuthActions.loginFailure({ error: 'No user data received' });
+            }
+            return AuthActions.loginSuccess({
+              token: response.token || '',
+              userModel: {
+                id: response.loggedUser.id ?? 0,
+                username: response.loggedUser.username ?? ''
+              }
+            });
+          }),
+          catchError(error => {
+            console.error('Login error:', error);
+            return of(AuthActions.loginFailure({ 
+              error: `${error.status}: ${error.statusText || 'Unknown'} - ${error.message || 'No message'}`
+            }));
+          })
+        );
+      })
     )
   );
 
