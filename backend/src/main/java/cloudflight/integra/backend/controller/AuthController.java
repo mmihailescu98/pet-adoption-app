@@ -1,6 +1,6 @@
 package cloudflight.integra.backend.controller;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.impl.UserServiceImpl;
 import lombok.Data;
@@ -44,8 +44,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public UserModel register(@RequestBody RegisterRequest request) {
-        UserModel user = new UserModel();
+    public User register(@RequestBody RegisterRequest request) {
+        User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());  // password will be encoded in UserService
 
