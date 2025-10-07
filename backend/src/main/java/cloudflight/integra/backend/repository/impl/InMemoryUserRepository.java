@@ -1,7 +1,6 @@
 package cloudflight.integra.backend.repository.impl;
 
 import cloudflight.integra.backend.model.UserModel;
-import cloudflight.integra.backend.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 @Repository
-public class InMemoryUserRepository implements UserRepository {
+public class InMemoryUserRepository {
 
     private final Map<Long, UserModel> users = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(0);
@@ -30,17 +29,17 @@ public class InMemoryUserRepository implements UserRepository {
                 .build());
     }
 
-    @Override
+    //@Override
     public Optional<UserModel> findByUsername(String username) {
         return users.values().stream().filter(user -> user.getUsername().equals(username)).findFirst();
     }
 
-    @Override
+    //@Override
     public List<UserModel> findAll() {
         return new ArrayList<>(users.values());
     }
 
-    @Override
+    //@Override
     public UserModel save(UserModel user) {
         if (user.getId() == null) {
             user.setId(idGenerator.incrementAndGet());
@@ -49,7 +48,4 @@ public class InMemoryUserRepository implements UserRepository {
         users.put(user.getId(), user);
         return user;
     }
-
-
-
 }
