@@ -25,7 +25,7 @@ public class InMemoryUserRepository implements UserRepository {
 
         save(UserModel.builder()
                 .username("user")
-                .password("user123") // will be encoded
+                .password("parola111") // will be encoded
                 .roles(Set.of("ROLE_USER"))
                 .build());
     }

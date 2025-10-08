@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import java.io.Serializable;
 
 @Entity
@@ -20,6 +22,9 @@ public class Pet implements Serializable {
     private String age;
     private String description;
     private String imgURL;
+
+    @Enumerated(EnumType.STRING)
+    private PetStatus status = PetStatus.PENDING; 
 
     public Pet() {}
 
@@ -96,5 +101,13 @@ public class Pet implements Serializable {
 
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
+    }
+
+        public PetStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PetStatus status) {
+        this.status = status;
     }
 }
