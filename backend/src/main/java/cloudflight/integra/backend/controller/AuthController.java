@@ -6,6 +6,7 @@ import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.impl.UserServiceImpl;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserServiceImpl userServiceImpl;
 
-    @PostMapping("/login")
+    @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public LoginResponse login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
