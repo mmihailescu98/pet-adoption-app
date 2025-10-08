@@ -20,7 +20,7 @@ import {FormsModule} from '@angular/forms';
   styleUrl: './map-search.css'
 })
 export class MapSearch {
-//Map Options
+  //Map Options
   center: google.maps.LatLngLiteral = {lat: 46, lng: 25};
   zoom = 6;
   display: google.maps.LatLngLiteral | undefined;
