@@ -20,11 +20,6 @@ export class AuthEffects {
         };
         return this.authService.login(request).pipe(
           map(response => {
-            console.log('Full response object:', JSON.stringify(response));
-            console.log('Response type:', typeof response);
-            console.log('loggedUser property:', response.loggedUser);
-            console.log('token property:', response.token);
-            
             if (!response.loggedUser) {
               console.error('loggedUser property is missing or undefined');
               return AuthActions.loginFailure({ error: 'No user data received' });
@@ -39,7 +34,7 @@ export class AuthEffects {
           }),
           catchError(error => {
             console.error('Login error:', error);
-            return of(AuthActions.loginFailure({ 
+            return of(AuthActions.loginFailure({
               error: `${error.status}: ${error.statusText || 'Unknown'} - ${error.message || 'No message'}`
             }));
           })
