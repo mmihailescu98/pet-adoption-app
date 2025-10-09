@@ -1,7 +1,7 @@
 import {ReactiveFormsModule} from '@angular/forms';
 import {PetListComponent} from './pet-list-component';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {loadPets, searchPets} from '../../store/pet-store/pet.actions';
+import {loadPets, searchPets} from '../../store/pet/pet.actions';
 import {By} from '@angular/platform-browser';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';

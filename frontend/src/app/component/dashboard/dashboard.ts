@@ -5,7 +5,7 @@ import {
 import {Component, effect, inject, ViewChild} from "@angular/core";
 import {Card} from 'primeng/card';
 import {NavBar} from '../nav-bar/nav-bar';
-import {DashboardStore} from '../../store/dashboard-store/dashboard.store';
+import {DashboardStore} from '../../store/dashboard/dashboard.store';
 import {AdoptionStatsDTO, PercentageStatsDTO} from '../../api';
 import {baseBarConfig, baseDonutConfig, ChartOptions} from './charts-config/base-charts-config';
 
@@ -17,10 +17,6 @@ import {baseBarConfig, baseDonutConfig, ChartOptions} from './charts-config/base
   providers: [DashboardStore],
 })
 export class Dashboard {
-  @ViewChild("breedPercentages") chartDonutBreed!: ChartComponent;
-  @ViewChild("speciesPercentages") chartDonutSpecies!: ChartComponent;
-  @ViewChild("mostAdoptedBreed") chartMABreed!: ChartComponent;
-  @ViewChild("mostAdoptedSpecies") chartMASpecies!: ChartComponent;
 
   public breedPercentagesData: Partial<ChartOptions>;
   public speciesPercentagesData: Partial<ChartOptions>;
