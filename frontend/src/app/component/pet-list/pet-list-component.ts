@@ -2,12 +2,14 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataViewModule} from 'primeng/dataview';
 import {Button, ButtonDirective} from 'primeng/button';
 import {Store} from '@ngrx/store';
-import {loadPets, searchPets} from '../../store/pet.actions';
-import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet.selectors';
+import {loadPets, searchPets} from '../../store/pet/pet.actions';
+import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet/pet.selectors';
 import {PetDTO} from '../../api/model/petDTO';
 import {Observable, startWith, Subject, takeUntil, map, switchMap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
+import {NavBar} from '../nav-bar/nav-bar';
+import {RouterLink} from '@angular/router';
 import {PetAddComponent} from '../pet-add/pet-add-component';
 
 @Component({
@@ -18,6 +20,8 @@ import {PetAddComponent} from '../pet-add/pet-add-component';
     AsyncPipe,
     ReactiveFormsModule,
     ButtonDirective,
+    NavBar,
+    RouterLink,
     PetAddComponent,
   ],
   templateUrl: './pet-list-component.html',

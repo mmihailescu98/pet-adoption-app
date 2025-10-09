@@ -36,8 +36,7 @@ ALTER TABLE user_roles
     ADD CONSTRAINT fk_user_roles_on_user_model FOREIGN KEY (user_id) REFERENCES users (id);
 
 INSERT INTO users (username, password)
-VALUES ('DariusSopom', 'password123'),
-       ('admin','user123');
+VALUES ('DariusSopom', 'password123');
 
 
 INSERT INTO user_roles (user_id, role)

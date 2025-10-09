@@ -1,3 +1,4 @@
+<app-nav-bar></app-nav-bar>
 <div class="pet-profile">
   @if ((status$ | async) === 'loading') {
     <p>Loading...</p>
@@ -7,28 +8,28 @@
     } @else {
       @if (pet$ | async; as pet) {
         <div class="pet-container">
-          
+
           <div class="pet-image">
             <img [src]="pet.imgURL" alt="{{ pet.name }}">
           </div>
-          
+
           <div class="pet-info">
             <h2>{{ pet.name }}</h2>
             <p class="species">{{ pet.species }} - {{ pet.breed }}</p>
             <p class="pet-detail"><strong>Age:</strong> {{ pet.age }}</p>
             <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
-            
+
             <p class="pet-detail status-tag">
-              <strong>Status:</strong> 
+              <strong>Status:</strong>
               <span [ngClass]="pet.status === 'ADOPTED' ? 'status-adopted' : 'status-pending'">
                 {{ pet.status }}
               </span>
             </p>
             <p class="description">{{ pet.description }}</p>
-            
+
             <div class="actions">
-              
-              <button class="btn adopt" 
+
+              <button class="btn adopt"
                       [disabled]="pet.status === 'ADOPTED'"
                       (click)="pet.id && adoptPet(pet.id)">
                 {{ pet.status === 'ADOPTED' ? 'Already Adopted' : 'Adopt' }}
