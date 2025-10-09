@@ -54,7 +54,7 @@ public class DashboardController {
         return dashboardService.getAdoptionRate();
     }
 
-    @GetMapping(value = "/locations/most-popular", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/locations/most-popular", produces = MediaType.TEXT_PLAIN_VALUE)
     public String mostPopularPetLocation() {
         return dashboardService.mostPopularPetLocation();
     }
