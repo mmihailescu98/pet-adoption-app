@@ -22,6 +22,7 @@ import {AdoptedPetsHistoryComponent} from '../adopted-pets-history/adopted-pets-
 import {loadAdoptedPetsByUser, loadUser, updateUser} from '../../store/user/user.actions';
 import {LOCATION_OPTIONS} from '../../resources/constants/location.constants';
 import {PetAddComponent} from '../pet-add/pet-add-component';
+import {NavBar} from '../nav-bar/nav-bar';
 
 @Component({
   selector: 'user-profile-component',
@@ -34,7 +35,8 @@ import {PetAddComponent} from '../pet-add/pet-add-component';
     SelectModule,
     EditProfileDialogComponent,
     AdoptedPetsHistoryComponent,
-    PetAddComponent
+    PetAddComponent,
+    NavBar
   ],
   templateUrl: './user-profile-component.html',
   styleUrl: './user-profile-component.css'
@@ -146,5 +148,5 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  saveNewPet($event: any) {}
+  saveNewPet(pet: PetDTO) {}
 }
