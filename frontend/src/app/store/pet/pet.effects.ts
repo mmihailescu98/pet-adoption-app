@@ -1,17 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AdoptionControllerService, PetControllerService} from '../api';
+import { AdoptionControllerService, PetControllerService} from '../../api';
 import * as PetActions from './pet.actions';
 import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
 import { of, from, Observable } from 'rxjs';
-import { PetDTO } from '../api/model/petDTO';
+import { PetDTO } from '../../api/model/petDTO';
 
 @Injectable()
 export class PetEffects {
   private actions$ = inject(Actions);
   private petService = inject(PetControllerService);
   private adoptionService = inject(AdoptionControllerService);
-  
+
   private blobToPets(blob: Blob) {
     return from(blob.text()).pipe(
       map(text => JSON.parse(text) as PetDTO[])
@@ -67,7 +67,7 @@ export class PetEffects {
       ofType(PetActions.adoptPet),
       mergeMap(({ id }) =>
         this.petService.adoptPet(id).pipe(
-          map((pet: any) => PetActions.adoptPetSuccess({ pet })), 
+          map((pet: any) => PetActions.adoptPetSuccess({ pet })),
           catchError(error => of(PetActions.adoptPetFailure({ error })))
         )
       )

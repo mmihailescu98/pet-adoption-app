@@ -1,3 +1,4 @@
+<app-nav-bar></app-nav-bar>
 <div class="add-panel">
   <p-button
     styleClass="w-full md:w-auto"
@@ -15,16 +16,16 @@
 
 
 @if ((status$ | async) === 'loading') {
-  <div class="p-mb-3">
-    Loading...
+  <div class="flex justify-content-center p-mb-3">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
   </div>
 } @else if ((status$ | async) === 'error') {
-  <div class="p-mb-3 p-error">
-    Error!
+  <div class="flex justify-content-center p-mb-3">
+    <i class="pi pi-exclamation-triangle" style="font-size: 2rem"> Error!</i>
   </div>
 } @else if (((status$ | async) === 'success') && ((pets$ | async)?.length === 0)) {
-  <div class="p-mb-3">
-    No pets found.
+  <div class="flex justify-content-center p-mb-3">
+    <i class="pi pi-search" style="font-size: 2rem"> No pets found!</i>
   </div>
 }
 
@@ -67,7 +68,7 @@
   <button pButton type="button" class="reset-search-button" (click)="onReset($event)"> Reset</button>
 </form>
 
-<p-dataView #dv [value]="(pets$ | async ) || []" [rows]="3" [paginator]="true">
+<p-dataView #dv [value]="(pets$ | async ) || []" [rows]="10" [paginator]="true">
   <ng-template #list let-items>
     <div class="items-panel">
       @for (pet of items; track pet.id) {
@@ -83,7 +84,7 @@
             </div>
           </div>
           <div class="buttons-panel">
-            <p-button styleClass="w-full md:w-auto">Details</p-button>
+            <p-button styleClass="w-full md:w-auto" [routerLink]="['/pet-profile', pet.id]">Details</p-button>
           </div>
         </div>
       }
