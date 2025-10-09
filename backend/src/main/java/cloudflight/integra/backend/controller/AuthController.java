@@ -1,7 +1,7 @@
 package cloudflight.integra.backend.controller;
 
-import cloudflight.integra.backend.model.UserModel;
 import cloudflight.integra.backend.security.CustomUserDetails;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.UserService;
 import lombok.Data;
@@ -12,7 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,8 +46,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public UserModel register(@RequestBody RegisterRequest request) {
-        UserModel user = new UserModel();
+    public User register(@RequestBody RegisterRequest request) {
+        User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());  // password will be encoded in UserService
 

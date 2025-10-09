@@ -1,6 +1,6 @@
 package cloudflight.integra.backend.security;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final UserModel user;
+    private final User user;
 
-    public CustomUserDetails(UserModel user) {
+    public CustomUserDetails(User user) {
         this.user = user;
     }
 

@@ -10,6 +10,7 @@ import {PetEffects} from './store/pet.effects';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
 import {provideHttpClient} from '@angular/common/http';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,6 +35,8 @@ export const appConfig: ApplicationConfig = {
       PetEffects
     ]),
 
-    provideHttpClient()
+    provideHttpClient(),
+
+    provideAnimations()
   ]
 };
