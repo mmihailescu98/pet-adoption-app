@@ -1,12 +1,9 @@
 package cloudflight.integra.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.io.Serializable;
 
 @Entity
@@ -24,6 +21,8 @@ public class Pet implements Serializable {
     private String imgURL;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "status_type")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PetStatus status = PetStatus.PENDING; 
 
     public Pet() {}
