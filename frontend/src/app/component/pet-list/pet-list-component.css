@@ -45,15 +45,15 @@
 
 /* desktop */
 @media (min-width: 768px) {
-  .items-panel{
+  .items-panel {
     flex-direction: column;
   }
 
-  .item-panel{
+  .item-panel {
     flex-direction: row;
   }
 
-  .item-panel .buttons-panel{
+  .item-panel .buttons-panel {
     margin-top: 0;
     margin-inline: auto 0;
     display: flex;
@@ -106,3 +106,14 @@
 .suggestions-list li:hover {
   background: hsl(200, 5%, 25%)
 }
+
+.add-panel {
+  margin-top: 0;
+  margin-inline: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+
