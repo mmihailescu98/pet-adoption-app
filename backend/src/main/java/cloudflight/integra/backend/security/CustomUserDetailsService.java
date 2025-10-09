@@ -1,6 +1,6 @@
 package cloudflight.integra.backend.security;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found: " + username));
 

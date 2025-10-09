@@ -1,8 +1,6 @@
 package cloudflight.integra.backend.service.impl;
 
-import cloudflight.integra.backend.dto.UserDTO;
-import cloudflight.integra.backend.model.Pet;
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,34 +20,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel registerUser(UserModel user) {
+    public User registerUser(User user) {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<UserModel> findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public Optional<UserModel> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
     @Override
-    public List<UserModel> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public UserModel updateUserProfile(Long id, UserDTO userDTO) {
-        Optional<UserModel> optionalUser = userRepository.findById(id);
+    public User updateUserProfile(Long id, UserDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found with id: " + id);
         }
-        UserModel user = optionalUser.get();
+        User user = optionalUser.get();
         user.setUsername(userDTO.username());
         user.setName(userDTO.name());
         user.setPhone(userDTO.phone());

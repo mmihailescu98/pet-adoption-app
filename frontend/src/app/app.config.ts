@@ -16,7 +16,6 @@ import {userReducer} from './store/user/user.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimations(),
     provideBrowserGlobalErrorListeners(),
     providePrimeNG({
       theme: {
@@ -40,6 +39,8 @@ export const appConfig: ApplicationConfig = {
       UserEffects
     ]),
 
-    provideHttpClient()
+    provideHttpClient(),
+
+    provideAnimations()
   ]
 };
