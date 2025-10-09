@@ -1,10 +1,12 @@
 package cloudflight.integra.backend.controller;
 
+import cloudflight.integra.backend.security.CustomUserDetails;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.impl.UserServiceImpl;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,20 +29,20 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserServiceImpl userServiceImpl;
 
-    @PostMapping("/login")
-    public JwtResponse login(@RequestBody LoginRequest request) {
+    @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public LoginResponse login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Set<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
 
         String token = jwtUtil.generateToken(userDetails.getUsername(), roles);
 
-        return new JwtResponse(token);
+        return new LoginResponse(token, new UserLoginModel(userDetails.getId(), userDetails.getUsername()));
     }
 
     @PostMapping("/register")
@@ -70,5 +72,17 @@ public class AuthController {
     @Data
     public static class JwtResponse {
         private final String token;
+    }
+
+    @Data
+    public static class LoginResponse {
+        private final String token;
+        private final UserLoginModel loggedUser;
+    }
+
+    @Data
+    public static class UserLoginModel {
+        private final Long id;
+        private final String username;
     }
 }
