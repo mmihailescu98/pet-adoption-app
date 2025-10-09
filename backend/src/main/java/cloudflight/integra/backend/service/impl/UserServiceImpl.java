@@ -1,5 +1,7 @@
 package cloudflight.integra.backend.service.impl;
 
+import cloudflight.integra.backend.dto.UserDTO;
+import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.UserService;

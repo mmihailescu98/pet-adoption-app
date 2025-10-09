@@ -21,6 +21,7 @@ import {EditProfileDialogComponent} from '../edit-profile-dialog/edit-profile-di
 import {AdoptedPetsHistoryComponent} from '../adopted-pets-history/adopted-pets-history-component';
 import {loadAdoptedPetsByUser, loadUser, updateUser} from '../../store/user/user.actions';
 import {LOCATION_OPTIONS} from '../../resources/constants/location.constants';
+import {PetAddComponent} from '../pet-add/pet-add-component';
 
 @Component({
   selector: 'user-profile-component',
@@ -32,7 +33,8 @@ import {LOCATION_OPTIONS} from '../../resources/constants/location.constants';
     ButtonModule,
     SelectModule,
     EditProfileDialogComponent,
-    AdoptedPetsHistoryComponent
+    AdoptedPetsHistoryComponent,
+    PetAddComponent
   ],
   templateUrl: './user-profile-component.html',
   styleUrl: './user-profile-component.css'
@@ -51,6 +53,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   adoptedPets$: Observable<PetDTO[]>;
 
   locationOptions = [...LOCATION_OPTIONS];
+
+  showAddDialog = false;
 
   private destroy$ = new Subject<void>();
 
@@ -95,7 +99,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   onAddPet() {
-    // TODO: Link logic to add a new pet to adoption
+    this.showAddDialog = true;
   }
 
   onOpenFavorites() {
@@ -141,4 +145,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  saveNewPet($event: any) {}
 }

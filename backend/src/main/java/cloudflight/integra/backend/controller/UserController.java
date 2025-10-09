@@ -22,12 +22,12 @@ public class UserController {
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserDTO> getUsers() {
-        return UserMapper.mapper.userToUserDTOList(userService.getAllUsers());
+        return UserMapper.INSTANCE.userToUserDTOList(userService.getAllUsers());
     }
 
     @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO getUser(@PathVariable Long id) {
-        return UserMapper.mapper.userToUserDTO(userService.findById(id).orElse(null));
+        return UserMapper.INSTANCE.userToUserDTO(userService.findById(id).orElse(null));
     }
 
     @GetMapping(value = "/users/{id}/pets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,6 +37,6 @@ public class UserController {
 
     @PutMapping(value = "/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO updateUserProfile(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        return UserMapper.mapper.userToUserDTO(userService.updateUserProfile(id, userDTO));
+        return UserMapper.INSTANCE.userToUserDTO(userService.updateUserProfile(id, userDTO));
     }
 }

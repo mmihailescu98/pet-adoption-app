@@ -26,6 +26,11 @@
     (cancelEdit)="onCancelEdit()">
   </edit-profile-dialog>
 
+  <pet-add-component
+    [(display)]="showAddDialog"
+    (savePet)="saveNewPet($event)">
+  </pet-add-component>
+
   <adopted-pets-history [adoptedPets$]="adoptedPets$"></adopted-pets-history>
 
 </div>
