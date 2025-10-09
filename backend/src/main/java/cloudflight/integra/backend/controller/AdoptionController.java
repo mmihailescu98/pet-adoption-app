@@ -33,9 +33,7 @@ public class AdoptionController {
     @PostMapping("/adoptions")
     public ResponseEntity<?> createAdoptionListing(@RequestBody AdoptionAddRequestDTO addRequestListing) {
         try{
-            var mappedEntity = AdoptionMapper.INSTANCE.toModelFromAddRequest(addRequestListing);
-            var addedEntity = adoptionService.createAdoption(mappedEntity);
-            return ResponseEntity.ok(AdoptionMapper.INSTANCE.toListItemFromModel(addedEntity));
+            return ResponseEntity.ok(AdoptionMapper.INSTANCE.toListItemFromModel(adoptionService.createAdoption(addRequestListing)));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

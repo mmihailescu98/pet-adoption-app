@@ -4,7 +4,7 @@ import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.service.AdoptionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -64,23 +64,23 @@ class AdoptionControllerTest {
         var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
                 "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
 
-        var publisher = new UserModel(1L, "alice", "password123", Set.of("ROLE_USER"));
+        var publisher = new User(1L, "alice", "password123", Set.of("ROLE_USER"));
 
         return new AdoptionAddRequestDTO(
                 pet,
-                publisher,
+                publisher.getId(),
                 List.of("img1a.jpg", "img1b.jpg"),
                 "123-456-7890"
         );
     }
 
-    private List<UserModel> mockUsers() {
+    private List<User> mockUsers() {
         return List.of(
-                new UserModel(1L, "alice", "password123", Set.of("ROLE_USER")),
-                new UserModel(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
-                new UserModel(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
-                new UserModel(4L, "diana", "mypassword", Set.of("ROLE_USER")),
-                new UserModel(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                new User(1L, "alice", "password123", Set.of("ROLE_USER")),
+                new User(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
+                new User(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
+                new User(4L, "diana", "mypassword", Set.of("ROLE_USER")),
+                new User(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
         );
     }
 
@@ -100,7 +100,7 @@ class AdoptionControllerTest {
     }
 
     private List<AdoptionEntry> mockAdoptionEntries() {
-        List<UserModel> users = mockUsers();
+        List<User> users = mockUsers();
         List<Pet> pets = mockPets();
 
         return List.of(

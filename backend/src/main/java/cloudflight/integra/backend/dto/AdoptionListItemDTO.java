@@ -1,13 +1,13 @@
 package cloudflight.integra.backend.dto;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 
 import java.util.List;
 
 public record AdoptionListItemDTO(
         Long id,
         PetDTO pet,
-        UserModel publisher,
+        User publisher,
         List<String> additionalImages,
         String contactNumber
 )

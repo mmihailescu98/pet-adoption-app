@@ -11,11 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Adoptions")
+@Table(name = "adoptions")
 public class AdoptionEntry {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // Each listing is for exactly one pet
@@ -24,10 +24,9 @@ public class AdoptionEntry {
     private Pet pet;
 
     // The user who owns/posted the listing
-    @ManyToOne(optional = true) // for now it is optional beacuse we need the auth store on the front end ,
-                                // on the final form it will be required (true)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "publisher_id")
-    private UserModel publisher;
+    private User publisher;
 
     private List<String> additionalImages;
     private String contactNumber;
@@ -35,7 +34,7 @@ public class AdoptionEntry {
     // The user who adopts it (nullable until adopted)
     @ManyToOne(optional = true)
     @JoinColumn(name = "adopter_id")
-    private UserModel adopter;
+    private User adopter;
 
     private LocalDateTime createdAt;
     private LocalDateTime adoptedAt;

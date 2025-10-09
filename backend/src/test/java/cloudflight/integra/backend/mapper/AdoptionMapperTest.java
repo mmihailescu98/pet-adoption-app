@@ -5,7 +5,7 @@ import cloudflight.integra.backend.dto.AdoptionListItemDTO;
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -24,15 +24,15 @@ class AdoptionMapperTest {
         pet.setId(1);
         pet.setName("Buddy");
 
-        UserModel publisher = new UserModel();
-        publisher.setUsername("john_doe");
+        User publisher = new User();
+        publisher.setId(1L);
 
         List<String> images = List.of("img1.png", "img2.png");
         String contactNumber = "123456789";
 
         AdoptionAddRequestDTO dto = new AdoptionAddRequestDTO(
                 pet,
-                publisher,
+                publisher.getId(),
                 images,
                 contactNumber
         );
@@ -43,7 +43,7 @@ class AdoptionMapperTest {
         // then
         assertNotNull(entry);
         assertEquals(pet, entry.getPet());
-        assertEquals(publisher, entry.getPublisher());
+        assertNull(entry.getPublisher());
         assertEquals(images, entry.getAdditionalImages());
         assertEquals(contactNumber, entry.getContactNumber());
 
@@ -62,7 +62,7 @@ class AdoptionMapperTest {
         pet.setId(2);
         pet.setName("Luna");
 
-        UserModel publisher = new UserModel();
+        User publisher = new User();
         publisher.setUsername("alice");
 
         List<String> images = List.of("extra1.png");
@@ -98,7 +98,7 @@ class AdoptionMapperTest {
         pet.setId(2);
         pet.setName("Luna");
 
-        UserModel publisher = new UserModel();
+        User publisher = new User();
         publisher.setUsername("alice");
 
         List<String> images = List.of("extra1.png");

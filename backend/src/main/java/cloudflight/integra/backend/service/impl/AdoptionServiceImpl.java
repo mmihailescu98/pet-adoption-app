@@ -1,8 +1,10 @@
 package cloudflight.integra.backend.service.impl;
 
+import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
+import cloudflight.integra.backend.mapper.AdoptionMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.AdoptionRepository;
 import cloudflight.integra.backend.repository.PetRepository;
 import cloudflight.integra.backend.repository.UserRepository;
@@ -29,21 +31,20 @@ public class AdoptionServiceImpl implements AdoptionService {
 
     /**
      * Adds an adoption listing , if the pet contained doesn't exist it will be added as well
-     * @param adoptionEntry the listing to be added
+     * @param adoptionAddRequest the listing to be added
      * @return the listing added
      * @throws RuntimeException if the user contained does not exist
      */
     @Override
-    public AdoptionEntry createAdoption(AdoptionEntry adoptionEntry) {
-        Pet toBePublished = adoptionEntry.getPet();
-        UserModel publisher = adoptionEntry.getPublisher();
+    public AdoptionEntry createAdoption(AdoptionAddRequestDTO adoptionAddRequest) {
+        Pet toBePublished = adoptionAddRequest.pet();
 
         boolean existingPet = false;
-
         try {
             toBePublished = petRepository.findById(toBePublished.getId()).orElseThrow();
             existingPet = true;
         }catch (Exception _){
+            System.out.println(toBePublished.getStatus());
             toBePublished = petRepository.save(toBePublished);
         }
 
@@ -55,12 +56,14 @@ public class AdoptionServiceImpl implements AdoptionService {
                     });
         }
 
-        publisher = userRepository.findByUsername(publisher.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+        User publisher = userRepository.findById(adoptionAddRequest.publisherId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        adoptionEntry.setPublisher(publisher);
-        adoptionEntry.setPet(toBePublished);
+        AdoptionEntry newEntry = AdoptionMapper.INSTANCE.toModelFromAddRequest(adoptionAddRequest);
 
-        return adoptionRepository.save(adoptionEntry);
+        newEntry.setPublisher(publisher);
+        newEntry.setPet(toBePublished);
+
+        return adoptionRepository.save(newEntry);
     }
 
     @Override
