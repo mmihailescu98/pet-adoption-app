@@ -62,4 +62,16 @@ export class PetEffects {
     )
   ));
 
+  adoptPet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.adoptPet),
+      mergeMap(({ id }) =>
+        this.petService.adoptPet(id).pipe(
+          map((pet: any) => PetActions.adoptPetSuccess({ pet })), 
+          catchError(error => of(PetActions.adoptPetFailure({ error })))
+        )
+      )
+    )
+  );
+
 }

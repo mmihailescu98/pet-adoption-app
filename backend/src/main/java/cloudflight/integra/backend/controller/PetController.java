@@ -34,6 +34,11 @@ public class PetController {
         return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
     }
 
+    @PostMapping("/pets/{id}/adopt")
+    public PetDTO adoptPet(@PathVariable Integer id) {
+        return PetMapper.INSTANCE.petToPetDTO(petService.adoptPet(id));
+    }
+
     @PostMapping("/pets")
     public PetDTO addPet(@RequestBody Pet pet) {
         return PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet));

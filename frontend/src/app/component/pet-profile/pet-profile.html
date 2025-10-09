@@ -7,7 +7,7 @@
     } @else {
       @if (pet$ | async; as pet) {
         <div class="pet-container">
-          <!-- Add image section -->
+          
           <div class="pet-image">
             <img [src]="pet.imgURL" alt="{{ pet.name }}">
           </div>
@@ -17,10 +17,22 @@
             <p class="species">{{ pet.species }} - {{ pet.breed }}</p>
             <p class="pet-detail"><strong>Age:</strong> {{ pet.age }}</p>
             <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
+            
+            <p class="pet-detail status-tag">
+              <strong>Status:</strong> 
+              <span [ngClass]="pet.status === 'ADOPTED' ? 'status-adopted' : 'status-pending'">
+                {{ pet.status }}
+              </span>
+            </p>
             <p class="description">{{ pet.description }}</p>
             
             <div class="actions">
-              <button class="btn adopt">Adopt</button>
+              
+              <button class="btn adopt" 
+                      [disabled]="pet.status === 'ADOPTED'"
+                      (click)="pet.id && adoptPet(pet.id)">
+                {{ pet.status === 'ADOPTED' ? 'Already Adopted' : 'Adopt' }}
+              </button>
               <button class="btn contact">Contact</button>
             </div>
           </div>
