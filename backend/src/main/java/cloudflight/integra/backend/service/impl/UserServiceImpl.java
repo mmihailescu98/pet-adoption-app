@@ -1,6 +1,6 @@
 package cloudflight.integra.backend.service.impl;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,19 +20,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel registerUser(UserModel user) {
+    public User registerUser(User user) {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<UserModel> findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public List<UserModel> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 }

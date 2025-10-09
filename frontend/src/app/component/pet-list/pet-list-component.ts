@@ -10,6 +10,7 @@ import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
+import {PetAddComponent} from '../pet-add/pet-add-component';
 
 @Component({
   selector: 'pet-list-component',
@@ -21,6 +22,7 @@ import {RouterLink} from '@angular/router';
     ButtonDirective,
     NavBar,
     RouterLink,
+    PetAddComponent,
   ],
   templateUrl: './pet-list-component.html',
   styleUrl: './pet-list-component.css'
@@ -36,6 +38,7 @@ export class PetListComponent implements OnInit, OnDestroy {
   filteredSpecies$: Observable<string[]>;
   filteredBreeds$: Observable<string[]>;
 
+    showAddDialog = false;
   filterForm: FormGroup;
 
   private destroy$ = new Subject<void>();
@@ -64,6 +67,13 @@ export class PetListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+    openDialog() {
+      this.showAddDialog = true;
+    }
+
+    saveNewPet(pet: PetDTO) {
+      console.log('New Pet:', pet);
+    }
   onReset(event: Event) {
     this.filterForm.reset({species: '', breed: ''});
   }

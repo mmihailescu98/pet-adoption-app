@@ -1,13 +1,11 @@
 package cloudflight.integra.backend.repository;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-
-public interface UserRepository {
-    Optional<UserModel> findByUsername(String username);
-    List<UserModel> findAll();
-    UserModel save(UserModel model);
+public interface UserRepository extends JpaRepository<User,Long> {
+    Optional<User> findByUsername(String username);
+    Optional<User> deleteByUsername(String username);
 }

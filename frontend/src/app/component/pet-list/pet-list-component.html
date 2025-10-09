@@ -1,4 +1,20 @@
 <app-nav-bar></app-nav-bar>
+<div class="add-panel">
+  <p-button
+    styleClass="w-full md:w-auto"
+    label="Add Pet"
+    (onClick)="openDialog()">
+  </p-button>
+</div>
+
+<!-- two-way bind parent <-> child -->
+<!-- Pass state and handle save -->
+<pet-add-component
+  [(display)]="showAddDialog"
+  (savePet)="saveNewPet($event)">
+</pet-add-component>
+
+
 @if ((status$ | async) === 'loading') {
   <div class="flex justify-content-center p-mb-3">
     <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
@@ -52,7 +68,7 @@
   <button pButton type="button" class="reset-search-button" (click)="onReset($event)"> Reset</button>
 </form>
 
-<p-dataView #dv [value]="(pets$ | async ) || []" [rows]="10" [paginator]="true">
+<p-dataView #dv [value]="(pets$ | async ) || []" [rows]="3" [paginator]="true">
   <ng-template #list let-items>
     <div class="items-panel">
       @for (pet of items; track pet.id) {
@@ -68,7 +84,7 @@
             </div>
           </div>
           <div class="buttons-panel">
-            <p-button styleClass="w-full md:w-auto" [routerLink]="['/pet-profile', pet.id]">Details</p-button>
+            <p-button styleClass="w-full md:w-auto">Details</p-button>
           </div>
         </div>
       }
