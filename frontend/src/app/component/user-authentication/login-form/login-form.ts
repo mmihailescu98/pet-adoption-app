@@ -10,6 +10,7 @@ import {selectLoginError, selectIsLoggedIn, selectLoading} from '../../../store/
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {clearLoginError, login} from '../../../store/auth/auth.actions';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {Router} from '@angular/router';
 
 
 @UntilDestroy()
@@ -34,7 +35,7 @@ export class LoginForm implements OnInit {
 
   loginForm!: FormGroup;
 
-  constructor(private store: Store,private formBuilder: FormBuilder) {
+  constructor(private store: Store,private formBuilder: FormBuilder,private router: Router) {
     this.isLoading$ = this.store.select(selectLoading);
     this.loginError$ = this.store.select(selectLoginError);
     this.hasLoggedIn$ = this.store.select(selectIsLoggedIn);
@@ -53,6 +54,7 @@ export class LoginForm implements OnInit {
       if (value) {
         alert('Login successful!');
         //should also route to another page, until then after a login is succesful the alert will be triggered each time we come to the login form
+        this.router.navigate(['/pet-list']);
       }
     })
 

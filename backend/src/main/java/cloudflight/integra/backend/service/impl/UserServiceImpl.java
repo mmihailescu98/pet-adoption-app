@@ -1,7 +1,7 @@
 package cloudflight.integra.backend.service.impl;
 
+import cloudflight.integra.backend.dto.AdoptedPetDTO;
 import cloudflight.integra.backend.dto.UserDTO;
-import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.UserService;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Pet> getAdoptedPetsByUser(Long id) {
-        return userRepository.findByIdWithPets(id).map(user -> List.copyOf(user.getAdoptedPets())).orElse(List.of());
+    public List<AdoptedPetDTO> getAdoptedPetsByUser(Long userID) {
+        return userRepository.findAdoptedPetsByUserId(userID);
     }
 }

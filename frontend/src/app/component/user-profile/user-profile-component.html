@@ -3,15 +3,15 @@
 <div class="item-panel">
   <form [formGroup]="editForm" class="profile-form">
     <section class="profile-photo-section">
-      <img [src]="editForm.value.imgURL" [alt]="editForm.value.username" class="profile-photo"/>
+      <img [src]="editForm.value.imgURL && editForm.value.imgURL.trim() !== ''? editForm.value.imgURL: '/resources/images/defaultUser.png'" class="profile-photo"/>
     </section>
 
     <section class="profile-details-section">
-      <p><i class="pi pi-user"></i> {{ editForm.value.name }}</p>
-      <p><i class="pi pi-envelope"></i> {{ editForm.value.email }}</p>
-      <p><i class="pi pi-phone"></i> {{ editForm.value.phone }}</p>
-      <p><i class="pi pi-map-marker"></i> {{ editForm.value.location }}</p>
-      <p><i class="pi pi-info-circle"></i> {{ editForm.value.bio }}</p>
+      <p><i class="pi pi-user"></i> {{ editForm.value.name || 'Enter your name' }}</p>
+      <p><i class="pi pi-envelope"></i> {{ editForm.value.email || 'Enter your email' }}</p>
+      <p><i class="pi pi-phone"></i> {{ editForm.value.phone ||  'Enter your phone number' }}</p>
+      <p><i class="pi pi-map-marker"></i> {{ editForm.value.location || 'Select your location' }}</p>
+      <p><i class="pi pi-info-circle"></i> {{ editForm.value.bio || 'Tell us about yourself' }}</p>
       <div class="profile-actions">
         <p-button type="button" label="Edit Profile" (onClick)="onEdit()" styleClass="p-button-secondary"></p-button>
         <p-button type="button" label="Add Pet" (onClick)="onAddPet()" styleClass="p-button-primary"></p-button>

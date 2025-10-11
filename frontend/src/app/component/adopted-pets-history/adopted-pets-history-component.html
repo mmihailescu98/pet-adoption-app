@@ -12,6 +12,11 @@
           <p><i class="pi pi-id-card"></i> {{ pet.age }}</p>
         </div>
       </div>
+      <div style="min-width: 150px; text-align: right;">
+        @if (pet.adoptedAt) {
+          <span>Adopted on: {{ pet.adoptedAt | date:'mediumDate' }}</span>
+        }
+      </div>
     }
   </div>
 </section>

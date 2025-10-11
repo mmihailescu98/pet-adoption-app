@@ -1,5 +1,5 @@
 import {createAction, props} from '@ngrx/store';
-import {PetDTO, UserDTO} from '../../api';
+import {AdoptedPetDTO, UserDTO} from '../../api';
 
 
 export const loadUser = createAction('[User] Load User', props<{ userID: number }>());
@@ -11,5 +11,5 @@ export const updateUserSuccess = createAction('[User] Update User Success', prop
 export const updateUserFailure = createAction('[User] Update User Failure', props<{ error: any }>());
 
 export const loadAdoptedPetsByUser = createAction('[User] Load Adopted Pets By User', props<{ userID: number }>());
-export const loadAdoptedPetsByUserSuccess = createAction('[User] Load Adopted Pets By User Success', props<{ adoptedPets: PetDTO[] }>());
+export const loadAdoptedPetsByUserSuccess = createAction('[User] Load Adopted Pets By User Success', props<{ adoptedPets: AdoptedPetDTO[] }>());
 export const loadAdoptedPetsByUserFailure = createAction('[User] Load Adopted Pets By User Failure', props<{ error: any }>());

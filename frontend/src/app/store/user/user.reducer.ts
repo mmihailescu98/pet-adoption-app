@@ -1,10 +1,10 @@
 import {createReducer, on} from '@ngrx/store';
 import * as UserActions from './user.actions';
-import {PetDTO, UserDTO} from '../../api';
+import {AdoptedPetDTO, UserDTO} from '../../api';
 
 export interface UserState {
   user: UserDTO | null;
-  adoptedPets: PetDTO[] | [];
+  adoptedPets: AdoptedPetDTO[] | [];
   loading: boolean;
   error: any;
 }

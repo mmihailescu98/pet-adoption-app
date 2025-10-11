@@ -9,12 +9,12 @@
           <label for="{{ field }}">{{ field | titlecase }}</label>
           @if (field === 'bio') {
             <textarea id="bio" pInputTextarea formControlName="bio" rows="3" autoResize="true"
-                      style="width: 100%"></textarea>
+                      style="width: 100%" placeholder="Tell us about yourself"></textarea>
           } @else if (field === 'location') {
             <p-select id="location" [options]="locationOptions" formControlName="location"
                       placeholder="Select a location" style="width: 100%"></p-select>
           } @else {
-            <input id="{{ field }}" type="text" pInputText formControlName="{{ field }}"/>
+            <input id="{{ field }}" type="text" pInputText formControlName="{{ field }}" placeholder="Enter your {{ field }}" style="width: 100%"/>
           }
         </div>
       }

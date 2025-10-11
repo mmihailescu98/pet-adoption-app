@@ -1,9 +1,8 @@
 package cloudflight.integra.backend.controller;
 
-import cloudflight.integra.backend.dto.PetDTO;
+import cloudflight.integra.backend.dto.AdoptedPetDTO;
 import cloudflight.integra.backend.dto.UserDTO;
 import cloudflight.integra.backend.mapper.UserMapper;
-import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +30,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{id}/pets", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PetDTO> getAdoptedPetsByUser(@PathVariable Long id) {
-        return PetMapper.INSTANCE.petToPetDTOList(userService.getAdoptedPetsByUser(id));
+    public List<AdoptedPetDTO> getAdoptedPetsByUser(@PathVariable Long id) {
+        return userService.getAdoptedPetsByUser(id);
     }
 
     @PutMapping(value = "/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

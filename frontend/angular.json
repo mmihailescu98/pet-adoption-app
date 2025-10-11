@@ -22,6 +22,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/app/resources/images",
+                "output": "resources/images"
               }
             ],
             "styles": [

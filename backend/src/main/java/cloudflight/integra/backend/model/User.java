@@ -44,9 +44,4 @@ public class User {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
-
-    // Testing for adopted pets history
-    @OneToMany
-    @JoinTable(name = "user_adopted_pets", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "pet_id"))
-    private Set<Pet> adoptedPets = new HashSet<>();
 }
