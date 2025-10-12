@@ -110,12 +110,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   private initializeEditForm() {
     this.editForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      name: ['', [Validators.minLength(2)]],
-      phone: [''],
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.maxLength(50)]],
+      name: ['', [Validators.minLength(2), Validators.maxLength(50)]],
+      phone: ['', [Validators.pattern(/^\d{9,15}$/) ,Validators.maxLength(15)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
       location: [''],
-      imgURL: [''],
+      imgURL: ['', [Validators.maxLength(500)]],
       bio: ['', [Validators.maxLength(1000)]]
     })
   }

@@ -36,8 +36,10 @@ export class EditProfileDialogComponent {
   }
 
   onSaveEdit() {
-    this.showEditDialogChange.emit(false);
-    this.saveEdit.emit(this.editForm.value);
+    if(this.editForm.valid){
+      this.showEditDialogChange.emit(false);
+      this.saveEdit.emit(this.editForm.value);
+    }
   }
 
   onDialogHide() {
