@@ -7,6 +7,8 @@ export interface PetState {
   selectedPet: PetDTO | null;   // add this
   error: any;
   status: 'pending' | 'loading' | 'error' | 'success';
+
+  favoriteError: any;
 }
 
 const initialState: PetState = {
@@ -14,6 +16,8 @@ const initialState: PetState = {
   selectedPet: null,
   error: null,
   status: 'pending',
+
+  favoriteError: null,
 };
 
 export const petReducer = createReducer(
@@ -93,6 +97,39 @@ export const petReducer = createReducer(
     ...state,
     error,
     status: 'error',
+  })),
+
+  // Favorite Pet reducers ---------------------------------------------------------------
+  on(PetActions.addFavoritePet, ( state , { petId }) => ({
+    ...state,
+    pets: state.pets.map(p => p.id === petId ? { ...p, isUserFavorite: true } : p),
+    selectedPet: state.selectedPet && state.selectedPet.id === petId ? { ...state.selectedPet, isUserFavorite: true } : state.selectedPet
+  })),
+
+  on(PetActions.addFavoritePetSuccess, state => ({
+    ...state,
+  })),
+
+  on(PetActions.addFavoritePetFailure, (state,{ error }) => ({
+    ...state,
+    favoriteError: error,
+    //TODO maybe find a way to revert the isUserFavorite change from the addFavoritePet action
+  })),
+
+  on(PetActions.removeFavoritePet, (state,{ petId }) => ({
+    ...state,
+    pets: state.pets.map(p => p.id == petId ? { ...p, isUserFavorite: false } : p),
+    selectedPet: state.selectedPet && state.selectedPet.id == petId ? { ...state.selectedPet, isUserFavorite: false } : state.selectedPet
+  })),
+
+  on(PetActions.removeFavoritePetSuccess, state => ({
+    ...state,
+  })),
+
+  on(PetActions.removeFavoritePetFailure, (state,{ error }) => ({
+    ...state,
+    favoriteError: error,
+    //TODO maybe find a way to revert the isUserFavorite change from the removeFavoritePet action
   }))
 );
 
