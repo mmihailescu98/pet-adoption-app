@@ -8,6 +8,7 @@ export const initialState: AuthState = {
   hasRegistered: false,
   loginError: null,
   registrationError: null,
+  userModel: null,
 };
 
 export const authReducer = createReducer(
@@ -19,10 +20,11 @@ export const authReducer = createReducer(
     loginError: null
   })),
 
-  on(AuthActions.loginSuccess, (state, { token }) => ({
+  on(AuthActions.loginSuccess, (state, { token, userModel }) => ({
     ...state,
     loading: false,
     token,
+    userModel,
   })),
 
   on(AuthActions.loginFailure, (state, { error }) => ({

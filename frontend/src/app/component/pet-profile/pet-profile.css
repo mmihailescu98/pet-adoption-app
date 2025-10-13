@@ -90,7 +90,6 @@ h2 {
   background-color: rgba(6, 182, 212, 0.1);
 }
 
-/* Make it responsive for desktop */
 @media (min-width: 768px) {
   .pet-container {
     flex-direction: row;
@@ -100,4 +99,23 @@ h2 {
     width: 350px;
     height: 350px;
   }
+}
+
+.status-adopted {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #10b981;
+  font-weight: bold;
+}
+
+.status-tag {
+  margin-top: 10px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
