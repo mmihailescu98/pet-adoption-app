@@ -5,6 +5,7 @@ import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.service.FavoritePetService;
 import cloudflight.integra.backend.service.PetService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,8 @@ public class PetController {
         return List.of("hello", "world");
     }
 
-    @GetMapping("/pets")
+
+    @GetMapping(value = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PetDTO> getPets(@RequestParam(required = false) String species, @RequestParam(required = false) String breed) {
         //JwtUtil.getAuthenticatedUser().getId();//TODO should be discussed if it s ok to use in order to get user id
 
@@ -36,7 +38,7 @@ public class PetController {
         return PetMapper.INSTANCE.petToPetDTOList(pets, favoritePetIds);
     }
 
-    @GetMapping("/pets/{id}")
+    @GetMapping(value = "/pets/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PetDTO getPetById(@PathVariable Integer id) {
         //JwtUtil.getAuthenticatedUser().getId();//TODO should be discussed if it s ok to use in order to get user id
 
