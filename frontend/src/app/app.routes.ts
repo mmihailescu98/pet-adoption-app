@@ -9,15 +9,11 @@ import {MapSearch} from './component/map-search/map-search';
 export const routes: Routes = [
   {
     path: '',
-    component: TestComponent
+    component: UserAuthComponent
   },
   {
     path: 'pet-list',
     component: PetListComponent
-  },
-  {
-    path: 'user-registration',
-    component: UserAuthComponent
   },
   {
     path: 'pet-profile/:id',

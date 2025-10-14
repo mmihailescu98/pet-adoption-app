@@ -13,9 +13,10 @@ import {authReducer} from './store/auth/auth.reducer';
 import {AuthEffects} from './store/auth/auth.effects';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
-import {provideHttpClient} from '@angular/common/http';
 import {MapService} from './component/map-search/map.service';
 import {provideAnimations} from '@angular/platform-browser/animations';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {authInterceptor} from './store/auth/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -40,7 +41,7 @@ export const appConfig: ApplicationConfig = {
       PetEffects
     ]),
 
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
 
     provideAnimations(),
 
