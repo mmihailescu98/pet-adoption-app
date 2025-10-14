@@ -35,7 +35,7 @@ export class LoginForm implements OnInit {
 
   loginForm!: FormGroup;
 
-  constructor(private store: Store,private formBuilder: FormBuilder,private router: Router) {
+  constructor(private store: Store,private formBuilder: FormBuilder, private router: Router) {
     this.isLoading$ = this.store.select(selectLoading);
     this.loginError$ = this.store.select(selectLoginError);
     this.hasLoggedIn$ = this.store.select(selectIsLoggedIn);
@@ -52,8 +52,6 @@ export class LoginForm implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((value) => {
       if (value) {
-        alert('Login successful!');
-        //should also route to another page, until then after a login is succesful the alert will be triggered each time we come to the login form
         this.router.navigate(['/pet-list']);
       }
     })

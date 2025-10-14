@@ -11,6 +11,8 @@ import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
 import {PetAddComponent} from '../pet-add/pet-add-component';
+import {UserLoginModel} from '../../api';
+import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'pet-list-component',
@@ -38,7 +40,7 @@ export class PetListComponent implements OnInit, OnDestroy {
   filteredSpecies$: Observable<string[]>;
   filteredBreeds$: Observable<string[]>;
 
-    showAddDialog = false;
+  showAddDialog = false;
   filterForm: FormGroup;
 
   private destroy$ = new Subject<void>();

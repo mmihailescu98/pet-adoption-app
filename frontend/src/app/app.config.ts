@@ -9,8 +9,9 @@ import {authReducer} from './store/auth/auth.reducer';
 import {AuthEffects} from './store/auth/auth.effects';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
-import {provideHttpClient} from '@angular/common/http';
 import {provideAnimations} from '@angular/platform-browser/animations';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {authInterceptor} from './store/auth/auth.interceptor';
 import {UserEffects} from './store/user/user.effects';
 import {userReducer} from './store/user/user.reducer';
 
@@ -39,7 +40,7 @@ export const appConfig: ApplicationConfig = {
       UserEffects
     ]),
 
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
 
     provideAnimations()
   ]

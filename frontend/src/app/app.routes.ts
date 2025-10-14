@@ -9,15 +9,11 @@ import {UserProfileComponent} from './component/user-profile/user-profile-compon
 export const routes: Routes = [
   {
     path: '',
-    component: TestComponent
+    component: UserAuthComponent
   },
   {
     path: 'pet-list',
     component: PetListComponent
-  },
-  {
-    path: 'user-registration',
-    component: UserAuthComponent
   },
   {
     path: 'pet-profile/:id',
