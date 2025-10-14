@@ -1,0 +1,27 @@
+<!-- google-maps-demo.component.html -->
+<google-map
+  mapId="map-1"
+  height="400px"
+  width="750px"
+  [center]="center"
+  [zoom]="zoom"
+  [options]="options"
+  (mapClick)="moveMap($event)"
+  (mapMousemove)="move($event)">
+  @if(position)
+  {
+    <!--    <map-marker [position]="position" [options]="markerOptions" />-->
+    <map-advanced-marker [position]="position" [options]="markerOptions"></map-advanced-marker>
+  }
+</google-map>
+
+<div>Latitude: {{display?.lat}}</div>
+<div>Longitude: {{display?.lng}}</div>
+
+<div class="mt-5 flex gap-4">
+  <p-floatlabel>
+    <input pInputText id="locationInputText" [(ngModel)]="value" autocomplete="off" />
+    <label for="locationInputText">Location</label>
+  </p-floatlabel>
+  <p-button (onClick)="searchLocation()">Find location</p-button>
+</div>
