@@ -15,10 +15,13 @@ public class Pet implements Serializable {
     private String species;
     private String breed;
     private String name;
-    private String location;
     private String age; // to be int
     private String description;
     private String imgURL;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "status_type")
@@ -27,7 +30,7 @@ public class Pet implements Serializable {
 
     public Pet() {}
 
-    public Pet(Integer id, String species, String breed, String name, String location, String age, String description, String imgURL) {
+    public Pet(Integer id, String species, String breed, String name, Location location, String age, String description, String imgURL) {
         this.id = id;
         this.species = species;
         this.breed = breed;
@@ -70,13 +73,9 @@ public class Pet implements Serializable {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
-    }
+    public Location getLocation() { return location; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public void setLocation(Location location) { this.location = location; }
 
     public String getAge() {
         return age;
