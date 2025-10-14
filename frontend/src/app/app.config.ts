@@ -1,4 +1,8 @@
-import {ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection} from '@angular/core';
+import {
+  ApplicationConfig, inject, provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection
+} from '@angular/core';
 import {provideRouter} from '@angular/router';
 import {routes} from './app.routes';
 import {providePrimeNG} from 'primeng/config';
@@ -9,6 +13,7 @@ import {authReducer} from './store/auth/auth.reducer';
 import {AuthEffects} from './store/auth/auth.effects';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
+import {MapService} from './component/map-search/map.service';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptor} from './store/auth/auth.interceptor';
@@ -42,6 +47,11 @@ export const appConfig: ApplicationConfig = {
 
     provideHttpClient(withInterceptors([authInterceptor])),
 
-    provideAnimations()
+    provideAnimations(),
+
+    provideAppInitializer(() => {
+      const mapsLoader = inject(MapService);
+      return mapsLoader.load();
+    })
   ]
 };

@@ -4,6 +4,7 @@ import {PetListComponent} from './component/pet-list/pet-list-component';
 import {UserAuthComponent} from './component/user-authentication/userAuth-component';
 import { PetProfileComponent } from './component/pet-profile/pet-profile';
 import {Dashboard} from './component/dashboard/dashboard';
+import {MapSearch} from './component/map-search/map-search';
 import {UserProfileComponent} from './component/user-profile/user-profile-component';
 
 export const routes: Routes = [
@@ -22,6 +23,10 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard
+  },
+  {
+    path: 'maps-test',
+    component: MapSearch
   },
   {
     path: 'user-profile/:id',
