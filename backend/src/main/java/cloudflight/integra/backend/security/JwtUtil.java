@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -15,6 +16,11 @@ public class JwtUtil {
 
     private final String JWT_SECRET = "secretKey777";
     private final long JWT_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+
+    public static CustomUserDetails getAuthenticatedUser()
+    {
+        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
     public String generateToken(String username, Set<String> roles) {
         return JWT.create()

@@ -11,7 +11,7 @@ export interface PetState {
   favoriteError: any;
 }
 
-const initialState: PetState = {
+export const initialState: PetState = {
   pets: [],
   selectedPet: null,
   error: null,

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginForm } from './login-form';
+import { provideMockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../store/auth/auth.reducer';
 
 describe('LoginForm', () => {
   let component: LoginForm;
@@ -8,7 +10,10 @@ describe('LoginForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginForm]
+      imports: [LoginForm],
+      providers: [
+        provideMockStore({ initialState }),
+      ]
     })
     .compileComponents();
 

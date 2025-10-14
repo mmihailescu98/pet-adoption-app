@@ -3,6 +3,7 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.Pet;
+import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.FavoritePetService;
 import cloudflight.integra.backend.service.PetService;
 import org.springframework.http.MediaType;
@@ -30,20 +31,21 @@ public class PetController {
 
     @GetMapping(value = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PetDTO> getPets(@RequestParam(required = false) String species, @RequestParam(required = false) String breed) {
-        //JwtUtil.getAuthenticatedUser().getId();//TODO should be discussed if it s ok to use in order to get user id
+        Long userId = JwtUtil.getAuthenticatedUser().getId();
 
         List<Pet> pets = petService.getPets(species, breed);
-        Set<Integer> favoritePetIds = favoritePetService.getUserFavoritePetIds(1L);//later it should be an id given by the FE or taken from context
+        Set<Integer> favoritePetIds = favoritePetService.getUserFavoritePetIds(userId);
 
         return PetMapper.INSTANCE.petToPetDTOList(pets, favoritePetIds);
     }
 
     @GetMapping(value = "/pets/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PetDTO getPetById(@PathVariable Integer id) {
-        //JwtUtil.getAuthenticatedUser().getId();//TODO should be discussed if it s ok to use in order to get user id
+        Long userId = JwtUtil.getAuthenticatedUser().getId();
+
 
         Pet pet = petService.getPetById(id);
-        Set<Integer> favoritePetIds = favoritePetService.getUserFavoritePetIds(1L);//same as above
+        Set<Integer> favoritePetIds = favoritePetService.getUserFavoritePetIds(userId);
 
         return PetMapper.INSTANCE.petToPetDTO(pet, favoritePetIds);
     }

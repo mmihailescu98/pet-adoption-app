@@ -96,7 +96,6 @@ export class PetEffects {
         group$.pipe(
           debounceTime(2000),
           switchMap(action => {
-            console.log("action effect triggered with", this.initialFavoritesStateMap.get(action.petId));
 
             let request$: Observable<any> = EMPTY;
 

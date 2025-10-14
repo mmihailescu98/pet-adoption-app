@@ -35,7 +35,6 @@ public class FavoritePetServiceImpl implements FavoritePetService {
      */
     @Override
     public Set<Integer> getUserFavoritePetIds(Long userId) {
-        //In Progress
         Set<Integer> favoritePetsIds = new HashSet<>();
         for (FavoritePet favorite : favoritePetRepository.findByUser_Id(userId))
         {

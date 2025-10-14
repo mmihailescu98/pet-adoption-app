@@ -51,9 +51,9 @@ export class PetProfileComponent implements OnInit {
     this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
       if (user) {
         if(pet.isUserFavorite) {
-          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: 1 }));
+          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: user.id! }));
         } else {
-          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: 1 }));
+          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: user.id! }));
         }
       } else
         alert("Please log in to manage favorites.");

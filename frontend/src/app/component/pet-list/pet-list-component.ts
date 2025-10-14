@@ -12,7 +12,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
 import {PetAddComponent} from '../pet-add/pet-add-component';
-import {UserLoginModel} from '../../api';
 import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
@@ -112,9 +111,9 @@ export class PetListComponent implements OnInit, OnDestroy {
     this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
       if (user) {
         if(pet.isUserFavorite) {
-          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: 1 }));
+          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: user.id! }));
         } else {
-          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: 1 }));
+          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: user.id! }));
         }
       } else
         alert("Please log in to manage favorites.");
