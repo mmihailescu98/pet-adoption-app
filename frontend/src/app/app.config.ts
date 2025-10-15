@@ -19,6 +19,7 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptor} from './store/auth/auth.interceptor';
 import {UserEffects} from './store/user/user.effects';
 import {userReducer} from './store/user/user.reducer';
+import {metaReducers} from './store/meta-reducers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,7 +39,9 @@ export const appConfig: ApplicationConfig = {
       auth: authReducer,
       pet: petReducer,
       user: userReducer
-    }),
+    },
+      { metaReducers }
+    ),
     provideEffects([
       AuthEffects,
       PetEffects,
