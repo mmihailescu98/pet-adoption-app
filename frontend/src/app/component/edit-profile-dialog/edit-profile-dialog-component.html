@@ -4,20 +4,34 @@
   <form [formGroup]="editForm">
     <div class="edit-dialog-grid">
 
-      @for (field of ['username', 'name', 'location', 'phone', 'email', 'imgURL', 'bio']; track field) {
-        <div class="p-field">
-          <label for="{{ field }}">{{ field | titlecase }}</label>
-          @if (field === 'bio') {
-            <textarea id="bio" pInputTextarea formControlName="bio" rows="3" autoResize="true" placeholder="Tell us about yourself" maxlength="1000"></textarea>
-          } @else if (field === 'location') {
-            <p-select id="location" [options]="locationOptions" formControlName="location" placeholder="Select a location"></p-select>
-          } @else if (field === 'email') {
-            <input id="{{ field }}" type="email" pInputText formControlName="{{ field }}" placeholder="Enter your {{ field }}" maxlength="500"/>
-          } @else {
-            <input id="{{ field }}" type="text" pInputText formControlName="{{ field }}" placeholder="Enter your {{ field }}" maxlength="500"/>
-          }
-        </div>
-      }
+      <div class="p-field">
+        <label for="username">Username</label>
+        <input id="username" type="text" pInputText formControlName="username" placeholder="Enter your username" maxlength="50"/>
+      </div>
+      <div class="p-field">
+        <label for="name">Name</label>
+        <input id="name" type="text" pInputText formControlName="name" placeholder="Enter your name" maxlength="50"/>
+      </div>
+      <div class="p-field">
+        <label for="location">Location</label>
+        <p-select id="location" [options]="locationOptions" formControlName="location" placeholder="Select your location"></p-select>
+      </div>
+      <div class="p-field">
+        <label for="phone">Phone</label>
+        <input id="phone" type="text" pInputText formControlName="phone" placeholder="Enter your phone number" maxlength="15"/>
+      </div>
+      <div class="p-field">
+        <label for="email">Email</label>
+        <input id="email" type="email" pInputText formControlName="email" placeholder="Enter your email" maxlength="50"/>
+      </div>
+      <div class="p-field">
+        <label for="imgURL">ImgURL</label>
+        <input id="imgURL" type="text" pInputText formControlName="imgURL" placeholder="Enter your imgURL" maxlength="500"/>
+      </div>
+      <div class="p-field">
+        <label for="bio">Bio</label>
+        <textarea id="bio" pInputTextarea formControlName="bio" rows="3" autoResize="true" placeholder="Tell us about yourself" maxlength="1000"></textarea>
+      </div>
 
       <div class="dialog-actions">
         <p-button type="button" label="Cancel" (onClick)="onCancelEdit()" styleClass="p-button-secondary"></p-button>

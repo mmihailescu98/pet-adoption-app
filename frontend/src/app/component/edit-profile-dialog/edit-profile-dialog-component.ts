@@ -5,7 +5,6 @@ import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import {SelectModule} from 'primeng/select';
 import {Textarea} from 'primeng/textarea';
-import {TitleCasePipe} from '@angular/common';
 import {UserDTO} from '../../api';
 
 @Component({
@@ -17,7 +16,6 @@ import {UserDTO} from '../../api';
     ButtonModule,
     SelectModule,
     Textarea,
-    TitleCasePipe
   ],
   templateUrl: './edit-profile-dialog-component.html',
   styleUrl: './edit-profile-dialog-component.css',
