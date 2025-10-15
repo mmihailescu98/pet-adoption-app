@@ -5,6 +5,7 @@ import {UserAuthComponent} from './component/user-authentication/userAuth-compon
 import { PetProfileComponent } from './component/pet-profile/pet-profile';
 import {Dashboard} from './component/dashboard/dashboard';
 import {MapSearch} from './component/map-search/map-search';
+import {UserProfileComponent} from './component/user-profile/user-profile-component';
 
 export const routes: Routes = [
   {
@@ -26,5 +27,9 @@ export const routes: Routes = [
   {
     path: 'maps-test',
     component: MapSearch
+  },
+  {
+    path: 'user-profile/:id',
+    component: UserProfileComponent
   }
 ];
