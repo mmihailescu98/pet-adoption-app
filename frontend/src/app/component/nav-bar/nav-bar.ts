@@ -1,16 +1,20 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Menubar} from 'primeng/menubar';
-import {MenuItem} from 'primeng/api';
+import {MenuItem, PrimeTemplate} from 'primeng/api';
 import {Router} from '@angular/router';
 import {Observable, Subject, takeUntil} from 'rxjs';
 import {UserLoginModel} from '../../api';
 import {selectLoggedInUser} from '../../store/auth/auth.selector';
 import {Store} from '@ngrx/store';
+import {Button} from 'primeng/button';
+import {logout} from '../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-nav-bar',
   imports: [
-    Menubar
+    Menubar,
+    PrimeTemplate,
+    Button
   ],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.css'
@@ -59,5 +63,10 @@ export class NavBar implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onLogout() {
+    this.store.dispatch(logout());
+    this.router.navigate(['/']);
   }
 }
