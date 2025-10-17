@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,10 +23,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel registerUser(UserModel user) {
-        // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(Set.of("USER"));
+        } else {
+            Set<String> normalized = user.getRoles().stream()
+                    .map(r -> r.startsWith("ROLE_") ? r.substring(5) : r)
+                    .map(String::toUpperCase)
+                    .collect(Collectors.toSet());
+            user.setRoles(normalized);
+        }
+
         return userRepository.save(user);
     }
+
 
     @Override
     public Optional<UserModel> findByUsername(String username) {
