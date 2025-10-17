@@ -50,6 +50,9 @@ export class AuthEffects {
           const request : RegisterRequest = {
             username: action.username,
             password: action.password,
+            first_name: action.first_name,
+            last_name: action.last_name,
+            email: action.email
             // roles are ignored in the backend for now
             //roles:
           }
