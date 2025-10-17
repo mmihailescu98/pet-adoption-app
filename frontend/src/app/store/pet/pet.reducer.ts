@@ -113,7 +113,6 @@ export const petReducer = createReducer(
   on(PetActions.addFavoritePetFailure, (state,{ error }) => ({
     ...state,
     favoriteError: error,
-    //TODO maybe find a way to revert the isUserFavorite change from the addFavoritePet action
   })),
 
   on(PetActions.removeFavoritePet, (state,{ petId }) => ({
@@ -129,7 +128,6 @@ export const petReducer = createReducer(
   on(PetActions.removeFavoritePetFailure, (state,{ error }) => ({
     ...state,
     favoriteError: error,
-    //TODO maybe find a way to revert the isUserFavorite change from the removeFavoritePet action
   }))
 );
 

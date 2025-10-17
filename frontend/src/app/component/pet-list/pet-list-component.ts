@@ -75,7 +75,6 @@ export class PetListComponent implements OnInit, OnDestroy {
   }
 
   saveNewPet(pet: PetDTO) {
-    console.log('New Pet:', pet);
   }
 
   onReset(event: Event) {

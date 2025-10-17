@@ -14,17 +14,13 @@ public interface PetMapper {
 
     PetMapper INSTANCE = Mappers.getMapper(PetMapper.class);
 
-    //normal
 
     @Mapping(target = "isUserFavorite", ignore = true)
     PetDTO petToPetDTO(Pet pet);
 
     List<PetDTO> petToPetDTOList(List<Pet> pets);
 
-    //---------------------------------------------------
 
-
-    //with isUserFavorite set
 
     @Named("isFavorite")
     default boolean isFavorite(Pet pet, Set<Integer> favoritePetIds) {
@@ -38,6 +34,5 @@ public interface PetMapper {
     @IterableMapping(qualifiedByName = "petToPetDTOFavorite")
     List<PetDTO> petToPetDTOList(List<Pet> pets,@Context Set<Integer> favoritePetIds);
 
-    //------------------------------------------------------
 
 }

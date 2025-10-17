@@ -21,7 +21,7 @@ public class FavoritePetsController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<PetDTO>> getFavoritePets(@RequestParam(required = false) Long userId) {
+    public ResponseEntity<List<PetDTO>> getFavoritePets(@RequestParam Long userId) {
         if (userId != null) {
             try{
                 List<PetDTO> dtos = PetMapper.INSTANCE.petToPetDTOList(favoritePetService.getFavoritePetsForUser(userId));
