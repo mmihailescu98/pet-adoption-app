@@ -67,6 +67,6 @@ export class NavBar implements OnInit, OnDestroy {
 
   onLogout() {
     this.store.dispatch(logout());
-    this.router.navigate(['/']);
+    this.router.navigate(['/authentication']);
   }
 }
