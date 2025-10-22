@@ -6,6 +6,7 @@ import { PetProfileComponent } from './component/pet-profile/pet-profile';
 import {Dashboard} from './component/dashboard/dashboard';
 import {MapSearch} from './component/map-search/map-search';
 import {UserProfileComponent} from './component/user-profile/user-profile-component';
+import {authGuard} from './store/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -14,22 +15,27 @@ export const routes: Routes = [
   },
   {
     path: 'pet-list',
-    component: PetListComponent
+    component: PetListComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'pet-profile/:id',
-    component: PetProfileComponent
+    component: PetProfileComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'dashboard',
-    component: Dashboard
+    component: Dashboard,
+    canActivate: [authGuard]
   },
   {
     path: 'maps-test',
-    component: MapSearch
+    component: MapSearch,
+    canActivate: [authGuard]
   },
   {
     path: 'user-profile/:id',
-    component: UserProfileComponent
+    component: UserProfileComponent,
+    canActivate: [authGuard]
   }
 ];
