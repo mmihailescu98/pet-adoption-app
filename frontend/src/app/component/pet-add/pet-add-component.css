@@ -1,1 +1,93 @@
 
+.pet-profile {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #27272A;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.pet-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pet-image {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.pet-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pet-info {
+  flex: 1;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.species {
+  font-size: 1.1rem;
+  color: #9ca3af;
+  margin-bottom: 1rem;
+}
+
+.pet-detail {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.description {
+  margin: 1.5rem 0;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .pet-container {
+    flex-direction: row;
+  }
+
+  .pet-image {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+.status-adopted {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #10b981;
+  font-weight: bold;
+}
+
+.status-tag {
+  margin-top: 10px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

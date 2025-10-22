@@ -1,17 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 import { PetDTO } from '../../api';
 import { loadPet, adoptPet } from '../../store/pet/pet.actions';
 import { selectSelectedPet, selectPetStatus, selectPetError } from '../../store/pet/pet.selectors';
 import { ActivatedRoute } from '@angular/router';
 import {NavBar} from '../nav-bar/nav-bar';
+import {GoogleMap, MapAdvancedMarker} from '@angular/google-maps';
 
 @Component({
   selector: 'app-pet-profile',
   standalone: true,
-  imports: [AsyncPipe, NgClass, NavBar],
+  imports: [AsyncPipe, NgClass, NavBar, GoogleMap, MapAdvancedMarker],
   templateUrl: './pet-profile.html',
   styleUrls: ['./pet-profile.css']
 })
@@ -26,6 +27,22 @@ export class PetProfileComponent implements OnInit {
     private store: Store,
     private route: ActivatedRoute
   ) {}
+
+  //Map Options
+  zoom = 14;
+  display: google.maps.LatLngLiteral | undefined;
+  options: google.maps.MapOptions = {
+    fullscreenControl: false,
+    keyboardShortcuts: false,
+    streetViewControl: false,
+  }
+  markerOptions: google.maps.marker.AdvancedMarkerElementOptions = {};
+
+  //Events
+  move(event: google.maps.MapMouseEvent) {
+    if(event.latLng)
+      this.display = event.latLng.toJSON();
+  }
 
   ngOnInit(): void {
     this.pet$ = this.store.select(selectSelectedPet);
@@ -46,5 +63,5 @@ export class PetProfileComponent implements OnInit {
 
   adoptPet(id: number): void {
   this.store.dispatch(adoptPet({ id }));
-}
+  }
 }

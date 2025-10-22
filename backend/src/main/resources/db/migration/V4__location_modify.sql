@@ -19,15 +19,35 @@ ALTER TABLE pets
             REFERENCES locations(id);
 
 --Move old location to new table
-INSERT INTO locations (city, state, street)
-SELECT location, 'No state', 'No Street'
-FROM pets
-WHERE location IS NOT NULL;
+-- INSERT INTO locations (city, state, street)
+-- SELECT location, 'No state', 'No Street'
+-- FROM pets
+-- WHERE location IS NOT NULL;
+--
+-- UPDATE pets p
+-- SET location_id = l.id
+--     FROM locations l
+-- where l.city = p.location;
 
+INSERT INTO locations (street, city, state, latitude, longitude)
+VALUES
+    ('Bulevardul Unirii 1', 'București', 'Romania', 44.426767, 26.102538),
+    ('Strada Memorandumului 10', 'Cluj-Napoca', 'Romania', 46.771210, 23.623635),
+    ('Bulevardul Ștefan cel Mare și Sfânt 4', 'Iași', 'Romania', 47.158455, 27.601441);
+
+WITH ordered_pets AS (
+    SELECT id, ROW_NUMBER() OVER (ORDER BY id) AS rn
+    FROM pets
+),
+     ordered_locations AS (
+         SELECT id, ROW_NUMBER() OVER (ORDER BY id) AS rn
+         FROM locations
+     )
 UPDATE pets p
 SET location_id = l.id
-    FROM locations l
-where l.city = p.location;
+FROM ordered_pets op
+         JOIN ordered_locations l ON op.rn = l.rn
+WHERE p.id = op.id;
 
 --Drop old location column
 ALTER TABLE pets DROP COLUMN location;

@@ -4,15 +4,12 @@ import {Button, ButtonDirective} from 'primeng/button';
 import {Store} from '@ngrx/store';
 import {loadPets, searchPets} from '../../store/pet/pet.actions';
 import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet/pet.selectors';
-import {PetDTO} from '../../api/model/petDTO';
+import {PetDTO} from '../../api';
 import {Observable, startWith, Subject, takeUntil, map, switchMap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
-import {PetAddComponent} from '../pet-add/pet-add-component';
-import {UserLoginModel} from '../../api';
-import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'pet-list-component',
@@ -24,7 +21,7 @@ import {selectLoggedInUser} from '../../store/auth/auth.selector';
     ButtonDirective,
     NavBar,
     RouterLink,
-    PetAddComponent,
+    // PetAddComponent,
   ],
   templateUrl: './pet-list-component.html',
   styleUrl: './pet-list-component.css'
@@ -40,7 +37,7 @@ export class PetListComponent implements OnInit, OnDestroy {
   filteredSpecies$: Observable<string[]>;
   filteredBreeds$: Observable<string[]>;
 
-  showAddDialog = false;
+  // showAddDialog = false;
   filterForm: FormGroup;
 
   private destroy$ = new Subject<void>();
@@ -69,14 +66,14 @@ export class PetListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-    openDialog() {
-      this.showAddDialog = true;
-    }
-
-    saveNewPet(pet: PetDTO) {
-      console.log('New Pet:', pet);
-    }
-  onReset(event: Event) {
+    // openDialog() {
+    //   this.showAddDialog = true;
+    // }
+    //
+    // saveNewPet(pet: PetDTO) {
+    //   console.log('New Pet:', pet);
+    // }
+  onReset(_: Event) {
     this.filterForm.reset({species: '', breed: ''});
   }
 

@@ -3,6 +3,7 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
+import cloudflight.integra.backend.model.Location;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.service.AdoptionService;
@@ -61,7 +62,8 @@ class AdoptionControllerTest {
     }
 
     private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
-        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
+        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy",
+                new Location(1, "street", "city", "country", 22.22,23.32), "3",
                 "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
 
         var publisher = new User(1L, "alice", "password123", Set.of("ROLE_USER"));
@@ -86,15 +88,20 @@ class AdoptionControllerTest {
 
     private List<Pet> mockPets() {
         return List.of(
-                new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
+                new Pet(1, "Dog", "Golden Retriever", "Buddy",
+                        new Location(1, "street", "New York", "country", 22.22,23.32), "3",
                         "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"),
-                new Pet(2, "Cat", "Siamese", "Luna", "Los Angeles", "2",
+                new Pet(2, "Cat", "Siamese", "Luna",
+                        new Location(1, "street", "Los Angeles", "country", 22.22,23.32), "2",
                         "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg"),
-                new Pet(3, "Dog", "German Shepherd", "Max", "Chicago", "4",
+                new Pet(3, "Dog", "German Shepherd", "Max",
+                        new Location(1, "street", "Chicago", "country", 22.22,23.32), "4",
                         "Loyal and protective, trained in basic commands.", "https://example.com/images/dog2.jpg"),
-                new Pet(4, "Rabbit", "Holland Lop", "Snowball", "San Francisco", "1",
+                new Pet(4, "Rabbit", "Holland Lop", "Snowball",
+                        new Location(1, "street", "San Francisco", "country", 22.22,23.32), "1",
                         "Cute and cuddly rabbit, perfect for small spaces.", "https://example.com/images/rabbit1.jpg"),
-                new Pet(5, "Dog", "Beagle", "Charlie", "Miami", "5",
+                new Pet(5, "Dog", "Beagle", "Charlie",
+                        new Location(1, "street", "Miami", "country", 22.22,23.32), "5",
                         "Playful beagle who loves outdoor walks.", "https://example.com/images/dog3.jpg")
         );
     }

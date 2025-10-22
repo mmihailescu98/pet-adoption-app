@@ -17,7 +17,9 @@
             <h2>{{ pet.name }}</h2>
             <p class="species">{{ pet.species }} - {{ pet.breed }}</p>
             <p class="pet-detail"><strong>Age:</strong> {{ pet.age }}</p>
-            <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
+            @if(pet.location){
+              <p class="pet-detail"><strong>Location:</strong> {{pet.location.state}}, {{ pet.location.city }}, {{pet.location.street}}</p>
+            }
 
             <p class="pet-detail status-tag">
               <strong>Status:</strong>
@@ -38,6 +40,21 @@
             </div>
           </div>
         </div>
+        @if(pet.location && pet.location.latitude && pet.location.longitude)
+        {
+          <div class="mt-3">
+            <google-map
+              mapId="map-1"
+              height="400px"
+              width="750px"
+              [center]="{lat: pet.location.latitude, lng: pet.location.longitude}"
+              [zoom]="zoom"
+              [options]="options"
+              (mapMousemove)="move($event)">
+              <map-advanced-marker [position]="{lat: pet.location.latitude, lng: pet.location.longitude}" [options]="markerOptions"></map-advanced-marker>
+            </google-map>
+          </div>
+        }
       }
     }
   }

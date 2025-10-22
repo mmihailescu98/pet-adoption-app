@@ -1,49 +1,74 @@
-<p-dialog
-  [(visible)]="display"
-  (onHide)="hideDialog()"
-  header="Add a New Pet"
-  [modal]="true"
-  [style]="{width: '40vw'}">
+<app-nav-bar></app-nav-bar>
 
-  <form [formGroup]="petForm" class="p-fluid">
-    <div class="p-field">
-      <label>Species</label>
-      <input pInputText formControlName="species" />
-    </div>
+<p-card header="Add a pet for adoption"
+        class="text-center flex flex-col items-center justify-center">
+  <form [formGroup]="petForm" class="w-full flex flex-column items-center justify-center gap-4">
+    <p-stepper [(value)]="activeStep" class="w-full">
+      <p-step-list>
+        <p-step [value]="1">General information</p-step>
+        <p-step [value]="2">Location</p-step>
+        <p-step [value]="3">Inspect and save</p-step>
+      </p-step-list>
+      <p-step-panels>
+        <p-step-panel [value]="1">
+          <ng-template #content let-activateCallback="activateCallback">
+            <div class="flex flex-column gap-5 mx-auto mt-4" style="min-height: 16rem; max-width: 20rem">
+                <p-floatlabel class="flex">
+                  <input pInputText class="w-full" id="nameInputText" formControlName="name" autocomplete="off" />
+                  <label for="nameInputText">Name</label>
+                </p-floatlabel>
+                <p-floatlabel class="flex">
+                  <input pInputText class="w-full" id="speciesInputText" formControlName="species" autocomplete="off" />
+                  <label for="speciesInputText">Species</label>
+                </p-floatlabel>
+                <p-floatlabel class="flex">
+                  <input pInputText class="w-full" id="breedInputText" formControlName="breed" autocomplete="off" />
+                  <label for="breedInputText">Breed</label>
+                </p-floatlabel>
+                <p-floatlabel class="flex">
+                  <input pInputText class="w-full" id="ageInputText" type="number" formControlName="age" autocomplete="off" />
+                  <label for="ageInputText">Age</label>
+                </p-floatlabel>
+                <p-floatlabel class="flex">
+                  <textarea pInputTextarea class="w-full" id="descriptionTextArea" rows="3" formControlName="description"></textarea>
+                  <label for="descriptionTextArea">Description</label>
+                </p-floatlabel>
+                <p-floatlabel class="flex">
+                  <input pInputText class="w-full" id="imgURLInputText" formControlName="imgURL" autocomplete="off" />
+                  <label for="imgURLInputText">Image URL</label>
+                </p-floatlabel>
+            </div>
+          </ng-template>
+        </p-step-panel>
 
-    <div class="p-field">
-      <label>Breed</label>
-      <input pInputText formControlName="breed" />
-    </div>
+        <p-step-panel [value]="2">
+          <ng-template #content let-activateCallback="activateCallback">
+          </ng-template>
+        </p-step-panel>
 
-    <div class="p-field">
-      <label>Name</label>
-      <input pInputText formControlName="name" />
-    </div>
+        <p-step-panel [value]="3">
+          <ng-template #content let-activateCallback="activateCallback">
+              <p-card header="{{petForm.get('name')?.value}}">
 
-    <div class="p-field">
-      <label>Location</label>
-      <input pInputText formControlName="location" />
-    </div>
+              <div class="pet-image">
+                <img [src]="petForm.get('imgURL')?.value" alt="{{ petForm.get('name')?.value }}">
+              </div>
 
-    <div class="p-field">
-      <label>Age</label>
-      <input pInputText type="number" formControlName="age" />
-    </div>
+              <div class="pet-info">
+                <h2>{{ name }}</h2>
+                <p class="species">{{ petForm.get('species')?.value }} - {{ petForm.get('breed')?.value }}</p>
+                <p class="pet-detail"><strong>Age:</strong> {{ petForm.get('age')?.value }}</p>
 
-    <div class="p-field">
-      <label>Description</label>
-      <textarea pInputTextarea rows="3" formControlName="description"></textarea>
-    </div>
-
-    <div class="p-field">
-      <label>Image URL</label>
-      <input pInputText formControlName="imgURL" />
+                <p class="description">{{ petForm.get('description')?.value }}</p>
+              </div>
+              </p-card>
+            <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="petForm.invalid"></p-button>
+</ng-template>
+        </p-step-panel>
+      </p-step-panels>
+    </p-stepper>
+    <div [hidden]="activeStep !== 2">
+    <app-map-search (locationModified)="modifyLocation($event)"/>
     </div>
   </form>
-
-  <ng-template pTemplate="footer">
-    <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="petForm.invalid"></p-button>
-    <p-button label="Cancel" icon="pi pi-times" class="p-button-secondary" (onClick)="hideDialog()"></p-button>
-  </ng-template>
-</p-dialog>
+</p-card>
