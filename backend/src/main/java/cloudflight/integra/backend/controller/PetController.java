@@ -4,6 +4,8 @@ import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.service.PetService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,13 +39,35 @@ public class PetController {
         return PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet));
     }
 
+
     @DeleteMapping("/pets/{id}")
-    public void deletePet(@PathVariable Integer id) {
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<?> deletePet(
+            @PathVariable Integer id,
+            @RequestParam(defaultValue = "false") boolean confirm) {
+
+        if (!confirm) {
+            return ResponseEntity.badRequest()
+                    .body("Please confirm deletion by setting ?confirm=true");
+        }
+
         petService.deletePetById(id);
+        return ResponseEntity.ok("Pet deleted successfully and removed from listings.");
     }
 
+
     @DeleteMapping("/pets")
-    public void deleteAllPets() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteAllPets(@RequestParam(defaultValue = "false") boolean confirm) {
+        if (!confirm) {
+            return ResponseEntity.badRequest()
+                    .body("Please confirm deletion by setting ?confirm=true");
+        }
+
         petService.deleteAllPets();
+        return ResponseEntity.ok("All pets deleted successfully (Admin only).");
     }
 }
+
+
+

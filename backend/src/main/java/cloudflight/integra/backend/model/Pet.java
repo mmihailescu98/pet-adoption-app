@@ -1,10 +1,7 @@
 package cloudflight.integra.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 
 @Entity
@@ -20,6 +17,9 @@ public class Pet implements Serializable {
     private String age;
     private String description;
     private String imgURL;
+
+
+
 
     public Pet() {}
 
@@ -97,4 +97,17 @@ public class Pet implements Serializable {
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private UserModel createdBy;
+
+    public UserModel getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserModel createdBy) {
+        this.createdBy = createdBy;
+    }
+
 }
