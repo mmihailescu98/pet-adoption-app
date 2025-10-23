@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +41,8 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(userDetails.getUsername(), roles);
 
-        return new LoginResponse(token, new UserLoginModel(userDetails.getId(), userDetails.getUsername()));
+        Boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"));
+        return new LoginResponse(token, new UserLoginModel(userDetails.getId(), userDetails.getUsername(), isAdmin));
     }
 
     @PostMapping("/register")
@@ -84,5 +84,6 @@ public class AuthController {
     public static class UserLoginModel {
         private final Long id;
         private final String username;
+        private final Boolean isAdmin;
     }
 }

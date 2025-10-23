@@ -11,6 +11,7 @@ public record PetDTO(
         String age,
         String description,
         String imgURL,
-        PetStatus status
+        PetStatus status,
+        UserDTO owner
 ) {}
 

@@ -12,7 +12,7 @@ import org.mapstruct.factory.Mappers;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper(uses = {PetMapper.class})
+@Mapper(uses = {PetMapper.class, UserMapper.class})
 public interface AdoptionMapper {
     AdoptionMapper INSTANCE = Mappers.getMapper(AdoptionMapper.class);
 

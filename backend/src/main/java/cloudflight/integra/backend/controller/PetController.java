@@ -3,11 +3,16 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.Pet;
+import cloudflight.integra.backend.security.CustomUserDetails;
+import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.PetService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequestMapping("/api")
 @RestController()
@@ -35,13 +40,35 @@ public class PetController {
     }
 
     @PostMapping("/pets/{id}/adopt")
-    public PetDTO adoptPet(@PathVariable Integer id) {
-        return PetMapper.INSTANCE.petToPetDTO(petService.adoptPet(id));
+    public ResponseEntity<PetDTO> adoptPet(@PathVariable Integer id) {
+        CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
+
+        if(authUser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        Long userId = authUser.getId();
+
+        Pet adoptedPet;
+        try {
+            adoptedPet = petService.adoptPet(id, userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok(PetMapper.INSTANCE.petToPetDTO(adoptedPet));
     }
 
     @PostMapping("/pets")
-    public PetDTO addPet(@RequestBody Pet pet) {
-        return PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet));
+    public ResponseEntity<PetDTO> addPet(@RequestBody Pet pet) {
+        CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
+
+        if(authUser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        if(!Objects.equals(authUser.getId(), pet.getOwner().getId()))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+        return ResponseEntity.ok(PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet)));
     }
 
     @DeleteMapping("/pets/{id}")
@@ -52,5 +79,34 @@ public class PetController {
     @DeleteMapping("/pets")
     public void deleteAllPets() {
         petService.deleteAllPets();
+    }
+
+    @PutMapping("/pets/{id}")
+    public ResponseEntity<PetDTO> updatePet(@PathVariable Integer id, @RequestBody PetDTO pet) {
+        CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
+        if (authUser == null)
+            return ResponseEntity.status(401).build();
+
+        boolean isAdmin = false;
+        boolean isPetOwner = false;
+        if (authUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")))
+            isAdmin = true;
+
+        try {
+            isPetOwner = petService.isOwnerOfPet(authUser.getId(), id);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!isAdmin && !isPetOwner ){
+            return ResponseEntity.status(403).build();
+        }
+
+        try{
+            PetDTO updatedPet = PetMapper.INSTANCE.petToPetDTO(petService.updatePet(pet));
+            return ResponseEntity.ok(updatedPet);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

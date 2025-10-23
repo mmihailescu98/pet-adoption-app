@@ -1,7 +1,7 @@
 package cloudflight.integra.backend.service;
 
+import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.model.Pet;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -13,9 +13,11 @@ public interface PetService {
     void deletePetById(int id);
     void deleteAllPets();
 
-    void updatePet(Pet pet);
+    Pet updatePet(PetDTO pet) throws Exception;
 
-    Pet adoptPet(int id);
+    Pet adoptPet(int petId, long userId) throws Exception;
 
     List<Pet> getPets(String species, String breed);
+
+    Boolean isOwnerOfPet(long userId, int petId) throws Exception;
 }

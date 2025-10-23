@@ -101,6 +101,7 @@ export class RegisterForm implements OnInit {
       alert("Passwords do not match!");
       return;
     }
+    console.log("dispached")
     this.store.dispatch(register({ username:username, password:password }));
   }
 }
