@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AdoptionControllerService, PetControllerService} from '../../api';
+import {AdoptionAddRequestDTO, AdoptionControllerService, PetControllerService} from '../../api';
 import * as PetActions from './pet.actions';
 import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
 import { of, from, Observable } from 'rxjs';
-import { PetDTO } from '../../api/model/petDTO';
+import { PetDTO } from '../../api';
 
 @Injectable()
 export class PetEffects {
@@ -71,6 +71,28 @@ export class PetEffects {
           catchError(error => of(PetActions.adoptPetFailure({ error })))
         )
       )
+    )
+  );
+
+  requestAdoptionForPet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.requestAdoptionForPet),
+      mergeMap(({ petId, userId }) => {
+        const pet: PetDTO = { id: petId } as PetDTO;
+        const requestDTO: AdoptionAddRequestDTO = {
+          pet: pet,
+          publisherId: userId,
+          additionalImages: [],
+          contactNumber: ''
+        };
+
+        return this.adoptionService.createAdoptionListing(requestDTO).pipe(
+          map(() => {
+            return PetActions.loadPet({ id: petId });
+          }),
+          catchError(error => of(PetActions.requestAdoptionForPetFailure({ error })))
+        );
+      })
     )
   );
 

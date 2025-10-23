@@ -28,12 +28,20 @@
             <p class="description">{{ pet.description }}</p>
 
             <div class="actions">
-
-              <button class="btn adopt"
-                      [disabled]="pet.status === 'ADOPTED'"
-                      (click)="pet.id && adoptPet(pet.id)">
-                {{ pet.status === 'ADOPTED' ? 'Already Adopted' : 'Adopt' }}
-              </button>
+              @if (pet.status === PetStatus.Adopted) {
+                <button class="btn adopt adopted" disabled>
+                  Already Adopted
+                </button>
+              } @else if (hasRequestedAdoption) {
+                <button class="btn adopt" disabled>
+                  Request Pending
+                </button>
+              } @else {
+                <button class="btn adopt"
+                        (click)="pet.id && adoptPet(pet.id)">
+                  Request Adoption
+                </button>
+              }
               <button class="btn contact">Contact</button>
             </div>
           </div>

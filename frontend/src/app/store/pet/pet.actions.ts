@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { PetDTO } from '../../api';
+import {AdoptionListItemDTO, PetDTO} from '../../api';
 
 export const loadPets = createAction('[Pet List] Load Pets');
 export const loadPetsSuccess = createAction('[Pet List] Load Pets Success', props<{ pets: PetDTO[] }>());
@@ -40,5 +40,20 @@ export const adoptPetSuccess = createAction(
 
 export const adoptPetFailure = createAction(
   '[Pet Profile] Adopt Pet Failure',
+  props<{ error: any }>()
+);
+
+export const requestAdoptionForPet = createAction(
+  '[Pet Profile] Request Adoption For Pet',
+  props<{ petId: number, userId: number }>()
+);
+
+export const requestAdoptionForPetSuccess = createAction(
+  '[Pet Profile] Request Adoption For Pet Success',
+  props<{ adoption: AdoptionListItemDTO }>()
+);
+
+export const requestAdoptionForPetFailure = createAction(
+  '[Pet Profile] Request Adoption For Pet Failure',
   props<{ error: any }>()
 );

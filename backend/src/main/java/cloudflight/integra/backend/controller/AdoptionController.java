@@ -39,4 +39,12 @@ public class AdoptionController {
         }
     }
 
+    @GetMapping(value = "/adoptions/check", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> hasUserRequestedAdoption(
+            @RequestParam Integer petId,
+            @RequestParam Long userId) {
+        boolean hasRequested = adoptionService.hasUserRequestedAdoption(petId, userId);
+        return ResponseEntity.ok(hasRequested);
+    }
+
 }
