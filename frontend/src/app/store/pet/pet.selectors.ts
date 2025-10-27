@@ -23,4 +23,14 @@ export const selectSelectedPet = createSelector(
   (state: PetState) => state.selectedPet
 );
 
+export const selectUpdateStatus = createSelector(
+  selectPetState,
+  (state: PetState) => state.updateStatus
+)
+
+export const selectUpdateError = createSelector(
+  selectPetState,
+  (state: PetState) => state.updateError
+)
+
 

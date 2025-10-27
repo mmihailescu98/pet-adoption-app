@@ -37,40 +37,40 @@
                 <button class="btn contact">Contact</button>
               </div>
             </div>
-            @if ( true //userIsAdmin || pet.owner == userId) {
+            @if (userIsAdmin || pet!.owner == userId) {
               <button pButton type="button" (click)="startEditing(pet!)" class="p-button-rounded p-button-text editButton">
                 <i pButtonIcon class="pi pi-pen-to-square"></i>
               </button>
             }
           </div>
         </div>
-          @if (editMode) {
-            <div class="edit-mode-container">
-              <form [formGroup]="editForm" class="edit-form-side" (ngSubmit)="saveEditing(previewPet!)">
-                <div class="flex flex-row justify-content-center column-gap-4">
-                  <label>Name <input formControlName="name" class="nameEditInput"></label>
-                  <label>Species <input formControlName="species" class="speciesEditInput"></label>
-                  <label>Breed <input formControlName="breed" class="breedEditInput"></label>
-                </div>
-                <div class="flex flex-row" [style.column-gap.rem]="3" >
-                  <label [style.margin-left.rem]="3">Age <input type="number" min="0" max="150" formControlName="age" class="w-11"></label>
-                  <label>Image URL <input formControlName="imgURL" class="w-20rem"></label>
-                  <label class="align-items-center">
-                    Location
-                    <button pButton type="button" class="p-button-text mt-2">
-                      <i pButtonIcon class="pi pi-map-marker"></i>
-                    </button>
-                  </label>
-                </div>
-                <label>Description <textarea formControlName="description" class="descriptionEditArea"></textarea></label>
+        @if (editMode) {
+          <div class="edit-mode-container">
+            <form [formGroup]="editForm" class="edit-form-side" (ngSubmit)="saveEditing(previewPet!)">
+              <div class="flex flex-row justify-content-center column-gap-4 ml-3 mr-2">
+                <label>Name <input pInputText formControlName="name" placeholder="required" class="nameEditInput"></label>
+                <label>Species <input pInputText formControlName="species" placeholder="required" class="speciesEditInput"></label>
+                <label>Breed <input pInputText formControlName="breed" placeholder="required" class="breedEditInput"></label>
+              </div>
+              <div class="flex flex-row" [style.column-gap.rem]="3" >
+                <label class="ml-6">Age <input pInputText type="number" min="0" max="150" formControlName="age" class="w-11 "></label>
+                <label class="ml-3">Image URL <input pInputText formControlName="imgURL" class="w-20rem"></label>
+                <label class="align-items-center ml-5">
+                  Location
+                  <button pButton type="button" class="p-button-text mt-2">
+                    <i pButtonIcon class="pi pi-map-marker"></i>
+                  </button>
+                </label>
+              </div>
+              <label class="ml-3">Description <textarea (input)="limitDescriptionLines($event)" formControlName="description"></textarea></label>
 
-                <div class="actions">
-                  <button pButton type="submit" class="btn save">Save</button>
-                  <button pButton type="button" class="btn cancel" (click)="cancelEditing()">Cancel</button>
-                </div>
-              </form>
-            </div>
-          }
+              <div class="actions">
+                <button pButton type="submit" class="btn save">Save</button>
+                <button pButton type="button" class="btn cancel" (click)="cancelEditing()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        }
       }
     }
   }

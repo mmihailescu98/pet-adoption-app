@@ -53,6 +53,9 @@ h2 {
 .description {
   margin: 1.5rem 0;
   line-height: 1.6;
+  max-width: 25rem;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .actions {
@@ -144,10 +147,15 @@ button:disabled {
   column-gap: 1rem;
 }
 
+.descriptionEditArea {
+  height: 10rem;
+}
+
 .edit-form-side {
   flex: 1;
   background: #1e1e22;
-  padding: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   display: flex;
@@ -169,7 +177,6 @@ button:disabled {
   margin-top: 0.5rem;
   padding: 0.7rem 0.9rem;
   border-radius: 10px;
-  border: 1px solid #374151;
   background: #111827;
   color: #f9fafb;
   font-size: 0.95rem;
@@ -184,8 +191,8 @@ button:disabled {
 }
 
 .edit-form-side textarea {
-  min-height: 100px;
-  resize: vertical;
+  min-height: 10rem;
+  resize: none;
 }
 
 .edit-form-side .actions {

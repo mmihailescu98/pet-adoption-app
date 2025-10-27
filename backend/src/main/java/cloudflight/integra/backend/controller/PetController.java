@@ -81,8 +81,8 @@ public class PetController {
         petService.deleteAllPets();
     }
 
-    @PutMapping("/pets/{id}")
-    public ResponseEntity<PetDTO> updatePet(@PathVariable Integer id, @RequestBody PetDTO pet) {
+    @PutMapping(value="/pets/{petId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PetDTO> updatePet(@PathVariable Integer petId, @RequestBody PetDTO pet) {
         CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
         if (authUser == null)
             return ResponseEntity.status(401).build();
@@ -93,7 +93,7 @@ public class PetController {
             isAdmin = true;
 
         try {
-            isPetOwner = petService.isOwnerOfPet(authUser.getId(), id);
+            isPetOwner = petService.isOwnerOfPet(authUser.getId(), petId);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
