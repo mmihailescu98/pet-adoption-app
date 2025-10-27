@@ -23,6 +23,7 @@ import {loadAdoptedPetsByUser, loadUser, updateUser} from '../../store/user/user
 import {LOCATION_OPTIONS} from '../../resources/constants/location.constants';
 import {PetAddComponent} from '../pet-add/pet-add-component';
 import {NavBar} from '../nav-bar/nav-bar';
+import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'user-profile-component',
@@ -45,6 +46,8 @@ import {NavBar} from '../nav-bar/nav-bar';
 export class UserProfileComponent implements OnInit, OnDestroy {
   @Input() userID?: number;
   private currentUserID?: number;
+  loggedInUserID?: number;
+  isOwner = false;
 
   editForm!: FormGroup;
   showEditDialog = false;
@@ -67,6 +70,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.adoptedPets$ = this.store.select(selectAdoptedPetsByUser);
 
     this.initializeEditForm();
+
+    this.store.select(selectLoggedInUser)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loggedInUser => {
+        this.loggedInUserID = loggedInUser?.id;
+        this.updateOwnership();
+      });
   }
 
   ngOnInit() {
@@ -80,14 +90,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   onEdit() {
+    if (!this.ensureOwner()) {
+      return;
+    }
     this.showEditDialog = true;
   }
 
   onSaveEdit(updatedUser: UserDTO) {
-    if (this.currentUserID) {
-      this.store.dispatch(updateUser({user: {...updatedUser, id: this.currentUserID}}));
-      this.showEditDialog = false;
+    if (!this.ensureOwner()) {
+      return;
     }
+    this.store.dispatch(updateUser({user: {...updatedUser, id: this.currentUserID}}));
+    this.showEditDialog = false;
   }
 
   onCancelEdit() {
@@ -101,17 +115,23 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   onAddPet() {
+    if (!this.ensureOwner()) {
+      return;
+    }
     this.showAddDialog = true;
   }
 
   onOpenFavorites() {
+    if(!this.ensureOwner()) {
+      return;
+    }
     // TODO: Link logic to open favorites
   }
 
   private initializeEditForm() {
     this.editForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.maxLength(50)]],
-      name: ['', [Validators.minLength(2), Validators.maxLength(50)]],
+      name: ['', [Validators.required, Validators.maxLength(50)]],
       phone: ['', [Validators.pattern(/^\d{9,15}$/) ,Validators.maxLength(15)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
       location: [''],
@@ -125,10 +145,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       const id = parseInt(params['id']);
       if (id) {
         this.currentUserID = id;
+        this.updateOwnership();
         this.store.dispatch(loadUser({userID: id}));
         this.store.dispatch(loadAdoptedPetsByUser({userID: id}));
       } else if (this.userID) {
         this.currentUserID = this.userID;
+        this.updateOwnership();
         this.store.dispatch(loadUser({userID: this.userID}));
         this.store.dispatch(loadAdoptedPetsByUser({userID: this.userID}));
       }
@@ -142,6 +164,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         if (user) {
           if (user.id) {
             this.currentUserID = user.id;
+            this.updateOwnership();
           }
           this.editForm.patchValue(user);
         }
@@ -149,4 +172,19 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   saveNewPet(pet: PetDTO) {}
+
+  private isSameUser(): boolean {
+    if (this.loggedInUserID == null || this.currentUserID == null) {
+      return false;
+    }
+    return this.loggedInUserID === this.currentUserID;
+  }
+
+  private updateOwnership() {
+    this.isOwner = this.isSameUser();
+  }
+
+  private ensureOwner(): boolean {
+    return this.isOwner && this.currentUserID != null;
+  }
 }
