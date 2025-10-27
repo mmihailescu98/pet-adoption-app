@@ -35,23 +35,12 @@ public class FavoritePetServiceImpl implements FavoritePetService {
      */
     @Override
     public Set<Integer> getUserFavoritePetIds(Long userId) {
-        Set<Integer> favoritePetsIds = new HashSet<>();
-        for (FavoritePet favorite : favoritePetRepository.findByUser_Id(userId))
-        {
-            favoritePetsIds.add(favorite.getPet().getId());
-        }
-        return favoritePetsIds;
+        return favoritePetRepository.findPetIdsByUserId(userId);
     }
 
     @Override
     public List<Pet> getFavoritePetsForUser(Long userId) {
-        List<Pet> favoritePets = new ArrayList<>();
-        for (FavoritePet favorite : favoritePetRepository.findByUser_Id(userId))
-        {
-            favoritePets.add(favorite.getPet());
-        }
-
-        return favoritePets;
+        return favoritePetRepository.findPetsByUserId(userId);
     }
 
     @Override

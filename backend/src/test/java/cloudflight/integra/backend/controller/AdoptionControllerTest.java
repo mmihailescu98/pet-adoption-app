@@ -61,28 +61,104 @@ class AdoptionControllerTest {
     }
 
     private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
-        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
+        var pet = new Pet(
+                1,
+                "Dog",
+                "Golden Retriever",
+                "Buddy",
+                "New York",
+                "3",
+                "Friendly and energetic family dog.",
+                "https://example.com/images/dog1.jpg"
+        );
 
-        var publisher = new User(1L, "alice", "password123", Set.of("ROLE_USER"));
+        var publisher = User.builder()
+                .id(1L)
+                .username("alice")
+                .password("password123")
+                .name("Alice Johnson")
+                .phone("123-456-7890")
+                .email("alice@example.com")
+                .location("New York")
+                .imgURL("https://example.com/images/alice.jpg")
+                .bio("Animal lover and long-time volunteer at the local shelter.")
+                .roles(Set.of("ROLE_USER"))
+                .build();
 
         return new AdoptionAddRequestDTO(
                 pet,
                 publisher.getId(),
                 List.of("img1a.jpg", "img1b.jpg"),
-                "123-456-7890"
+                publisher.getPhone()
         );
     }
 
+
     private List<User> mockUsers() {
         return List.of(
-                new User(1L, "alice", "password123", Set.of("ROLE_USER")),
-                new User(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
-                new User(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
-                new User(4L, "diana", "mypassword", Set.of("ROLE_USER")),
-                new User(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                User.builder()
+                        .id(1L)
+                        .username("alice")
+                        .password("password123")
+                        .name("Alice Johnson")
+                        .phone("123-456-7890")
+                        .email("alice@example.com")
+                        .location("New York")
+                        .imgURL("https://example.com/images/alice.jpg")
+                        .bio("Animal lover and volunteer at the local shelter.")
+                        .roles(Set.of("ROLE_USER"))
+                        .build(),
+                User.builder()
+                        .id(2L)
+                        .username("bob")
+                        .password("securePass")
+                        .name("Bob Smith")
+                        .phone("234-567-8901")
+                        .email("bob@example.com")
+                        .location("Chicago")
+                        .imgURL("https://example.com/images/bob.jpg")
+                        .bio("Software engineer who loves dogs.")
+                        .roles(Set.of("ROLE_USER", "ROLE_ADMIN"))
+                        .build(),
+                User.builder()
+                        .id(3L)
+                        .username("charlie")
+                        .password("qwerty")
+                        .name("Charlie Brown")
+                        .phone("345-678-9012")
+                        .email("charlie@example.com")
+                        .location("Boston")
+                        .imgURL("https://example.com/images/charlie.jpg")
+                        .bio("Cat owner and adoption advocate.")
+                        .roles(Set.of("ROLE_USER"))
+                        .build(),
+                User.builder()
+                        .id(4L)
+                        .username("diana")
+                        .password("mypassword")
+                        .name("Diana Prince")
+                        .phone("456-789-0123")
+                        .email("diana@example.com")
+                        .location("Los Angeles")
+                        .imgURL("https://example.com/images/diana.jpg")
+                        .bio("Passionate about rescuing abandoned pets.")
+                        .roles(Set.of("ROLE_USER"))
+                        .build(),
+                User.builder()
+                        .id(5L)
+                        .username("edward")
+                        .password("letmein")
+                        .name("Edward Johnson")
+                        .phone("567-890-1234")
+                        .email("edward@example.com")
+                        .location("Seattle")
+                        .imgURL("https://example.com/images/edward.jpg")
+                        .bio("Moderator of the adoption community forum.")
+                        .roles(Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                        .build()
         );
     }
+
 
     private List<Pet> mockPets() {
         return List.of(

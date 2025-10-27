@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {addFavoritePet, loadPets, removeFavoritePet, searchPets} from '../../store/pet/pet.actions';
 import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet/pet.selectors';
 import {PetDTO} from '../../api/model/petDTO';
-import {Observable, startWith, Subject, takeUntil, map, switchMap, delay, take} from 'rxjs';
+import {Observable, startWith, Subject, takeUntil, map, switchMap, take} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
@@ -118,6 +118,4 @@ export class PetListComponent implements OnInit, OnDestroy {
         alert("Please log in to manage favorites.");
     });
   }
-
-  protected readonly delay = delay;
 }

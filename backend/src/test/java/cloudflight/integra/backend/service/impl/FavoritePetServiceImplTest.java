@@ -32,61 +32,51 @@ class FavoritePetServiceImplTest {
 
     @Test
     void testGetUserFavoritePetIds_Success() {
-        Pet pet1 = new Pet(); pet1.setId(1);
-        Pet pet2 = new Pet(); pet2.setId(2);
-
-        FavoritePet fav1 = new FavoritePet(); fav1.setPet(pet1);
-        FavoritePet fav2 = new FavoritePet(); fav2.setPet(pet2);
-
-        when(favoritePetRepository.findByUser_Id(10L))
-                .thenReturn(List.of(fav1, fav2));
+        when(favoritePetRepository.findPetIdsByUserId(10L))
+                .thenReturn(Set.of(1, 2));
 
         Set<Integer> result = favoritePetService.getUserFavoritePetIds(10L);
 
         assertEquals(Set.of(1, 2), result);
-        verify(favoritePetRepository).findByUser_Id(10L);
+        verify(favoritePetRepository).findPetIdsByUserId(10L);
     }
 
     @Test
     void testGetUserFavoritePetIds_NoFavoritePets() {
-        when(favoritePetRepository.findByUser_Id(20L))
-                .thenReturn(Collections.emptyList());
+        when(favoritePetRepository.findPetIdsByUserId(20L))
+                .thenReturn(Collections.emptySet());
 
         Set<Integer> result = favoritePetService.getUserFavoritePetIds(20L);
 
         assertTrue(result.isEmpty());
-        verify(favoritePetRepository).findByUser_Id(20L);
+        verify(favoritePetRepository).findPetIdsByUserId(20L);
     }
 
     @Test
     void testGetUserFavoritePetIds_NonExistentUserId() {
-        when(userRepository.findById(20L)).thenReturn(Optional.empty());
-        when(favoritePetRepository.findByUser_Id(20L))
-                .thenReturn(Collections.emptyList());
+        when(favoritePetRepository.findPetIdsByUserId(30L))
+                .thenReturn(Collections.emptySet());
 
-        Set<Integer> result = favoritePetService.getUserFavoritePetIds(20L);
+        Set<Integer> result = favoritePetService.getUserFavoritePetIds(30L);
+
         assertTrue(result.isEmpty());
-        verify(favoritePetRepository).findByUser_Id(20L);
+        verify(favoritePetRepository).findPetIdsByUserId(30L);
     }
-
-
 
     @Test
     void testGetFavoritePetsForUser() {
         Pet pet1 = new Pet(); pet1.setId(1);
         Pet pet2 = new Pet(); pet2.setId(2);
 
-        FavoritePet fav1 = new FavoritePet(); fav1.setPet(pet1);
-        FavoritePet fav2 = new FavoritePet(); fav2.setPet(pet2);
-
-        when(favoritePetRepository.findByUser_Id(10L))
-                .thenReturn(List.of(fav1, fav2));
+        when(favoritePetRepository.findPetsByUserId(10L))
+                .thenReturn(List.of(pet1, pet2));
 
         List<Pet> result = favoritePetService.getFavoritePetsForUser(10L);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(pet1));
         assertTrue(result.contains(pet2));
+        verify(favoritePetRepository).findPetsByUserId(10L);
     }
 
     @Test
