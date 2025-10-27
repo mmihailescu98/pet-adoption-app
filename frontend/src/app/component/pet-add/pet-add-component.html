@@ -3,6 +3,7 @@
 <p-card header="Add a pet for adoption"
         class="text-center flex flex-col items-center justify-center">
   <form [formGroup]="petForm" class="w-full flex flex-column items-center justify-center gap-4">
+
     <p-stepper [(value)]="activeStep" class="w-full">
       <p-step-list>
         <p-step [value]="1">General information</p-step>
@@ -10,65 +11,138 @@
         <p-step [value]="3">Inspect and save</p-step>
       </p-step-list>
       <p-step-panels>
+        <!--Panel for general information-->
         <p-step-panel [value]="1">
           <ng-template #content let-activateCallback="activateCallback">
-            <div class="flex flex-column gap-5 mx-auto mt-4" style="min-height: 16rem; max-width: 20rem">
-                <p-floatlabel class="flex">
-                  <input pInputText class="w-full" id="nameInputText" formControlName="name" autocomplete="off" />
-                  <label for="nameInputText">Name</label>
-                </p-floatlabel>
-                <p-floatlabel class="flex">
-                  <input pInputText class="w-full" id="speciesInputText" formControlName="species" autocomplete="off" />
-                  <label for="speciesInputText">Species</label>
-                </p-floatlabel>
-                <p-floatlabel class="flex">
-                  <input pInputText class="w-full" id="breedInputText" formControlName="breed" autocomplete="off" />
-                  <label for="breedInputText">Breed</label>
-                </p-floatlabel>
-                <p-floatlabel class="flex">
-                  <input pInputText class="w-full" id="ageInputText" type="number" formControlName="age" autocomplete="off" />
-                  <label for="ageInputText">Age</label>
-                </p-floatlabel>
-                <p-floatlabel class="flex">
-                  <textarea pInputTextarea class="w-full" id="descriptionTextArea" rows="3" formControlName="description"></textarea>
-                  <label for="descriptionTextArea">Description</label>
-                </p-floatlabel>
-                <p-floatlabel class="flex">
-                  <input pInputText class="w-full" id="imgURLInputText" formControlName="imgURL" autocomplete="off" />
-                  <label for="imgURLInputText">Image URL</label>
-                </p-floatlabel>
+            <div class="flex flex-column mx-auto mt-4" style="min-height: 16rem; max-width: 20rem">
+              <p class="text-left">* Required</p>
+              <p-floatlabel class="flex mt-5">
+                <input pInputText class="w-full" id="nameInputText" formControlName="name" autocomplete="off"/>
+                <label for="nameInputText">Name*</label>
+              </p-floatlabel>
+              @if (name?.invalid && (name?.dirty || name?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('name') }}
+                </small>
+              }
+              <p-floatlabel class="flex  mt-5">
+                <input pInputText class="w-full" id="speciesInputText" formControlName="species" autocomplete="off"/>
+                <label for="speciesInputText">Species*</label>
+              </p-floatlabel>
+              @if (species?.invalid && (species?.dirty || species?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('species') }}
+                </small>
+              }
+              <p-floatlabel class="flex  mt-5">
+                <input pInputText class="w-full" id="breedInputText" formControlName="breed" autocomplete="off"/>
+                <label for="breedInputText">Breed*</label>
+              </p-floatlabel>
+              @if (breed?.invalid && (breed?.dirty || breed?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('breed') }}
+                </small>
+              }
+              <p-floatlabel class="flex  mt-5">
+                <input pInputText class="w-full" id="ageInputText" type="number" formControlName="age"
+                       autocomplete="off"/>
+                <label for="ageInputText">Age*</label>
+              </p-floatlabel>
+              @if (age?.invalid && (age?.dirty || age?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('age') }}
+                </small>
+              }
+              <p-floatlabel class="flex  mt-5">
+                <textarea pInputTextarea class="w-full" id="descriptionTextArea" rows="3"
+                          formControlName="description"></textarea>
+                <label for="descriptionTextArea">Description</label>
+              </p-floatlabel>
+              @if (description?.invalid && (description?.dirty || description?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('description') }}
+                </small>
+              }
+              <p-floatlabel class="flex  mt-5">
+                <input pInputText class="w-full" id="imgURLInputText" formControlName="imgURL" autocomplete="off"/>
+                <label for="imgURLInputText">Image URL</label>
+              </p-floatlabel>
+              @if (imgURL?.invalid && (imgURL?.dirty || imgURL?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('imgURL') }}
+                </small>
+              }
+              <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)"/>
             </div>
           </ng-template>
         </p-step-panel>
 
+        <!--Panel for location, there is no content, the map component is outside of p-stepper-->
         <p-step-panel [value]="2">
           <ng-template #content let-activateCallback="activateCallback">
           </ng-template>
         </p-step-panel>
 
+        <!--Panel for pet profile and for save-->
         <p-step-panel [value]="3">
           <ng-template #content let-activateCallback="activateCallback">
-              <p-card header="{{petForm.get('name')?.value}}">
+            <p-card>
+              <div class="flex gap-3 justify-content-center">
+                <div class="min-w-[200px] max-w-[500px] flex-column align-content-center">
+                  <img class="border-round-lg max-w-20rem" [src]="petForm.get('imgURL')?.value"
+                       alt="{{ petForm.get('name')?.value }}">
+                </div>
 
-              <div class="pet-image">
-                <img [src]="petForm.get('imgURL')?.value" alt="{{ petForm.get('name')?.value }}">
+                <div class="flex-column align-content-center text-left">
+                  <h1 class="">
+                    Name: {{ petForm.get('name')?.value || "missing" }}
+                  </h1>
+
+                  <p class="">
+                    <strong>Species:</strong> {{ petForm.get('species')?.value || "missing" }}
+                  </p>
+                  <p>
+                    <strong>Breed:</strong> {{ petForm.get('breed')?.value || "missing" }}
+                  </p>
+
+                  <p>
+                    <strong>Age:</strong> {{ petForm.get('age')?.value || "missing" }}
+                  </p>
+
+                  <p>
+                    <strong>Location:</strong> {{ petForm.get('location.state')?.value || "missing" }},
+                    {{ petForm.get('location.city')?.value || "missing" }}
+                    {{ petForm.get('location.street')?.value ? ', ' + petForm.get('location.street')?.value : '' }}
+                  </p>
+
+                  <div class="max-w-20rem">
+                    <strong>Description:</strong>
+                    <p class="text-clamp">
+                      {{ petForm.get('description')?.value || "missing" }}
+                    </p>
+                  </div>
+                </div>
+
               </div>
+            </p-card>
 
-              <div class="pet-info">
-                <h2>{{ name }}</h2>
-                <p class="species">{{ petForm.get('species')?.value }} - {{ petForm.get('breed')?.value }}</p>
-                <p class="pet-detail"><strong>Age:</strong> {{ petForm.get('age')?.value }}</p>
-
-                <p class="description">{{ petForm.get('description')?.value }}</p>
-              </div>
-              </p-card>
-            <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="petForm.invalid"></p-button>
-</ng-template>
+            <!--Nav buttons for p-steeper-->
+            <div class="w-full flex justify-content-between">
+              <p-button label="Back" icon="pi pi-arrow-left" iconPos="left" (onClick)="activateCallback(2)"/>
+              <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="petForm.invalid"></p-button>
+            </div>
+          </ng-template>
         </p-step-panel>
       </p-step-panels>
     </p-stepper>
+
+    <!--Map component for second panel-->
     <div [hidden]="activeStep !== 2">
-    <app-map-search (locationModified)="modifyLocation($event)"/>
+      <app-map-search (locationModified)="modifyLocation($event)"/>
+      <div class="w-full flex justify-content-between">
+        <p-button label="Back" icon="pi pi-arrow-left" iconPos="left" (onClick)="activeStep = 1"></p-button>
+        <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activeStep = 3"></p-button>
+      </div>
     </div>
   </form>
 </p-card>

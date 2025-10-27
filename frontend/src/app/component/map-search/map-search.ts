@@ -21,8 +21,6 @@ import {LocationDTO} from '../../api'
   styleUrl: './map-search.css'
 })
 export class MapSearch {
-  //pune campurile ca input
-
   @Output() locationModified = new EventEmitter<LocationDTO>();
 
   position: google.maps.LatLngLiteral | null = null;
@@ -81,7 +79,6 @@ export class MapSearch {
       this.location.latitude = this.position.lat;
       this.location.longitude = this.position.lng;
       this.zoom = 14;
-      console.log(results[0].address_components);
 
       let nr = "";
 
@@ -105,7 +102,8 @@ export class MapSearch {
     }
   }
 
-  emiteLocation(){
+  //Emit location for parent component
+  emitLocation(){
     this.locationModified.emit(this.location);
   }
 }

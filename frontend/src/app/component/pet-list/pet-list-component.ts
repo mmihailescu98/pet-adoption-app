@@ -37,7 +37,6 @@ export class PetListComponent implements OnInit, OnDestroy {
   filteredSpecies$: Observable<string[]>;
   filteredBreeds$: Observable<string[]>;
 
-  // showAddDialog = false;
   filterForm: FormGroup;
 
   private destroy$ = new Subject<void>();
@@ -66,13 +65,6 @@ export class PetListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-    // openDialog() {
-    //   this.showAddDialog = true;
-    // }
-    //
-    // saveNewPet(pet: PetDTO) {
-    //   console.log('New Pet:', pet);
-    // }
   onReset(_: Event) {
     this.filterForm.reset({species: '', breed: ''});
   }

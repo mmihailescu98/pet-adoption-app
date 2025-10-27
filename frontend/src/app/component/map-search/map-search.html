@@ -1,31 +1,33 @@
 <div class="flex gap-6 justify-content-center">
-<div class="mb-3 flex flex-column gap-5">
-  <p-floatlabel class="flex">
-    <input pInputText id="countryInputText" [(ngModel)]="location.state" autocomplete="off" />
-    <label for="countryInputText">Country</label>
-  </p-floatlabel>
-  <p-floatlabel class="flex">
-    <input pInputText id="cityInputText" [(ngModel)]="location.city" autocomplete="off" />
-    <label for="cityInputText">City</label>
-  </p-floatlabel>
-  <p-floatlabel class="flex">
-    <input pInputText id="streetInputText" [(ngModel)]="location.street" autocomplete="off" />
-    <label for="streetInputText">Street and number</label>
-  </p-floatlabel>
-  <p-button (onClick)="searchLocation()">Find location</p-button>
-</div>
+<!--Panel for location text inputs-->
+  <div class="mb-3 flex flex-column gap-5">
+    <p-floatlabel class="flex">
+      <input pInputText id="countryInputText" [(ngModel)]="location.state" autocomplete="off"/>
+      <label for="countryInputText">Country</label>
+    </p-floatlabel>
+    <p-floatlabel class="flex">
+      <input pInputText id="cityInputText" [(ngModel)]="location.city" autocomplete="off"/>
+      <label for="cityInputText">City</label>
+    </p-floatlabel>
+    <p-floatlabel class="flex">
+      <input pInputText id="streetInputText" [(ngModel)]="location.street" autocomplete="off"/>
+      <label for="streetInputText">Street and number</label>
+    </p-floatlabel>
+    <p-button (onClick)="searchLocation()">Find location</p-button>
+  </div>
 
-<google-map
-  mapId="map-1"
-  height="500px"
-  width="500px"
-  [center]="center"
-  [zoom]="zoom"
-  [options]="options"
-  (mapClick)="moveMap($event)">
-  @if(position)
-  {
-    <map-advanced-marker (mapDragend)="markerPos($event)" [position]="position" [options]="markerOptions"></map-advanced-marker>
-  }
-</google-map>
+<!--Map-->
+  <google-map
+    mapId="map-1"
+    height="500px"
+    width="500px"
+    [center]="center"
+    [zoom]="zoom"
+    [options]="options"
+    (mapClick)="moveMap($event)">
+    @if (position) {
+      <map-advanced-marker (mapDragend)="markerPos($event)" [position]="position"
+                           [options]="markerOptions"></map-advanced-marker>
+    }
+  </google-map>
 </div>

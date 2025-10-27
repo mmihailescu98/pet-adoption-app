@@ -4,7 +4,7 @@ import { AdoptionControllerService, PetControllerService} from '../../api';
 import * as PetActions from './pet.actions';
 import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
 import { of, from, Observable } from 'rxjs';
-import { PetDTO } from '../../api/model/petDTO';
+import { PetDTO } from '../../api';
 
 @Injectable()
 export class PetEffects {
@@ -74,4 +74,15 @@ export class PetEffects {
     )
   );
 
+  addPet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.addPet),
+      mergeMap(action =>
+        this.petService.addPet(action.pet).pipe(  // presupunem că trimiți un PetDTO
+          map((pet: PetDTO) => PetActions.addPetSuccess({ pet })),
+          catchError(error => of(PetActions.addPetFailure({ error })))
+        )
+      )
+    )
+  );
 }

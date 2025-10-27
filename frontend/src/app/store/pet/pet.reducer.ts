@@ -93,6 +93,24 @@ export const petReducer = createReducer(
     ...state,
     error,
     status: 'error',
-  }))
+  })),
+  // addPet
+  on(PetActions.addPet, state => ({
+    ...state,
+    error: null,
+    status: 'loading',
+  })),
+  on(PetActions.addPetSuccess, (state, { pet }) => ({
+    ...state,
+    pets: [...state.pets, pet],
+    error: null,
+    status: 'success',
+  })),
+  on(PetActions.addPetFailure, (state, { error }) => ({
+    ...state,
+    error,
+    status: 'error',
+  })),
+
 );
 
