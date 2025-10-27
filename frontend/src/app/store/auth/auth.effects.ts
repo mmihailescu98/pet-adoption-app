@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {AuthControllerService, LoginRequest, RegisterRequest} from '../../api';
 import * as AuthActions from './auth.actions';
-import { catchError, map, mergeMap } from 'rxjs';
+import { catchError, map, mergeMap, tap } from 'rxjs';
 import { of } from 'rxjs';
 
 @Injectable()
@@ -47,6 +47,9 @@ export class AuthEffects {
           const request : RegisterRequest = {
             username: action.username,
             password: action.password,
+            first_name: action.first_name,
+            last_name: action.last_name,
+            email: action.email
             // roles are ignored in the backend for now
             //roles:
           }
@@ -58,5 +61,15 @@ export class AuthEffects {
         }
       )
     )
+  );
+
+  logout$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AuthActions.logout),
+        tap(() => {
+          localStorage.removeItem('auth');
+        })
+      ),
+    { dispatch: false }
   );
 }

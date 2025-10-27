@@ -17,6 +17,9 @@ import {MapService} from './component/map-search/map.service';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptor} from './store/auth/auth.interceptor';
+import {UserEffects} from './store/user/user.effects';
+import {userReducer} from './store/user/user.reducer';
+import {metaReducers} from './store/meta-reducers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,11 +37,15 @@ export const appConfig: ApplicationConfig = {
 
     provideStore({
       auth: authReducer,
-      pet: petReducer
-    }),
+      pet: petReducer,
+      user: userReducer
+    },
+      { metaReducers }
+    ),
     provideEffects([
       AuthEffects,
-      PetEffects
+      PetEffects,
+      UserEffects
     ]),
 
     provideHttpClient(withInterceptors([authInterceptor])),
