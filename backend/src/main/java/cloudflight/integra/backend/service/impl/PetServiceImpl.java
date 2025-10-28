@@ -6,6 +6,7 @@ import cloudflight.integra.backend.model.PetStatus;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.PetRepository;
 import cloudflight.integra.backend.repository.UserRepository;
+import cloudflight.integra.backend.security.CustomUserDetails;
 import cloudflight.integra.backend.service.PetService;
 import cloudflight.integra.backend.validators.PetValidator;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -31,7 +33,13 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet savePet(Pet pet) {
+    public Pet savePet(Pet pet, CustomUserDetails authUser) throws Exception {
+
+        if(!Objects.equals(authUser.getId(), pet.getOwner().getId()))
+        {
+            throw new Exception("Authenticated user doesnt match pet owner");
+        }
+
         return petRepository.save(pet);
     }
 
@@ -51,7 +59,25 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet updatePet(PetDTO pet) throws Exception {
+    public Pet updatePet(PetDTO pet, Integer petId, CustomUserDetails authUser) throws Exception {
+        if(!pet.id().equals(petId))
+        {
+            throw new Exception("Pet id doesnt match request path id");
+        }
+
+        boolean isAdmin = false;
+        boolean isPetOwner = false;
+        if (authUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")))
+        {
+            isAdmin = true;
+        }
+
+        isPetOwner = this.isOwnerOfPet(authUser.getId(), petId);
+
+        if (!isAdmin && !isPetOwner ){
+            throw new Exception("User is neither pet owner or an admin!");
+        }
+
         Pet existingPet = getPetById(pet.id());
         if (existingPet == null) {
             throw new Exception("Pet not found with id: " + pet.id());
@@ -108,13 +134,19 @@ public class PetServiceImpl implements PetService {
         Optional<Pet> pet = petRepository.findById(petId);
 
         if (pet.isEmpty())
+        {
             throw new Exception("Pet with id " + petId + " not found.");
+        }
 
         if (pet.get().getOwner() == null)
+        {
             throw new Exception("Pet with id " + petId + " has no owner.?");
+        }
 
         if (pet.get().getOwner().getId() != userId)
+        {
             return false;
+        }
 
         return true;
     }

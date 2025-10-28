@@ -4,15 +4,13 @@ import {Button, ButtonDirective} from 'primeng/button';
 import {Store} from '@ngrx/store';
 import {loadPets, searchPets} from '../../store/pet/pet.actions';
 import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet/pet.selectors';
-import {PetDTO} from '../../api/model/petDTO';
+import {PetDTO} from '../../api';
 import {Observable, startWith, Subject, takeUntil, map, switchMap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
 import {PetAddComponent} from '../pet-add/pet-add-component';
-import {UserLoginModel} from '../../api';
-import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'pet-list-component',
@@ -73,9 +71,8 @@ export class PetListComponent implements OnInit, OnDestroy {
       this.showAddDialog = true;
     }
 
-    saveNewPet(pet: PetDTO) {
-      console.log('New Pet:', pet);
-    }
+    saveNewPet(pet: PetDTO) {}
+
   onReset(event: Event) {
     this.filterForm.reset({species: '', breed: ''});
   }

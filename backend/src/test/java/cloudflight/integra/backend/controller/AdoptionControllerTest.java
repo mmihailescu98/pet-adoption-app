@@ -10,7 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +26,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(
+        controllers = AdoptionController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = {
+                        cloudflight.integra.backend.security.JwtAuthenticationFilter.class,
+                        cloudflight.integra.backend.security.SecurityConfig.class
+                }
+        )
+)
 @AutoConfigureMockMvc(addFilters = false)
 class AdoptionControllerTest {
 
@@ -37,7 +48,7 @@ class AdoptionControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void getAdoptionEndpoint_getListedAdoptions() throws Exception {
+    void getAdoptionEndpoint_getListedAdoptions() throws Exception {
         when(adoptionService.getPendingAdoptions()).thenReturn(mockAdoptionEntries());
 
         mockMvc.perform(get("/api/adoptions"))
@@ -48,11 +59,10 @@ class AdoptionControllerTest {
 
     @Test
     void createAdoptionListing_success() throws Exception {
-        // Arrange
         var requestDto = buildAdoptionAddRequestDTO();
-        when(adoptionService.createAdoption(any())).thenReturn(AdoptionMapper.INSTANCE.toModelFromAddRequest(requestDto));
+        when(adoptionService.createAdoption(any()))
+                .thenReturn(AdoptionMapper.INSTANCE.toModelFromAddRequest(requestDto));
 
-        // Act & Assert
         mockMvc.perform(post("/api/adoptions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -61,14 +71,23 @@ class AdoptionControllerTest {
     }
 
     private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
-        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
+        User owner = mockUsers().getFirst();
 
-        var publisher = new User(1L, "alice", "password123", Set.of("ROLE_USER"));
+        Pet pet = new Pet(
+                1,
+                "Dog",
+                "Golden Retriever",
+                "Buddy",
+                "New York",
+                "3",
+                "Friendly and energetic family dog.",
+                "https://example.com/images/dog1.jpg",
+                owner
+        );
 
         return new AdoptionAddRequestDTO(
                 pet,
-                publisher.getId(),
+                owner.getId(),
                 List.of("img1a.jpg", "img1b.jpg"),
                 "123-456-7890"
         );
@@ -76,32 +95,87 @@ class AdoptionControllerTest {
 
     private List<User> mockUsers() {
         return List.of(
-                new User(1L, "alice", "password123", Set.of("ROLE_USER")),
-                new User(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
-                new User(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
-                new User(4L, "diana", "mypassword", Set.of("ROLE_USER")),
-                new User(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                User.builder()
+                        .id(1L)
+                        .username("alice")
+                        .password("password123")
+                        .name("Alice Johnson")
+                        .phone("123-456-7890")
+                        .email("alice@example.com")
+                        .location("New York")
+                        .imgURL("https://example.com/images/alice.jpg")
+                        .bio("Animal lover and volunteer at the local shelter.")
+                        .roles(Set.of("ROLE_USER"))
+                        .build(),
+                User.builder()
+                        .id(2L)
+                        .username("bob")
+                        .password("securePass")
+                        .name("Bob Smith")
+                        .phone("234-567-8901")
+                        .email("bob@example.com")
+                        .location("Chicago")
+                        .imgURL("https://example.com/images/bob.jpg")
+                        .bio("Software engineer who loves dogs.")
+                        .roles(Set.of("ROLE_USER", "ROLE_ADMIN"))
+                        .build(),
+                User.builder()
+                        .id(3L)
+                        .username("charlie")
+                        .password("qwerty")
+                        .name("Charlie Brown")
+                        .phone("345-678-9012")
+                        .email("charlie@example.com")
+                        .location("Boston")
+                        .imgURL("https://example.com/images/charlie.jpg")
+                        .bio("Cat owner and adoption advocate.")
+                        .roles(Set.of("ROLE_USER"))
+                        .build(),
+                User.builder()
+                        .id(4L)
+                        .username("diana")
+                        .password("mypassword")
+                        .name("Diana Prince")
+                        .phone("456-789-0123")
+                        .email("diana@example.com")
+                        .location("Los Angeles")
+                        .imgURL("https://example.com/images/diana.jpg")
+                        .bio("Passionate about rescuing abandoned pets.")
+                        .roles(Set.of("ROLE_USER"))
+                        .build(),
+                User.builder()
+                        .id(5L)
+                        .username("edward")
+                        .password("letmein")
+                        .name("Edward Johnson")
+                        .phone("567-890-1234")
+                        .email("edward@example.com")
+                        .location("Seattle")
+                        .imgURL("https://example.com/images/edward.jpg")
+                        .bio("Moderator of the adoption community forum.")
+                        .roles(Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                        .build()
         );
     }
 
-    private List<Pet> mockPets() {
+    private List<Pet> mockPets(List<User> users) {
         return List.of(
                 new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"),
+                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", users.get(0)),
                 new Pet(2, "Cat", "Siamese", "Luna", "Los Angeles", "2",
-                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg"),
+                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg", users.get(1)),
                 new Pet(3, "Dog", "German Shepherd", "Max", "Chicago", "4",
-                        "Loyal and protective, trained in basic commands.", "https://example.com/images/dog2.jpg"),
+                        "Loyal and protective, trained in basic commands.", "https://example.com/images/dog2.jpg", users.get(1)),
                 new Pet(4, "Rabbit", "Holland Lop", "Snowball", "San Francisco", "1",
-                        "Cute and cuddly rabbit, perfect for small spaces.", "https://example.com/images/rabbit1.jpg"),
+                        "Cute and cuddly rabbit, perfect for small spaces.", "https://example.com/images/rabbit1.jpg", users.get(2)),
                 new Pet(5, "Dog", "Beagle", "Charlie", "Miami", "5",
-                        "Playful beagle who loves outdoor walks.", "https://example.com/images/dog3.jpg")
+                        "Playful beagle who loves outdoor walks.", "https://example.com/images/dog3.jpg", users.get(3))
         );
     }
 
     private List<AdoptionEntry> mockAdoptionEntries() {
         List<User> users = mockUsers();
-        List<Pet> pets = mockPets();
+        List<Pet> pets = mockPets(users);
 
         return List.of(
                 AdoptionEntry.builder().id(1L).pet(pets.get(0)).publisher(users.get(0))
@@ -111,7 +185,6 @@ class AdoptionControllerTest {
                         .createdAt(LocalDateTime.now().minusDays(10))
                         .adoptedAt(null)
                         .build(),
-
                 AdoptionEntry.builder().id(2L).pet(pets.get(1)).publisher(users.get(1))
                         .additionalImages(List.of("img2a.jpg"))
                         .contactNumber("987-654-3210")
@@ -119,7 +192,6 @@ class AdoptionControllerTest {
                         .createdAt(LocalDateTime.now().minusDays(20))
                         .adoptedAt(LocalDateTime.now().minusDays(5))
                         .build(),
-
                 AdoptionEntry.builder().id(3L).pet(pets.get(2)).publisher(users.get(1))
                         .additionalImages(List.of())
                         .contactNumber("555-111-2222")
@@ -127,7 +199,6 @@ class AdoptionControllerTest {
                         .createdAt(LocalDateTime.now().minusDays(15))
                         .adoptedAt(null)
                         .build(),
-
                 AdoptionEntry.builder().id(4L).pet(pets.get(3)).publisher(users.get(2))
                         .additionalImages(List.of("img4a.jpg", "img4b.jpg"))
                         .contactNumber("444-333-2222")
@@ -135,7 +206,6 @@ class AdoptionControllerTest {
                         .createdAt(LocalDateTime.now().minusDays(2))
                         .adoptedAt(null)
                         .build(),
-
                 AdoptionEntry.builder().id(5L).pet(pets.get(4)).publisher(users.get(3))
                         .additionalImages(List.of("img5a.jpg"))
                         .contactNumber("111-222-3333")

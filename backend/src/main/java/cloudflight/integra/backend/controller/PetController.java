@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequestMapping("/api")
 @RestController()
@@ -44,7 +43,9 @@ public class PetController {
         CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
 
         if(authUser == null)
+        {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         Long userId = authUser.getId();
 
@@ -63,12 +64,15 @@ public class PetController {
         CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
 
         if(authUser == null)
+        {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-        if(!Objects.equals(authUser.getId(), pet.getOwner().getId()))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
-        return ResponseEntity.ok(PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet)));
+        try{
+            return ResponseEntity.ok(PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet,authUser)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/pets/{id}")
@@ -85,25 +89,12 @@ public class PetController {
     public ResponseEntity<PetDTO> updatePet(@PathVariable Integer petId, @RequestBody PetDTO pet) {
         CustomUserDetails authUser = JwtUtil.getAuthenticatedUser();
         if (authUser == null)
+        {
             return ResponseEntity.status(401).build();
-
-        boolean isAdmin = false;
-        boolean isPetOwner = false;
-        if (authUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")))
-            isAdmin = true;
-
-        try {
-            isPetOwner = petService.isOwnerOfPet(authUser.getId(), petId);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!isAdmin && !isPetOwner ){
-            return ResponseEntity.status(403).build();
         }
 
         try{
-            PetDTO updatedPet = PetMapper.INSTANCE.petToPetDTO(petService.updatePet(pet));
+            PetDTO updatedPet = PetMapper.INSTANCE.petToPetDTO(petService.updatePet(pet,petId,authUser));
             return ResponseEntity.ok(updatedPet);
         }catch (Exception e) {
             return ResponseEntity.badRequest().build();
