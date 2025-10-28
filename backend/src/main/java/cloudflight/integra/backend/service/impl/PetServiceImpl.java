@@ -7,8 +7,12 @@ import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.PetRepository;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.PetService;
+import cloudflight.integra.backend.validators.PetValidator;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +22,12 @@ public class PetServiceImpl implements PetService {
     PetRepository petRepository;
     UserRepository userRepository;
 
-    PetServiceImpl (PetRepository petRepository, UserRepository userRepository) {
+    PetValidator petValidator;
+
+    PetServiceImpl (PetRepository petRepository, UserRepository userRepository, PetValidator petValidator) {
         this.petRepository = petRepository;
         this.userRepository = userRepository;
+        this.petValidator = petValidator;
     }
 
     @Override
@@ -58,7 +65,19 @@ public class PetServiceImpl implements PetService {
         existingPet.setDescription(pet.description());
         existingPet.setImgURL(pet.imgURL());
 
+        Errors errors = new BeanPropertyBindingResult(existingPet, "pet");
+        petValidator.validate(existingPet, errors);
+
+        if (errors.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder("Validation failed: ");
+            for (ObjectError error : errors.getAllErrors()) {
+                errorMsg.append(error.getDefaultMessage()).append("; ");
+            }
+            throw new IllegalArgumentException(errorMsg.toString());
+        }
+
         petRepository.save(existingPet);
+
 
         return existingPet;
     }

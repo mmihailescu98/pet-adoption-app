@@ -1,4 +1,4 @@
-package cloudflight.integra.backend.Validators;
+package cloudflight.integra.backend.validators;
 
 import cloudflight.integra.backend.model.Pet;
 import org.springframework.stereotype.Component;
@@ -25,6 +25,10 @@ public class PetValidator implements Validator {
         // Species check
         if (pet.getSpecies() == null || pet.getSpecies().trim().isEmpty()) {
             errors.rejectValue("species", "species.empty", "Species cannot be empty");
+        }
+
+        if (pet.getBreed() == null || pet.getBreed().trim().isEmpty()) {
+            errors.rejectValue("breed", "breed.empty", "Breed cannot be empty");
         }
 
         // Age check

@@ -37,7 +37,7 @@
                 <button class="btn contact">Contact</button>
               </div>
             </div>
-            @if (userIsAdmin || pet!.owner == userId) {
+            @if (userIsAdmin || pet!.owner?.id == userId) {
               <button pButton type="button" (click)="startEditing(pet!)" class="p-button-rounded p-button-text editButton">
                 <i pButtonIcon class="pi pi-pen-to-square"></i>
               </button>
