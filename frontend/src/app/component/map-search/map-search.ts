@@ -59,7 +59,6 @@ export class MapSearch {
       this.center = { lat: loc.lat(), lng: loc.lng() };
       this.position = this.center;
       this.zoom = 14;
-      console.log(results[0].address_components);
     } catch (err) {
       alert('No location found');
     }

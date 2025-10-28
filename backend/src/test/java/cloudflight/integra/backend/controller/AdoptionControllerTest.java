@@ -64,7 +64,14 @@ class AdoptionControllerTest {
         var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
                 "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
 
-        var publisher = new User(1L, "alice", "password123", Set.of("ROLE_USER"));
+        var publisher = User.builder()
+                .id(1L)
+                .username("alice")
+                .password("password123")
+                .name("Alice Smith")
+                .email("alice@example.com")
+                .roles(Set.of("ROLE_USER"))
+                .build();
 
         return new AdoptionAddRequestDTO(
                 pet,
@@ -76,11 +83,11 @@ class AdoptionControllerTest {
 
     private List<User> mockUsers() {
         return List.of(
-                new User(1L, "alice", "password123", Set.of("ROLE_USER")),
-                new User(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
-                new User(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
-                new User(4L, "diana", "mypassword", Set.of("ROLE_USER")),
-                new User(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                User.builder().id(1L).username("alice").password("password123").name("Alice Smith").email("alice@example.com").roles(Set.of("ROLE_USER")).build(),
+                User.builder().id(2L).username("bob").password("securePass").name("Bob Johnson").email("bob@example.com").roles(Set.of("ROLE_USER", "ROLE_ADMIN")).build(),
+                User.builder().id(3L).username("charlie").password("qwerty").name("Charlie Brown").email("charlie@example.com").roles(Set.of("ROLE_USER")).build(),
+                User.builder().id(4L).username("diana").password("mypassword").name("Diana Prince").email("diana@example.com").roles(Set.of("ROLE_USER")).build(),
+                User.builder().id(5L).username("edward").password("letmein").name("Edward Norton").email("edward@example.com").roles(Set.of("ROLE_USER", "ROLE_MODERATOR")).build()
         );
     }
 
