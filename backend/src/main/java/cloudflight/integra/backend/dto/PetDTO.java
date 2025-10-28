@@ -1,5 +1,7 @@
 package cloudflight.integra.backend.dto;
 
+import cloudflight.integra.backend.model.PetStatus;
+
 public record PetDTO(
         Integer id,
         String species,
@@ -8,6 +10,7 @@ public record PetDTO(
         String location,
         String age,
         String description,
-        String imgURL
+        String imgURL,
+        PetStatus status
 ) {}
 

@@ -1,13 +1,25 @@
 package cloudflight.integra.backend.repository;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.dto.AdoptedPetDTO;
+import cloudflight.integra.backend.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+    Optional<User> findById(Long id);
+    Optional<User> deleteByUsername(String username);
 
-public interface UserRepository {
-    Optional<UserModel> findByUsername(String username);
-    List<UserModel> findAll();
-    UserModel save(UserModel model);
+    @Query("SELECT new cloudflight.integra.backend.dto.AdoptedPetDTO(" +
+            "p.id, p.species, p.breed, p.name, p.location, p.age, p.description, " +
+            "p.imgURL, p.status, a.createdAt, a.adoptedAt) " +
+            "FROM AdoptionEntry a JOIN a.pet p " +
+            "WHERE a.adopter.id = :userID AND a.adoptedAt IS NOT NULL")
+    List<AdoptedPetDTO> findAdoptedPetsByUserId(@Param("userID") Long userID);
 }

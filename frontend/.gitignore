@@ -45,3 +45,4 @@ Thumbs.db
 /src/app/api/
 openapitools.json
 
+/src/environments/

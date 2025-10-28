@@ -1,15 +1,16 @@
 package cloudflight.integra.backend.controller;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.security.CustomUserDetails;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.security.JwtUtil;
-import cloudflight.integra.backend.service.impl.UserServiceImpl;
+import cloudflight.integra.backend.service.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,31 +26,33 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
-    @PostMapping("/login")
-    public JwtResponse login(@RequestBody LoginRequest request) {
+    @PostMapping(value="/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public LoginResponse login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Set<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
 
         String token = jwtUtil.generateToken(userDetails.getUsername(), roles);
 
-        return new JwtResponse(token);
+        return new LoginResponse(token, new UserLoginModel(userDetails.getId(), userDetails.getUsername()));
     }
 
     @PostMapping("/register")
-    public UserModel register(@RequestBody RegisterRequest request) {
-        UserModel user = new UserModel();
+    public User register(@RequestBody RegisterRequest request) {
+        User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());  // password will be encoded in UserService
+        user.setName(request.getFirst_name() + " " + request.getLast_name());
+        user.setEmail(request.getEmail());
 
-        return userServiceImpl.registerUser(user);
+        return userService.registerUser(user);
     }
 
 
@@ -63,6 +66,9 @@ public class AuthController {
     public static class RegisterRequest {
         private String username;
         private String password;
+        private String first_name;
+        private String last_name;
+        private String email;
         private String roles; // example: "ROLE_USER"
     }
 
@@ -70,5 +76,17 @@ public class AuthController {
     @Data
     public static class JwtResponse {
         private final String token;
+    }
+
+    @Data
+    public static class LoginResponse {
+        private final String token;
+        private final UserLoginModel loggedUser;
+    }
+
+    @Data
+    public static class UserLoginModel {
+        private final Long id;
+        private final String username;
     }
 }

@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {AuthControllerService, LoginRequest, RegisterRequest} from '../../api';
 import * as AuthActions from './auth.actions';
-import { catchError, map, mergeMap } from 'rxjs';
+import { catchError, map, mergeMap, tap } from 'rxjs';
 import { of } from 'rxjs';
 
 @Injectable()
@@ -14,16 +14,32 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.login),
       mergeMap((action) => {
-          const request: LoginRequest = {
-            username: action.username,
-            password: action.password
-          };
-          return this.authService.login(request).pipe(
-            map(response => AuthActions.loginSuccess({ token: response.token ? response.token : 'success, but no token provided' })),
-            catchError(error => of(AuthActions.loginFailure({ error: error.message })))
-          );
-        }
-      )
+        const request: LoginRequest = {
+          username: action.username,
+          password: action.password
+        };
+        return this.authService.login(request).pipe(
+          map(response => {
+            if (!response.loggedUser) {
+              console.error('loggedUser property is missing or undefined');
+              return AuthActions.loginFailure({ error: 'No user data received' });
+            }
+            return AuthActions.loginSuccess({
+              token: response.token || '',
+              userModel: {
+                id: response.loggedUser.id ?? 0,
+                username: response.loggedUser.username ?? ''
+              }
+            });
+          }),
+          catchError(error => {
+            console.error('Login error:', error);
+            return of(AuthActions.loginFailure({
+              error: `${error.status}: ${error.statusText || 'Unknown'} - ${error.message || 'No message'}`
+            }));
+          })
+        );
+      })
     )
   );
 
@@ -34,6 +50,9 @@ export class AuthEffects {
           const request : RegisterRequest = {
             username: action.username,
             password: action.password,
+            first_name: action.first_name,
+            last_name: action.last_name,
+            email: action.email
             // roles are ignored in the backend for now
             //roles:
           }
@@ -45,5 +64,15 @@ export class AuthEffects {
         }
       )
     )
+  );
+
+  logout$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AuthActions.logout),
+        tap(() => {
+          localStorage.removeItem('auth');
+        })
+      ),
+    { dispatch: false }
   );
 }

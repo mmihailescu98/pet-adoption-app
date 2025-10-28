@@ -1,6 +1,8 @@
 package cloudflight.integra.backend.service.impl;
 
-import cloudflight.integra.backend.model.UserModel;
+import cloudflight.integra.backend.dto.AdoptedPetDTO;
+import cloudflight.integra.backend.dto.UserDTO;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +25,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel registerUser(UserModel user) {
+    public User registerUser(User user) {
+        // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
@@ -40,12 +44,39 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Optional<UserModel> findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public List<UserModel> getAllUsers() {
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User updateUserProfile(Long id, UserDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+        User user = optionalUser.get();
+        user.setUsername(userDTO.username());
+        user.setName(userDTO.name());
+        user.setPhone(userDTO.phone());
+        user.setEmail(userDTO.email());
+        user.setLocation(userDTO.location());
+        user.setImgURL(userDTO.imgURL());
+        user.setBio(userDTO.bio());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public List<AdoptedPetDTO> getAdoptedPetsByUser(Long userID) {
+        return userRepository.findAdoptedPetsByUserId(userID);
     }
 }

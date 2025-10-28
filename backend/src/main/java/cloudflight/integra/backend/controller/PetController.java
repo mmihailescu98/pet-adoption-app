@@ -6,6 +6,7 @@ import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.service.PetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,14 +25,20 @@ public class PetController {
         return List.of("hello", "world");
     }
 
-    @GetMapping("/pets")
+
+    @GetMapping(value = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PetDTO> getPets(@RequestParam(required = false) String species, @RequestParam(required = false) String breed) {
         return PetMapper.INSTANCE.petToPetDTOList(petService.getPets(species, breed));
     }
 
-    @GetMapping("/pets/{id}")
+    @GetMapping(value = "/pets/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PetDTO getPetById(@PathVariable Integer id) {
         return PetMapper.INSTANCE.petToPetDTO(petService.getPetById(id));
+    }
+
+    @PostMapping("/pets/{id}/adopt")
+    public PetDTO adoptPet(@PathVariable Integer id) {
+        return PetMapper.INSTANCE.petToPetDTO(petService.adoptPet(id));
     }
 
     @PostMapping("/pets")

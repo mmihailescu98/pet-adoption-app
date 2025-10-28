@@ -1,6 +1,8 @@
 package cloudflight.integra.backend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 
@@ -14,12 +16,16 @@ public class Pet implements Serializable {
     private String breed;
     private String name;
     private String location;
-    private String age;
+    private String age; // to be int
     private String description;
     private String imgURL;
 
 
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "status_type")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private PetStatus status = PetStatus.PENDING; 
 
     public Pet() {}
 
@@ -110,4 +116,11 @@ public class Pet implements Serializable {
         this.createdBy = createdBy;
     }
 
+        public PetStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PetStatus status) {
+        this.status = status;
+    }
 }

@@ -93,6 +93,9 @@ export class RegisterForm implements OnInit {
     let username: string = this.registrationForm.get('username')?.value;
     let password: string = this.registrationForm.get('password')?.value;
     let password_check: string = this.registrationForm.get('password_check')?.value;
+    let first_name: string = this.registrationForm.get('first_name')?.value;
+    let last_name: string = this.registrationForm.get('last_name')?.value;
+    let email: string = this.registrationForm.get('email')?.value;
 
     if(!password || !password_check || !username)
       return;
@@ -101,6 +104,6 @@ export class RegisterForm implements OnInit {
       alert("Passwords do not match!");
       return;
     }
-    this.store.dispatch(register({ username:username, password:password }));
+    this.store.dispatch(register({ username:username, password:password, first_name:first_name, last_name:last_name, email:email }));
   }
 }

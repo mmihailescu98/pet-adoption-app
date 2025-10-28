@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserModel  {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,22 @@ public class UserModel  {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(unique = true)
+    private String phone;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String location;
+
+    private String imgURL;
+
+    @Column(length = 1000)
+    private String bio;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

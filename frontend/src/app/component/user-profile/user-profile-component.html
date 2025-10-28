@@ -1,0 +1,42 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="item-panel">
+  <form [formGroup]="editForm" class="profile-form">
+    <section class="profile-photo-section">
+      <img
+        [src]="editForm.value.imgURL && editForm.value.imgURL.trim() !== ''? editForm.value.imgURL: '/resources/images/defaultUser.png'"
+        class="profile-photo" alt="User Profile Photo"/>
+    </section>
+
+    <section class="profile-details-section">
+      <p><i class="pi pi-user"></i> {{ editForm.value.name || 'Enter your name' }}</p>
+      <p><i class="pi pi-envelope"></i> {{ editForm.value.email || 'Enter your email' }}</p>
+      <p><i class="pi pi-phone"></i> {{ editForm.value.phone || 'Enter your phone number' }}</p>
+      <p><i class="pi pi-map-marker"></i> {{ editForm.value.location || 'Select your location' }}</p>
+      <p><i class="pi pi-info-circle"></i> {{ editForm.value.bio || 'Tell us about yourself' }}</p>
+      <div class="profile-actions">
+        @if (isOwner) {
+          <p-button type="button" label="Edit Profile" (onClick)="onEdit()" styleClass="p-button-secondary"></p-button>
+          <p-button type="button" label="Add Pet" (onClick)="onAddPet()" styleClass="p-button-primary"></p-button>
+          <p-button type="button" label="Favorites" (onClick)="onOpenFavorites()" styleClass="p-button-help"></p-button>
+        }
+      </div>
+    </section>
+  </form>
+
+  <edit-profile-dialog
+    [(showEditDialog)]="showEditDialog"
+    [editForm]="editForm"
+    [locationOptions]="locationOptions"
+    (saveEdit)="onSaveEdit($event)"
+    (cancelEdit)="onCancelEdit()">
+  </edit-profile-dialog>
+
+  <pet-add-component
+    [(display)]="showAddDialog"
+    (savePet)="saveNewPet($event)">
+  </pet-add-component>
+
+  <adopted-pets-history [adoptedPets$]="adoptedPets$"></adopted-pets-history>
+
+</div>
