@@ -30,7 +30,9 @@ public class FavoritePetsController {
                 return ResponseEntity.badRequest().build();
             }
         }else
+        {
             return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        }
     }
 
     @PostMapping("/favorites")
