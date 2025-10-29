@@ -33,4 +33,9 @@ export const selectUpdateError = createSelector(
   (state: PetState) => state.updateError
 )
 
+export const selectFavoriteError = createSelector(
+  selectPetState,
+  (state: PetState) => state.favoriteError
+)
+
 

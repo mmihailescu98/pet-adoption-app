@@ -15,7 +15,19 @@
 
           <div class="pet-info">
             <div class="pet-info">
-              <h2>{{ !editMode ? pet.name : previewPet?.name }}</h2>
+              <h2>
+                {{ !editMode ? pet.name : previewPet?.name }}
+                <p-button
+                  [icon]="pet.isUserFavorite ? 'pi pi-star-fill' : 'pi pi-star'"
+                  styleClass="p-button-text"
+                  [pTooltip]="pet.isUserFavorite ? 'Remove from favorites' : 'Add to favorites'"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  tooltipZIndex="1000"
+                  showDelay="750"
+                  (onClick)="toggleFavorite(pet)">
+                </p-button>
+              </h2>
               <p class="species">{{ !editMode ? pet.species : previewPet?.species }} - {{ !editMode ? pet.breed : previewPet?.breed}}</p>
               <p class="pet-detail"><strong>Age:</strong> {{ !editMode ? pet.age : previewPet?.age }}</p>
               <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
