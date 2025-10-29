@@ -45,6 +45,17 @@
               <button class="btn contact">Contact</button>
             </div>
           </div>
+
+          <p-button
+            [icon]="pet.isUserFavorite ? 'pi pi-star-fill' : 'pi pi-star'"
+            styleClass="p-button-text star-btn"
+            [pTooltip]="pet.isUserFavorite ? 'Remove from favorites' : 'Add to favorites'"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+            tooltipZIndex="1000"
+            showDelay="750"
+            (onClick)="toggleFavorite(pet)">
+          </p-button>
         </div>
       }
     }

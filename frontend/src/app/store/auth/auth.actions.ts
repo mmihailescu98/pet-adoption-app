@@ -46,3 +46,5 @@ export const clearLoginError = createAction(
 export const clearRegisterError = createAction(
   '[Auth] Clear Register Error',
 )
+
+export const logout = createAction('[Auth] Logout');

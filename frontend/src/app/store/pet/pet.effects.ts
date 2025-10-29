@@ -2,14 +2,16 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {AdoptionAddRequestDTO, AdoptionControllerService, PetControllerService} from '../../api';
 import * as PetActions from './pet.actions';
-import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
-import { of, from, Observable } from 'rxjs';
-import { PetDTO } from '../../api';
+import {mergeMap, map, catchError, switchMap, debounceTime, groupBy} from 'rxjs/operators';
+import {of, from, Observable, EMPTY} from 'rxjs';
+import { PetDTO } from '../../api/model/petDTO';
+import {FavoritePetsControllerService} from '../../api';
 
 @Injectable()
 export class PetEffects {
   private actions$ = inject(Actions);
   private petService = inject(PetControllerService);
+  private favoritePetService = inject(FavoritePetsControllerService);
   private adoptionService = inject(AdoptionControllerService);
 
   private blobToPets(blob: Blob) {
@@ -95,5 +97,69 @@ export class PetEffects {
       })
     )
   );
+
+
+  private initialFavoritesStateMap = new Map<number, boolean>();
+
+  toggleFavoritePet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.addFavoritePet, PetActions.removeFavoritePet),
+      groupBy(action => {
+        // store the initial (pre-toggle) favorite state if not yet tracked
+        if (!this.initialFavoritesStateMap.has(action.petId)) {
+          this.initialFavoritesStateMap.set(
+            action.petId,
+            action.type !== PetActions.addFavoritePet.type
+          );
+        }
+        return action.petId;
+      }),
+      mergeMap(group$ =>
+        group$.pipe(
+          debounceTime(2000),
+          switchMap(action => {
+
+            let request$: Observable<any> = EMPTY;
+
+            if (
+              action.type === PetActions.addFavoritePet.type &&
+              this.initialFavoritesStateMap.get(action.petId) === false
+            ) {
+              request$ = this.favoritePetService.addFavoritePet({
+                petId: action.petId,
+                userId: action.userId,
+              });
+            } else if (
+              action.type === PetActions.removeFavoritePet.type &&
+              this.initialFavoritesStateMap.get(action.petId) === true
+            ) {
+              request$ = this.favoritePetService.removeFavoritePet({
+                petId: action.petId,
+                userId: action.userId,
+              });
+            }
+
+            return request$.pipe(
+              map(() => {
+                this.initialFavoritesStateMap.delete(action.petId); // clean up
+                return action.type === PetActions.addFavoritePet.type
+                  ? PetActions.addFavoritePetSuccess()
+                  : PetActions.removeFavoritePetSuccess();
+              }),
+              catchError(error => {
+                this.initialFavoritesStateMap.delete(action.petId); // clean up even on error
+                return of(
+                  action.type === PetActions.addFavoritePet.type
+                    ? PetActions.addFavoritePetFailure({ error })
+                    : PetActions.removeFavoritePetFailure({ error })
+                );
+              })
+            );
+          })
+        )
+      )
+    )
+  );
+
 
 }

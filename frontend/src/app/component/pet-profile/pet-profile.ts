@@ -3,16 +3,18 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
 import {Observable, take} from 'rxjs';
 import {AdoptionControllerService, Pet, PetDTO} from '../../api';
-import {loadPet, adoptPet, requestAdoptionForPet} from '../../store/pet/pet.actions';
 import { selectSelectedPet, selectPetStatus, selectPetError } from '../../store/pet/pet.selectors';
+import {loadPet, adoptPet, removeFavoritePet, addFavoritePet, requestAdoptionForPet} from '../../store/pet/pet.actions';
 import { ActivatedRoute } from '@angular/router';
 import {NavBar} from '../nav-bar/nav-bar';
+import {Button} from 'primeng/button';
+import {Tooltip} from 'primeng/tooltip';
 import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'app-pet-profile',
   standalone: true,
-  imports: [AsyncPipe, NgClass, NavBar],
+  imports: [AsyncPipe, NgClass, NavBar, Button, Tooltip],
   templateUrl: './pet-profile.html',
   styleUrls: ['./pet-profile.css']
 })
@@ -63,6 +65,19 @@ export class PetProfileComponent implements OnInit {
           error => console.error('Error checking adoption request:', error)
         );
       }
+    });
+  }
+
+  toggleFavorite(pet: PetDTO) {
+    this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
+      if (user) {
+        if(pet.isUserFavorite) {
+          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: user.id! }));
+        } else {
+          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: user.id! }));
+        }
+      } else
+        alert("Please log in to manage favorites.");
     });
   }
 

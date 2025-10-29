@@ -1,10 +1,13 @@
 import {ReactiveFormsModule} from '@angular/forms';
 import {PetListComponent} from './pet-list-component';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {loadPets, searchPets} from '../../store/pet/pet.actions';
+import {addFavoritePet, loadPets, removeFavoritePet, searchPets} from '../../store/pet/pet.actions';
 import {By} from '@angular/platform-browser';
 import {MockStore, provideMockStore} from '@ngrx/store/testing';
 import {of} from 'rxjs';
+import {PetDTO} from '../../api';
+import { selectLoggedInUser } from '../../store/auth/auth.selector';
+import {ActivatedRoute} from '@angular/router';
 
 describe('PetListComponent - Filtering', () => {
   let component: PetListComponent;
@@ -26,7 +29,11 @@ describe('PetListComponent - Filtering', () => {
         PetListComponent
       ],
       providers: [
-        provideMockStore({ initialState })
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: { params: of({}) }
+        }
       ]
     }).compileComponents();
 
@@ -102,5 +109,63 @@ describe('PetListComponent - Filtering', () => {
 
     const suggestions = fixture.debugElement.queryAll(By.css('.suggestions-list li'));
     expect(suggestions.length).toBe(0);
+  });
+
+  it('should render filled star for favorite pet', () => {
+    component.pets$ = of([{ id: 1, name: 'Buddy', isUserFavorite: true } as PetDTO]);
+    fixture.detectChanges();
+
+    const buttons = fixture.debugElement.queryAll(By.css('p-button'));
+    const starBtn = buttons.find(b => (b.componentInstance as any).styleClass?.includes('star-btn'))!;
+    expect(starBtn).toBeTruthy();
+    expect((starBtn.componentInstance as any).icon).toBe('pi pi-star-fill');
+  });
+
+  it('should render empty star for non-favorite pet', () => {
+    component.pets$ = of([{ id: 2, name: 'Milo', isUserFavorite: false } as PetDTO]);
+    fixture.detectChanges();
+
+    const buttons = fixture.debugElement.queryAll(By.css('p-button'));
+    const starBtn = buttons.find(b => (b.componentInstance as any).styleClass?.includes('star-btn'))!;
+    expect(starBtn).toBeTruthy();
+    expect((starBtn.componentInstance as any).icon).toBe('pi pi-star');
+  });
+
+  it('clicking star on favorite dispatches removeFavoritePet with user id', () => {
+    const mockUser = { id: 10 } as any;
+    const store = TestBed.inject(MockStore);
+    store.overrideSelector(selectLoggedInUser, mockUser);
+
+    component.pets$ = of([{ id: 3, name: 'Luna', isUserFavorite: true } as PetDTO]);
+    const dispatchSpy = spyOn(store, 'dispatch');
+
+    fixture.detectChanges();
+
+    const buttons = fixture.debugElement.queryAll(By.css('p-button'));
+    const starBtn = buttons.find(b => (b.componentInstance as any).styleClass?.includes('star-btn'))!;
+    expect(starBtn).toBeTruthy();
+
+    starBtn.triggerEventHandler('onClick', {});
+
+    expect(dispatchSpy).toHaveBeenCalledWith(removeFavoritePet({ petId: 3, userId: 10 }));
+  });
+
+  it('clicking star on non-favorite dispatches addFavoritePet with user id', () => {
+    const mockUser = { id: 11 } as any;
+    const store = TestBed.inject(MockStore);
+    store.overrideSelector(selectLoggedInUser, mockUser);
+
+    component.pets$ = of([{ id: 4, name: 'Max', isUserFavorite: false } as PetDTO]);
+    const dispatchSpy = spyOn(store, 'dispatch');
+
+    fixture.detectChanges();
+
+    const buttons = fixture.debugElement.queryAll(By.css('p-button'));
+    const starBtn = buttons.find(b => (b.componentInstance as any).styleClass?.includes('star-btn'))!;
+    expect(starBtn).toBeTruthy();
+
+    starBtn.triggerEventHandler('onClick', {});
+
+    expect(dispatchSpy).toHaveBeenCalledWith(addFavoritePet({ petId: 4, userId: 11 }));
   });
 });
