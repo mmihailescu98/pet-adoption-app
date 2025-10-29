@@ -20,6 +20,8 @@
 .item-panel .buttons-panel {
   margin-top: 1rem;
   text-align: center;
+
+  flex-direction: column;
 }
 
 .item-panel .thumb {
