@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AdoptionControllerService, PetControllerService} from '../../api';
+import {AdoptionAddRequestDTO, AdoptionControllerService, PetControllerService} from '../../api';
 import * as PetActions from './pet.actions';
 import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
 import { of, from, Observable } from 'rxjs';
@@ -76,11 +76,11 @@ export class PetEffects {
 
   addPet$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(PetActions.addPet),
+      ofType(PetActions.addPetForAdoption),
       mergeMap(action =>
-        this.petService.addPet(action.pet).pipe(  // presupunem că trimiți un PetDTO
-          map((pet: PetDTO) => PetActions.addPetSuccess({ pet })),
-          catchError(error => of(PetActions.addPetFailure({ error })))
+        this.adoptionService.createAdoptionListing(action.adoptionRequest).pipe(
+          map((adoptionRequest: AdoptionAddRequestDTO) => PetActions.addPetForAdoptionSuccess({ adoptionRequest })),
+          catchError(error => of(PetActions.addPetForAdoptionFailure({ error })))
         )
       )
     )

@@ -2,6 +2,7 @@ package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
+import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.User;
@@ -37,7 +38,8 @@ public class AdoptionServiceImpl implements AdoptionService {
      */
     @Override
     public AdoptionEntry createAdoption(AdoptionAddRequestDTO adoptionAddRequest) {
-        Pet toBePublished = adoptionAddRequest.pet();
+
+        Pet toBePublished = PetMapper.INSTANCE.petDTOToPet(adoptionAddRequest.pet());
 
         boolean existingPet = false;
         try {

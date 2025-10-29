@@ -5,14 +5,14 @@ import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {Textarea} from 'primeng/textarea';
 import {MapSearch} from '../map-search/map-search';
-import {LocationDTO} from '../../api'
+import {AdoptionAddRequestDTO, LocationDTO} from '../../api'
 import {NavBar} from '../nav-bar/nav-bar';
 import {Card} from 'primeng/card';
 import {FloatLabel} from 'primeng/floatlabel';
 import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {addPet} from '../../store/pet/pet.actions';
+import {addPetForAdoption} from '../../store/pet/pet.actions';
 
 
 @Component({
@@ -112,7 +112,14 @@ export class PetAddComponent {
 
     const newPet = this.petForm.value;
 
-    this.store.dispatch(addPet({pet: newPet}));
+    const adoptionRequest: AdoptionAddRequestDTO =
+      {
+        pet: newPet,
+        additionalImages: [],
+        contactNumber: "1123344",
+      };
+
+    this.store.dispatch(addPetForAdoption({adoptionRequest}));
 
     this.router.navigate(['/pet-list']);
     alert("Pet saved!");

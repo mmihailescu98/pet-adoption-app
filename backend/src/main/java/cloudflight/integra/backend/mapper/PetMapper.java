@@ -3,7 +3,6 @@ package cloudflight.integra.backend.mapper;
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.model.Pet;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -17,4 +16,6 @@ public interface PetMapper {
 //    @Mapping(target = "location",source = "location")
     List<PetDTO> petToPetDTOList(List<Pet> pets);
     PetDTO petToPetDTO(Pet pet);
+
+    Pet petDTOToPet(PetDTO petDTO);
 }
