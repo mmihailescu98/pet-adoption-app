@@ -88,7 +88,7 @@ class AdoptionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.contactNumber").value("123456789"));
+                .andExpect(jsonPath("$.contactNumber").value("123-456-7890"));
     }
 
     // --- Helpers ---
