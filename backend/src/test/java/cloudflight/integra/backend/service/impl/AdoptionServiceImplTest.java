@@ -39,15 +39,15 @@ class AdoptionServiceImplTest {
     private AdoptionServiceImpl adoptionService;
 
     @Test
-void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
-    Pet pet = new Pet();
-    pet.setId(1);
-    pet.setName("Buddy");
-    pet.setStatus(PetStatus.WAITING);
+    void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
+        Pet pet = new Pet();
+        pet.setId(1);
+        pet.setName("Buddy");
+        pet.setStatus(PetStatus.WAITING);
 
-    User user = new User();
-    user.setId(1L);
-    user.setUsername("john");
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("john");
 
         AdoptionEntry adoptionEntry = new AdoptionEntry();
         adoptionEntry.setPet(pet);
@@ -69,9 +69,9 @@ void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
         AdoptionEntry result = adoptionService.createAdoption(request);
 
         assertEquals(request.pet().name(), result.getPet().getName());
-        // AdoptionAddRequestDTO contains a PetDTO. The service maps it to a new Pet instance,
-        // so we verify using any(Pet.class) instead of a specific object reference.
-        verify(petRepository).save(any(Pet.class));
+        // Pet is saved twice: once when it doesn't exist, and once to update status to PENDING
+        verify(petRepository, times(2)).save(any(Pet.class));
+        verify(adoptionRepository).save(any(AdoptionEntry.class));
     }
 
     @Test
@@ -80,6 +80,7 @@ void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
         pet.setId(2);
 
         User user = new User();
+        user.setId(1L);
         user.setUsername("alice");
 
         PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
@@ -91,10 +92,14 @@ void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
         );
 
         when(petRepository.findById(2)).thenReturn(Optional.of(pet));
-        when(adoptionRepository.findByPetAndAdopterIsNull(pet))
-                .thenReturn(Optional.of(new AdoptionEntry()));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(adoptionRepository.existsByPetIdAndPublisherIdAndAdopterIsNull(pet.getId(), user.getId()))
+                .thenReturn(true);
 
         assertThrows(RuntimeException.class, () -> adoptionService.createAdoption(request));
+        
+        verify(adoptionRepository).existsByPetIdAndPublisherIdAndAdopterIsNull(pet.getId(), user.getId());
+        verify(adoptionRepository, never()).save(any(AdoptionEntry.class));
     }
 
     @Test
@@ -102,22 +107,21 @@ void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
         Pet pet = new Pet();
         pet.setId(3);
 
-        User user = new User();
-        user.setUsername("ghost");
-
         PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
         AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
                 petDTO,
-                user.getId(),
+                1L,
                 List.of("image1.jpg", "image2.jpg"),
                 "123456789"
         );
 
         when(petRepository.findById(3)).thenReturn(Optional.of(pet));
-        when(adoptionRepository.findByPetAndAdopterIsNull(pet)).thenReturn(Optional.empty());
-        when(userRepository.findById(any())).thenReturn(Optional.empty());
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> adoptionService.createAdoption(request));
+        
+        verify(userRepository).findById(1L);
+        verify(adoptionRepository, never()).save(any(AdoptionEntry.class));
     }
 
     @Test
