@@ -2,6 +2,7 @@ package cloudflight.integra.backend.controller;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
+import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Location;
 import cloudflight.integra.backend.model.Pet;
@@ -10,20 +11,26 @@ import cloudflight.integra.backend.security.CustomUserDetails;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.AdoptionService;
 import cloudflight.integra.backend.service.FavoritePetService;
+import cloudflight.integra.backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -54,6 +61,9 @@ class AdoptionControllerTest {
     private FavoritePetService favoritePetService;
 
     @MockitoBean
+    UserService userService;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -80,25 +90,44 @@ class AdoptionControllerTest {
 
     @Test
     void createAdoptionListing_success() throws Exception {
-        var requestDto = buildAdoptionAddRequestDTO();
-        when(adoptionService.createAdoption(any()))
-                .thenReturn(AdoptionMapper.INSTANCE.toModelFromAddRequest(requestDto));
+        try (MockedStatic<JwtUtil> jwtUtilMock = mockStatic(JwtUtil.class)) {
+            // Mock authenticated user
+            var mockUser = mock(CustomUserDetails.class);
+            when(mockUser.getId()).thenReturn(1L);
+            jwtUtilMock.when(JwtUtil::getAuthenticatedUser).thenReturn(mockUser);
 
-        mockMvc.perform(post("/api/adoptions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.contactNumber").value("123-456-7890"));
+            // mock Authentication
+            Authentication authentication = Mockito.mock(Authentication.class);
+            Mockito.when(authentication.getName()).thenReturn("alice");
+
+            // mock SecurityContext
+            SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+            Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+
+            // SecurityContextHolder
+            SecurityContextHolder.setContext(securityContext);
+
+            // mock userService
+            var user = buildPublisher();
+            when(userService.findByUsername("alice")).thenReturn(Optional.of(user));
+
+            var requestDto = buildAdoptionAddRequestDTO();
+            var responseService = buildAdoptionEntryResponse();
+            when(adoptionService.createAdoption(any()))
+                    .thenReturn(responseService);
+
+            mockMvc.perform(post("/api/adoptions")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.contactNumber").value("123-456-7890"));
+        }
     }
 
     // --- Helpers ---
 
-    private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
-        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy",
-                new Location(1, "street", "city", "country", 22.22,23.32), "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
-
-        var publisher = User.builder()
+    private User buildPublisher(){
+        return User.builder()
                 .id(1L)
                 .username("alice")
                 .password("password123")
@@ -110,10 +139,38 @@ class AdoptionControllerTest {
                 .bio("Animal lover and long-time volunteer at the local shelter.")
                 .roles(Set.of("ROLE_USER"))
                 .build();
+    }
+
+
+    private AdoptionEntry buildAdoptionEntryResponse() {
+        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy",
+                new Location(1, "street", "city", "country", 22.22,23.32), "3",
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
+        var petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
+
+        var publisher = buildPublisher();
+
+        var addRequest = new AdoptionAddRequestDTO(
+                petDTO,
+                publisher.getId(),
+                List.of("img1a.jpg", "img1b.jpg"),
+                publisher.getPhone()
+        );
+
+        return AdoptionMapper.INSTANCE.toModelFromAddRequest(addRequest);
+    }
+
+    private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
+        var pet = new Pet(null, "Dog", "Golden Retriever", "Buddy",
+                new Location(null, "street", "city", "country", 22.22,23.32), "3",
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
+        var petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
+
+        var publisher = buildPublisher();
 
         return new AdoptionAddRequestDTO(
-                pet,
-                publisher.getId(),
+                petDTO,
+                null,
                 List.of("img1a.jpg", "img1b.jpg"),
                 publisher.getPhone()
         );

@@ -49,7 +49,6 @@ public class AdoptionController {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> user = userService.findByUsername(username);
-            System.out.println(username);
             if(user.isPresent() && addRequestListing.publisherId() == null
                     && addRequestListing.pet() != null)
             {

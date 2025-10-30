@@ -13,13 +13,17 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
+
     Optional<User> findById(Long id);
+
     Optional<User> deleteByUsername(String username);
 
     @Query("SELECT new cloudflight.integra.backend.dto.AdoptedPetDTO(" +
-            "p.id, p.species, p.breed, p.name, p.location, p.age, p.description, " +
-            "p.imgURL, p.status, a.createdAt, a.adoptedAt) " +
-            "FROM AdoptionEntry a JOIN a.pet p " +
+            "p.id, p.species, p.breed, p.name, " +
+            "new cloudflight.integra.backend.dto.LocationDTO(l.id,l.state, l.city, l.street, l.latitude, l.longitude), " +
+            "p.age, p.description, p.imgURL, p.status, a.createdAt, a.adoptedAt) " +
+            "FROM AdoptionEntry a JOIN a.pet p JOIN p.location l " +
             "WHERE a.adopter.id = :userID AND a.adoptedAt IS NOT NULL")
     List<AdoptedPetDTO> findAdoptedPetsByUserId(@Param("userID") Long userID);
+
 }

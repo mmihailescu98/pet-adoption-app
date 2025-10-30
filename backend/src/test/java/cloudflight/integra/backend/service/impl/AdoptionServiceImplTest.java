@@ -1,6 +1,8 @@
 package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
+import cloudflight.integra.backend.dto.PetDTO;
+import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.User;
@@ -47,8 +49,9 @@ class AdoptionServiceImplTest {
         adoptionEntry.setPet(pet);
         adoptionEntry.setPublisher(user);
 
+        PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
         AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
-                pet,
+                petDTO,
                 user.getId(),
                 List.of("image1.jpg", "image2.jpg"),
                 "123456789"
@@ -61,8 +64,10 @@ class AdoptionServiceImplTest {
 
         AdoptionEntry result = adoptionService.createAdoption(request);
 
-        assertEquals(request.pet().getName(), result.getPet().getName());
-        verify(petRepository).save(pet);
+        assertEquals(request.pet().name(), result.getPet().getName());
+        // AdoptionAddRequestDTO contains a PetDTO. The service maps it to a new Pet instance,
+        // so we verify using any(Pet.class) instead of a specific object reference.
+        verify(petRepository).save(any(Pet.class));
     }
 
     @Test
@@ -73,8 +78,9 @@ class AdoptionServiceImplTest {
         User user = new User();
         user.setUsername("alice");
 
+        PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
         AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
-                pet,
+                petDTO,
                 user.getId(),
                 List.of("image1.jpg", "image2.jpg"),
                 "123456789"
@@ -95,8 +101,9 @@ class AdoptionServiceImplTest {
         User user = new User();
         user.setUsername("ghost");
 
+        PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
         AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
-                pet,
+                petDTO,
                 user.getId(),
                 List.of("image1.jpg", "image2.jpg"),
                 "123456789"

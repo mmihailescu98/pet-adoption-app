@@ -67,7 +67,7 @@
               }
               <p-floatlabel class="flex  mt-5">
                 <input pInputText class="w-full" id="imgURLInputText" formControlName="imgURL" autocomplete="off"/>
-                <label for="imgURLInputText">Image URL</label>
+                <label for="imgURLInputText">Image URL*</label>
               </p-floatlabel>
               @if (imgURL?.invalid && (imgURL?.dirty || imgURL?.touched)) {
                 <small class="p-error">
@@ -95,7 +95,7 @@
               <!--Contact number-->
               <p-floatlabel class="flex  mt-5">
                 <input pInputText class="w-full" id="contactNumberInputText" formControlName="contactNumber" autocomplete="off"/>
-                <label for="contactNumberInputText">Contact number</label>
+                <label for="contactNumberInputText">Contact number*</label>
               </p-floatlabel>
               @if (contactNumber?.invalid && (contactNumber?.dirty || contactNumber?.touched)) {
                 <small class="p-error">

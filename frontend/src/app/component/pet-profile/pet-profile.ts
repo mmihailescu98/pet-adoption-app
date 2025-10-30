@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import {Observable, take} from 'rxjs';
 import { PetDTO } from '../../api';
 import {loadPet, adoptPet, removeFavoritePet, addFavoritePet} from '../../store/pet/pet.actions';
 import { selectSelectedPet, selectPetStatus, selectPetError } from '../../store/pet/pet.selectors';

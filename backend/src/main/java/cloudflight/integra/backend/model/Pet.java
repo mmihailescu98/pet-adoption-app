@@ -5,6 +5,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
@@ -107,5 +108,16 @@ public class Pet implements Serializable {
 
     public void setStatus(PetStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Pet pet)) return false;
+        return Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(breed, pet.breed) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(description, pet.description) && Objects.equals(imgURL, pet.imgURL) && Objects.equals(location, pet.location) && status == pet.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, species, breed, name, age, description, imgURL, location, status);
     }
 }

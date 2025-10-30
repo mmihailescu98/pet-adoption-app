@@ -18,17 +18,6 @@ ALTER TABLE pets
         FOREIGN KEY (location_id)
             REFERENCES locations(id);
 
---Move old location to new table
--- INSERT INTO locations (city, state, street)
--- SELECT location, 'No state', 'No Street'
--- FROM pets
--- WHERE location IS NOT NULL;
---
--- UPDATE pets p
--- SET location_id = l.id
---     FROM locations l
--- where l.city = p.location;
-
 INSERT INTO locations (street, city, state, latitude, longitude)
 VALUES
     ('Bulevardul Unirii 1', 'București', 'Romania', 44.426767, 26.102538),
