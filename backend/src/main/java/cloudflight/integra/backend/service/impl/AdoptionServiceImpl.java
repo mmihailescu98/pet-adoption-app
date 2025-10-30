@@ -38,7 +38,6 @@ public class AdoptionServiceImpl implements AdoptionService {
      */
     @Override
     public AdoptionEntry createAdoption(AdoptionAddRequestDTO adoptionAddRequest) {
-
         Pet toBePublished = PetMapper.INSTANCE.petDTOToPet(adoptionAddRequest.pet());
 
         boolean existingPet = false;

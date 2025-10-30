@@ -1,16 +1,18 @@
-import { Injectable, inject } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {Injectable, inject} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {AdoptionAddRequestDTO, AdoptionControllerService, PetControllerService} from '../../api';
 import * as PetActions from './pet.actions';
-import { mergeMap, map, catchError, switchMap } from 'rxjs/operators';
-import { of, from, Observable } from 'rxjs';
-import { PetDTO } from '../../api';
+import {mergeMap, map, catchError, switchMap, tap} from 'rxjs/operators';
+import {of, from, Observable} from 'rxjs';
+import {PetDTO} from '../../api';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class PetEffects {
   private actions$ = inject(Actions);
   private petService = inject(PetControllerService);
   private adoptionService = inject(AdoptionControllerService);
+  private router = inject(Router);
 
   private blobToPets(blob: Blob) {
     return from(blob.text()).pipe(
@@ -21,19 +23,18 @@ export class PetEffects {
   loadPets$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PetActions.loadPets),
-      mergeMap(() =>
-        {
+      mergeMap(() => {
 
           return this.adoptionService.getAdoptions().pipe(
             map(adoptions => {
               const adoptablePets = adoptions.map(adoption => adoption.pet!);
-              return PetActions.loadPetsSuccess({ pets: adoptablePets });
+              return PetActions.loadPetsSuccess({pets: adoptablePets});
             }),
-            catchError(error => of(PetActions.loadPetsFailure({ error })))
+            catchError(error => of(PetActions.loadPetsFailure({error})))
           );
         }
       )
-  ));
+    ));
 
   searchPets$ = createEffect(() =>
     this.actions$.pipe(
@@ -41,34 +42,33 @@ export class PetEffects {
       mergeMap(action =>
         (this.petService.getPets(action.species, action.breed) as unknown as Observable<Blob>).pipe(
           switchMap(blob => this.blobToPets(blob)),
-          map(pets => PetActions.searchPetsSuccess({ pets })),
-          catchError(error => of(PetActions.searchPetsFailure({ error })))
+          map(pets => PetActions.searchPetsSuccess({pets})),
+          catchError(error => of(PetActions.searchPetsFailure({error})))
         )
       )
     )
   );
 
 
-
   loadPet$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PetActions.loadPet),
-      mergeMap((value) =>
-        { return this.petService.getPetById(value.id).pipe(
-            map(pet => PetActions.loadPetSuccess({ pet })),
-            catchError(error => of(PetActions.loadPetFailure({ error })))
+      mergeMap((value) => {
+          return this.petService.getPetById(value.id).pipe(
+            map(pet => PetActions.loadPetSuccess({pet})),
+            catchError(error => of(PetActions.loadPetFailure({error})))
           )
         }
-    )
-  ));
+      )
+    ));
 
   adoptPet$ = createEffect(() =>
     this.actions$.pipe(
       ofType(PetActions.adoptPet),
-      mergeMap(({ id }) =>
+      mergeMap(({id}) =>
         this.petService.adoptPet(id).pipe(
-          map((pet: any) => PetActions.adoptPetSuccess({ pet })),
-          catchError(error => of(PetActions.adoptPetFailure({ error })))
+          map((pet: any) => PetActions.adoptPetSuccess({pet})),
+          catchError(error => of(PetActions.adoptPetFailure({error})))
         )
       )
     )
@@ -79,10 +79,39 @@ export class PetEffects {
       ofType(PetActions.addPetForAdoption),
       mergeMap(action =>
         this.adoptionService.createAdoptionListing(action.adoptionRequest).pipe(
-          map((adoptionRequest: AdoptionAddRequestDTO) => PetActions.addPetForAdoptionSuccess({ adoptionRequest })),
-          catchError(error => of(PetActions.addPetForAdoptionFailure({ error })))
+          map((adoptionRequest: AdoptionAddRequestDTO) => PetActions.addPetForAdoptionSuccess({adoptionRequest})),
+          catchError(error => of(PetActions.addPetForAdoptionFailure({error})))
         )
       )
     )
   );
+
+  addPetForAdoptionSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(PetActions.addPetForAdoptionSuccess),
+        tap(() => {
+          alert('Pet saved successfully!');
+          setTimeout(() => {
+            this.router.navigate(['/pet-list']);
+          }, 0);
+        })
+      ),
+    {dispatch: false}
+  );
+
+  addPetForAdoptionFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(PetActions.addPetForAdoptionFailure),
+        tap(({error}) => {
+          alert('Failed to save pet. Please try again.');
+
+          console.error('Add pet failed:', error);
+        })
+      ),
+    {dispatch: false}
+  );
+
+
 }

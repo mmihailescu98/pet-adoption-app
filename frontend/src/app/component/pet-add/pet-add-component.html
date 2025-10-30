@@ -2,7 +2,7 @@
 
 <p-card header="Add a pet for adoption"
         class="text-center flex flex-col items-center justify-center">
-  <form [formGroup]="petForm" class="w-full flex flex-column items-center justify-center gap-4">
+  <form [formGroup]="adoptionRequestForm" class="w-full flex flex-column items-center justify-center gap-4">
 
     <p-stepper [(value)]="activeStep" class="w-full">
       <p-step-list>
@@ -16,13 +16,15 @@
           <ng-template #content let-activateCallback="activateCallback">
             <div class="flex flex-column mx-auto mt-4" style="min-height: 16rem; max-width: 20rem">
               <p class="text-left">* Required</p>
+<!--Pet Form-->
+              <div [formGroup]="petForm">
               <p-floatlabel class="flex mt-5">
                 <input pInputText class="w-full" id="nameInputText" formControlName="name" autocomplete="off"/>
                 <label for="nameInputText">Name*</label>
               </p-floatlabel>
               @if (name?.invalid && (name?.dirty || name?.touched)) {
                 <small class="p-error">
-                  {{ getErrorMessage('name') }}
+                  {{ getErrorMessage('name', this.petForm) }}
                 </small>
               }
               <p-floatlabel class="flex  mt-5">
@@ -31,7 +33,7 @@
               </p-floatlabel>
               @if (species?.invalid && (species?.dirty || species?.touched)) {
                 <small class="p-error">
-                  {{ getErrorMessage('species') }}
+                  {{ getErrorMessage('species', this.petForm) }}
                 </small>
               }
               <p-floatlabel class="flex  mt-5">
@@ -40,7 +42,7 @@
               </p-floatlabel>
               @if (breed?.invalid && (breed?.dirty || breed?.touched)) {
                 <small class="p-error">
-                  {{ getErrorMessage('breed') }}
+                  {{ getErrorMessage('breed', this.petForm) }}
                 </small>
               }
               <p-floatlabel class="flex  mt-5">
@@ -50,7 +52,7 @@
               </p-floatlabel>
               @if (age?.invalid && (age?.dirty || age?.touched)) {
                 <small class="p-error">
-                  {{ getErrorMessage('age') }}
+                  {{ getErrorMessage('age', this.petForm) }}
                 </small>
               }
               <p-floatlabel class="flex  mt-5">
@@ -60,7 +62,7 @@
               </p-floatlabel>
               @if (description?.invalid && (description?.dirty || description?.touched)) {
                 <small class="p-error">
-                  {{ getErrorMessage('description') }}
+                  {{ getErrorMessage('description', this.petForm) }}
                 </small>
               }
               <p-floatlabel class="flex  mt-5">
@@ -69,9 +71,39 @@
               </p-floatlabel>
               @if (imgURL?.invalid && (imgURL?.dirty || imgURL?.touched)) {
                 <small class="p-error">
-                  {{ getErrorMessage('imgURL') }}
+                  {{ getErrorMessage('imgURL', this.petForm) }}
                 </small>
               }
+              </div>
+
+              <!--Additional Images-->
+              <fieldset class="p-fieldset p-mb-4">
+                <legend>Additional Images</legend>
+
+                <div formArrayName="additionalImages" class="flex flex-column gap-4">
+                  @for (ctrl of additionalImages.controls; track $index){
+                    <div class="p-field p-d-flex p-ai-center p-mb-2">
+                    <input name="image{{$index + 1}}" pInputText [formControl]="ctrl" placeholder="Image URL {{ $index + 1 }}" class="p-mr-2 flex-1" />
+                    <p-button icon="pi pi-trash" severity="danger" (click)="removeImage($index)"></p-button>
+                    </div>
+                  }
+
+                  <p-button icon="pi pi-plus" label="Add Image" (click)="addImage()"></p-button>
+                </div>
+              </fieldset>
+
+              <!--Contact number-->
+              <p-floatlabel class="flex  mt-5">
+                <input pInputText class="w-full" id="contactNumberInputText" formControlName="contactNumber" autocomplete="off"/>
+                <label for="contactNumberInputText">Contact number</label>
+              </p-floatlabel>
+              @if (contactNumber?.invalid && (contactNumber?.dirty || contactNumber?.touched)) {
+                <small class="p-error">
+                  {{ getErrorMessage('contactNumber', this.adoptionRequestForm) }}
+                </small>
+              }
+
+
               <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)"/>
             </div>
           </ng-template>
@@ -86,6 +118,10 @@
         <!--Panel for pet profile and for save-->
         <p-step-panel [value]="3">
           <ng-template #content let-activateCallback="activateCallback">
+            @if(adoptionRequestForm.invalid){
+              <p-header>Please complete all required fields before proceeding.</p-header>
+            }
+            @else{
             <p-card>
               <div class="flex gap-3 justify-content-center">
                 <div class="min-w-[200px] max-w-[500px] flex-column align-content-center">
@@ -129,8 +165,9 @@
             <!--Nav buttons for p-steeper-->
             <div class="w-full flex justify-content-between">
               <p-button label="Back" icon="pi pi-arrow-left" iconPos="left" (onClick)="activateCallback(2)"/>
-              <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="petForm.invalid"></p-button>
+              <p-button label="Save" icon="pi pi-check" (onClick)="onSave()" [disabled]="adoptionRequestForm.invalid"></p-button>
             </div>
+              }
           </ng-template>
         </p-step-panel>
       </p-step-panels>

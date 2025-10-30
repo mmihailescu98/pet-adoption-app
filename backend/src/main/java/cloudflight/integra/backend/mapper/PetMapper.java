@@ -13,7 +13,6 @@ public interface PetMapper {
 
     PetMapper INSTANCE = Mappers.getMapper(PetMapper.class);
 
-//    @Mapping(target = "location",source = "location")
     List<PetDTO> petToPetDTOList(List<Pet> pets);
     PetDTO petToPetDTO(Pet pet);
 

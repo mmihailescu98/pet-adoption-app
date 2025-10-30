@@ -1,11 +1,19 @@
 import {Component, Output, EventEmitter, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import {DialogModule} from 'primeng/dialog';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {Textarea} from 'primeng/textarea';
 import {MapSearch} from '../map-search/map-search';
-import {AdoptionAddRequestDTO, LocationDTO} from '../../api'
+import {LocationDTO} from '../../api'
 import {NavBar} from '../nav-bar/nav-bar';
 import {Card} from 'primeng/card';
 import {FloatLabel} from 'primeng/floatlabel';
@@ -27,6 +35,7 @@ export class PetAddComponent {
   @Output() savePet = new EventEmitter<any>();  // emits the form values
   @ViewChild(MapSearch) mapComponent!: MapSearch;
 
+  adoptionRequestForm: FormGroup;
   petForm: FormGroup;
   private _activeStep: number = 1;
 
@@ -36,19 +45,19 @@ export class PetAddComponent {
 
   // Force map component to emit location for form when the user is on the save panel
   set activeStep(value: number) {
-    this._activeStep = value;
     if (value === 3) {
       if (this.mapComponent) {
         this.mapComponent.emitLocation();
       }
     }
+    this._activeStep = value;
   }
 
   constructor(private fb: FormBuilder, private router: Router, private store: Store) {
     this.petForm = this.fb.group({
-      species: ['', [Validators.required]],
-      breed: ['', [Validators.required]],
-      name: ['', [Validators.required]],
+      species: ['', [Validators.required, Validators.maxLength(50)]],
+      breed: ['', [Validators.required, Validators.maxLength(50)]],
+      name: ['', [Validators.required, Validators.maxLength(50)]],
       location: this.fb.group({
         state: ['', [Validators.required]],
         city: ['', [Validators.required]],
@@ -56,9 +65,15 @@ export class PetAddComponent {
         latitude: [null, [Validators.required]],
         longitude: [null, [Validators.required]]
       }),
-      age: ['', [Validators.required, Validators.min(0)]],
+      age: ['', [Validators.required, Validators.min(0), Validators.maxLength(50)]],
       description: [''],
-      imgURL: ['']
+      imgURL: ['', [Validators.required, Validators.min(0), Validators.maxLength(255)]]
+    });
+
+    this.adoptionRequestForm = this.fb.group({
+      pet: this.petForm,
+      additionalImages: this.fb.array<FormControl<string>>([]),
+      contactNumber: ['', [Validators.required, Validators.min(0), Validators.maxLength(20)]],
     });
   }
 
@@ -87,14 +102,48 @@ export class PetAddComponent {
     return this.petForm.get('imgURL');
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.petForm.get(controlName);
+  get contactNumber() {
+    return this.adoptionRequestForm.get('contactNumber');
+  }
+
+  get additionalImages(): FormArray<FormControl<string>> {
+    return this.adoptionRequestForm.get('additionalImages') as FormArray<FormControl<string>>;
+  }
+
+
+  addImage(url: string = '') {
+    if (this.additionalImages.length >= 5) {
+      console.warn('Maximum 5 images are allowed.');
+      return;
+    }
+
+    const control = this.fb.control<string>(
+      url,
+      {
+        validators: [Validators.required, Validators.maxLength(255)],
+        nonNullable: true,
+      }
+    );
+
+    this.additionalImages.push(control);
+  }
+
+  removeImage(index: number) {
+    this.additionalImages.removeAt(index);
+  }
+
+  getErrorMessage(controlName: string, form: FormGroup): string {
+    const control = form.get(controlName);
     if (control?.hasError('required')) {
       return 'This field is required.';
     }
     if (control?.hasError('minlength')) {
       const reqLen = control.getError('minlength')?.requiredLength;
       return `Must be at least ${reqLen} characters long.`;
+    }
+    if (control?.hasError('maxlength')) {
+      const reqLen = control.getError('maxlength')?.requiredLength;
+      return `Must be at most ${reqLen} characters long.`;
     }
     if (control?.hasError('min')) {
       const minVal = control.getError('min')?.min;
@@ -105,24 +154,14 @@ export class PetAddComponent {
 
 
   onSave() {
-    if (this.petForm.invalid) {
-      this.petForm.markAllAsTouched();
+    if (this.adoptionRequestForm.invalid) {
+      this.adoptionRequestForm.markAllAsTouched();
       return;
     }
 
-    const newPet = this.petForm.value;
-
-    const adoptionRequest: AdoptionAddRequestDTO =
-      {
-        pet: newPet,
-        additionalImages: [],
-        contactNumber: "1123344",
-      };
+    const adoptionRequest = this.adoptionRequestForm.value;
 
     this.store.dispatch(addPetForAdoption({adoptionRequest}));
-
-    this.router.navigate(['/pet-list']);
-    alert("Pet saved!");
   }
 
   //This is used to modify petForm location by the map component
