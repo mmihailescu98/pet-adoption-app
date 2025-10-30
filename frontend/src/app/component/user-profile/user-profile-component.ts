@@ -21,7 +21,6 @@ import {EditProfileDialogComponent} from '../edit-profile-dialog/edit-profile-di
 import {AdoptedPetsHistoryComponent} from '../adopted-pets-history/adopted-pets-history-component';
 import {loadAdoptedPetsByUser, loadUser, updateUser} from '../../store/user/user.actions';
 import {LOCATION_OPTIONS} from '../../resources/constants/location.constants';
-import {PetAddComponent} from '../pet-add/pet-add-component';
 import {NavBar} from '../nav-bar/nav-bar';
 import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
@@ -36,7 +35,6 @@ import {selectLoggedInUser} from '../../store/auth/auth.selector';
     SelectModule,
     EditProfileDialogComponent,
     AdoptedPetsHistoryComponent,
-    PetAddComponent,
     NavBar
   ],
   templateUrl: './user-profile-component.html',
@@ -112,13 +110,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.editForm.patchValue(user);
       }
     });
-  }
-
-  onAddPet() {
-    if (!this.ensureOwner()) {
-      return;
-    }
-    this.showAddDialog = true;
   }
 
   onOpenFavorites() {

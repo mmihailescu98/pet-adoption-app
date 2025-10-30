@@ -56,6 +56,11 @@ export class NavBar implements OnInit, OnDestroy {
         label: 'Dashboard',
         icon: 'pi pi-chart-bar',
         command: () => this.router.navigate(['/dashboard'])
+      },
+      {
+        label: 'Add pet',
+        icon: 'pi pi-plus',
+        command: () => this.router.navigate(['/add-pet'])
       }
     ]
   }

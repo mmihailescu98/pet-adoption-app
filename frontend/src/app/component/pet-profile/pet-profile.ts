@@ -13,17 +13,18 @@ import {
 } from '../../store/pet/pet.selectors';
 import { ActivatedRoute } from '@angular/router';
 import {NavBar} from '../nav-bar/nav-bar';
-import {Button} from 'primeng/button';
+import {GoogleMap, MapAdvancedMarker} from '@angular/google-maps';
+import {Button, ButtonDirective, ButtonIcon} from 'primeng/button';
 import {Tooltip} from 'primeng/tooltip';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {selectLoggedInUser} from '../../store/auth/auth.selector';
-import {ButtonDirective, ButtonIcon} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
 
 @Component({
   selector: 'app-pet-profile',
   standalone: true,
-  imports: [AsyncPipe, NgClass, NavBar, ReactiveFormsModule, ButtonDirective, ButtonIcon, InputText, Button, Tooltip],
+  imports: [AsyncPipe, NgClass, NavBar, GoogleMap, MapAdvancedMarker,
+    Button, Tooltip, ReactiveFormsModule, InputText, ButtonDirective, ButtonIcon],
   templateUrl: './pet-profile.html',
   styleUrls: ['./pet-profile.css']
 })
@@ -48,6 +49,22 @@ export class PetProfileComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder
   ) {}
+
+  //Map Options
+  zoom = 14;
+  display: google.maps.LatLngLiteral | undefined;
+  options: google.maps.MapOptions = {
+    fullscreenControl: false,
+    keyboardShortcuts: false,
+    streetViewControl: false,
+  }
+  markerOptions: google.maps.marker.AdvancedMarkerElementOptions = {};
+
+  //Events
+  move(event: google.maps.MapMouseEvent) {
+    if(event.latLng)
+      this.display = event.latLng.toJSON();
+  }
 
   ngOnInit(): void {
     this.pet$ = this.store.select(selectSelectedPet);

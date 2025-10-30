@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as PetActions from './pet.actions';
-import { PetDTO } from '../../api';
+import {PetDTO} from '../../api';
 
 export interface PetState {
   pets: PetDTO[];
@@ -162,6 +162,26 @@ export const petReducer = createReducer(
   on(PetActions.removeFavoritePetFailure, (state,{ error }) => ({
     ...state,
     favoriteError: error,
-  }))
+  })),
+  // addPet
+  on(PetActions.addPetForAdoption, state => ({
+    ...state,
+    error: null,
+    status: 'loading',
+  })),
+  on(PetActions.addPetForAdoptionSuccess, (state, { adoptionRequest }) => ({
+    ...state,
+    pets: adoptionRequest.pet
+      ? [...state.pets, adoptionRequest.pet]
+      : state.pets,
+    error: null,
+    status: 'success',
+  })),
+  on(PetActions.addPetForAdoptionFailure, (state, { error }) => ({
+    ...state,
+    error,
+    status: 'error',
+  })),
+
 );
 

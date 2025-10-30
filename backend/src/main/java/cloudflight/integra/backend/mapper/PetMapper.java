@@ -2,14 +2,18 @@ package cloudflight.integra.backend.mapper;
 
 import cloudflight.integra.backend.dto.PetDTO;
 import cloudflight.integra.backend.model.Pet;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Named;
+import org.mapstruct.Mapping;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.Context;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Set;
 
 
-@Mapper
+@Mapper(uses = LocationMapper.class)
 public interface PetMapper {
 
     PetMapper INSTANCE = Mappers.getMapper(PetMapper.class);
@@ -35,4 +39,6 @@ public interface PetMapper {
     List<PetDTO> petToPetDTOList(List<Pet> pets,@Context Set<Integer> favoritePetIds);
 
 
+
+    Pet petDTOToPet(PetDTO petDTO);
 }

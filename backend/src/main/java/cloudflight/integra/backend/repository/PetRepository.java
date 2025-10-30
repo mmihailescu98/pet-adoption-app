@@ -38,6 +38,6 @@ public interface PetRepository extends JpaRepository<Pet, Integer> {
     @Query("SELECT COUNT(p) FROM Pet p WHERE p.status = 'ADOPTED'")
     Long countAdoptedPets();
 
-    @Query("SELECT p.location FROM Pet p GROUP BY p.location ORDER BY COUNT(p) DESC")
+    @Query("SELECT l.city FROM Location l GROUP BY l.city ORDER BY COUNT(l) DESC")
     List<String> findMostPopularLocation();
 }

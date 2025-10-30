@@ -1,1 +1,5 @@
-
+.p-error{
+  color: #ef4444;
+  text-align: left;
+  margin-top: 5px;
+}

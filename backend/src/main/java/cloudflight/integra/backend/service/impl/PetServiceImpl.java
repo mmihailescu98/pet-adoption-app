@@ -1,6 +1,7 @@
 package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.PetDTO;
+import cloudflight.integra.backend.mapper.LocationMapper;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.PetStatus;
 import cloudflight.integra.backend.model.User;
@@ -66,7 +67,7 @@ public class PetServiceImpl implements PetService {
         }
 
         boolean isAdmin = false;
-        boolean isPetOwner = false;
+        boolean isPetOwner;
         if (authUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")))
         {
             isAdmin = true;
@@ -87,7 +88,7 @@ public class PetServiceImpl implements PetService {
         existingPet.setSpecies(pet.species());
         existingPet.setBreed(pet.breed());
         existingPet.setAge(pet.age());
-        existingPet.setLocation(pet.location());
+        existingPet.setLocation(LocationMapper.INSTANCE.locationDTOToLocation(pet.location()));
         existingPet.setDescription(pet.description());
         existingPet.setImgURL(pet.imgURL());
 
@@ -143,11 +144,6 @@ public class PetServiceImpl implements PetService {
             throw new Exception("Pet with id " + petId + " has no owner.?");
         }
 
-        if (pet.get().getOwner().getId() != userId)
-        {
-            return false;
-        }
-
-        return true;
+        return pet.get().getOwner().getId() == userId;
     }
 }

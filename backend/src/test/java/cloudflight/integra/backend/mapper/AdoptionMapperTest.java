@@ -30,8 +30,9 @@ class AdoptionMapperTest {
         List<String> images = List.of("img1.png", "img2.png");
         String contactNumber = "123456789";
 
+        PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
         AdoptionAddRequestDTO dto = new AdoptionAddRequestDTO(
-                pet,
+                petDTO,
                 publisher.getId(),
                 images,
                 contactNumber

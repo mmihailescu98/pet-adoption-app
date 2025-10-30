@@ -7,7 +7,7 @@ public record PetDTO(
         String species,
         String breed,
         String name,
-        String location,
+        LocationDTO location,
         String age,
         String description,
         String imgURL,
