@@ -140,4 +140,16 @@ export class PetEffects {
   );
 
 
+  updatePet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.updatePet),
+      mergeMap(({ updatedPet }) =>
+        this.petService.updatePet(updatedPet.id!,updatedPet).pipe(
+          map((pet : PetDTO) => PetActions.updatePetSuccess({ updatedPet: pet })),
+          catchError(error => of(PetActions.updatePetFailure({updateError: error})))
+        )
+      )
+    )
+  )
+
 }

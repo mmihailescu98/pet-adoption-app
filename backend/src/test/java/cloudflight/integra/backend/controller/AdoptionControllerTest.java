@@ -93,12 +93,7 @@ class AdoptionControllerTest {
     // --- Helpers ---
 
     private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
-        var pet = new Pet(
-                1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"
-        );
-
-        var publisher = User.builder()
+        User publisher = User.builder()
                 .id(1L)
                 .username("alice")
                 .password("password123")
@@ -110,6 +105,11 @@ class AdoptionControllerTest {
                 .bio("Animal lover and long-time volunteer at the local shelter.")
                 .roles(Set.of("ROLE_USER"))
                 .build();
+
+        Pet pet = new Pet(
+                1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", publisher
+        );
 
         return new AdoptionAddRequestDTO(
                 pet,
@@ -140,17 +140,19 @@ class AdoptionControllerTest {
     }
 
     private List<Pet> mockPets() {
+        User owner = mockUsers().getFirst();
+
         return List.of(
                 new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"),
+                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg",owner),
                 new Pet(2, "Cat", "Siamese", "Luna", "Los Angeles", "2",
-                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg"),
+                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg",owner),
                 new Pet(3, "Dog", "German Shepherd", "Max", "Chicago", "4",
-                        "Loyal and protective.", "https://example.com/images/dog2.jpg"),
+                        "Loyal and protective.", "https://example.com/images/dog2.jpg",owner),
                 new Pet(4, "Rabbit", "Holland Lop", "Snowball", "San Francisco", "1",
-                        "Cute and cuddly rabbit.", "https://example.com/images/rabbit1.jpg"),
+                        "Cute and cuddly rabbit.", "https://example.com/images/rabbit1.jpg",owner),
                 new Pet(5, "Dog", "Beagle", "Charlie", "Miami", "5",
-                        "Playful beagle.", "https://example.com/images/dog3.jpg")
+                        "Playful beagle.", "https://example.com/images/dog3.jpg",owner)
         );
     }
 

@@ -14,41 +14,75 @@
           </div>
 
           <div class="pet-info">
-            <h2>{{ pet.name }}</h2>
-            <p class="species">{{ pet.species }} - {{ pet.breed }}</p>
-            <p class="pet-detail"><strong>Age:</strong> {{ pet.age }}</p>
-            <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
+            <div class="pet-info">
+              <h2>
+                {{ !editMode ? pet.name : previewPet?.name }}
+                <p-button
+                  [icon]="pet.isUserFavorite ? 'pi pi-star-fill' : 'pi pi-star'"
+                  styleClass="p-button-text"
+                  [pTooltip]="pet.isUserFavorite ? 'Remove from favorites' : 'Add to favorites'"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  tooltipZIndex="1000"
+                  showDelay="750"
+                  (onClick)="toggleFavorite(pet)">
+                </p-button>
+              </h2>
+              <p class="species">{{ !editMode ? pet.species : previewPet?.species }} - {{ !editMode ? pet.breed : previewPet?.breed}}</p>
+              <p class="pet-detail"><strong>Age:</strong> {{ !editMode ? pet.age : previewPet?.age }}</p>
+              <p class="pet-detail"><strong>Location:</strong> {{ pet.location }}</p>
 
-            <p class="pet-detail status-tag">
-              <strong>Status:</strong>
-              <span [ngClass]="pet.status === 'ADOPTED' ? 'status-adopted' : 'status-pending'">
-                {{ pet.status }}
-              </span>
-            </p>
-            <p class="description">{{ pet.description }}</p>
+              <p class="pet-detail status-tag">
+                <strong>Status:</strong>
+                <span [ngClass]="pet.status === 'ADOPTED' ? 'status-adopted' : 'status-pending'">
+                  {{ pet.status }}
+                </span>
+              </p>
+              <p class="description">{{ !editMode ? pet.description : previewPet?.description }}</p>
 
-            <div class="actions">
-
-              <button class="btn adopt"
-                      [disabled]="pet.status === 'ADOPTED'"
-                      (click)="pet.id && adoptPet(pet.id)">
-                {{ pet.status === 'ADOPTED' ? 'Already Adopted' : 'Adopt' }}
-              </button>
-              <button class="btn contact">Contact</button>
+              <div class="actions">
+                <button class="btn adopt"
+                        [disabled]="pet.status === 'ADOPTED'"
+                        (click)="pet.id && adoptPet(pet.id)">
+                  {{ pet.status === 'ADOPTED' ? 'Already Adopted' : 'Adopt' }}
+                </button>
+                <button class="btn contact">Contact</button>
+              </div>
             </div>
+            @if (userIsAdmin || pet!.owner?.id == userId) {
+              <button pButton type="button" (click)="startEditing(pet!)" class="p-button-rounded p-button-text editButton">
+                <i pButtonIcon class="pi pi-pen-to-square"></i>
+              </button>
+            }
           </div>
-
-          <p-button
-            [icon]="pet.isUserFavorite ? 'pi pi-star-fill' : 'pi pi-star'"
-            styleClass="p-button-text star-btn"
-            [pTooltip]="pet.isUserFavorite ? 'Remove from favorites' : 'Add to favorites'"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-            tooltipZIndex="1000"
-            showDelay="750"
-            (onClick)="toggleFavorite(pet)">
-          </p-button>
         </div>
+        @if (editMode) {
+          <div class="edit-mode-container">
+            <form [formGroup]="editForm" class="edit-form-side" (ngSubmit)="saveEditing(previewPet!)">
+              <div class="flex flex-row justify-content-center column-gap-4 ml-3 mr-2">
+                <label>Name <input pInputText formControlName="name" placeholder="required" class="nameEditInput"></label>
+                <label>Species <input pInputText formControlName="species" placeholder="required" class="speciesEditInput"></label>
+                <label>Breed <input pInputText formControlName="breed" placeholder="required" class="breedEditInput"></label>
+              </div>
+              <div class="flex flex-row" [style.column-gap.rem]="3" >
+                <label class="ml-6">Age <input pInputText type="number" min="0" max="150" formControlName="age" class="w-11 "></label>
+                <label class="ml-3">Image URL <input pInputText formControlName="imgURL" class="w-20rem"></label>
+                <label class="align-items-center ml-5">
+                  Location
+                  <button pButton type="button" class="p-button-text mt-2">
+                    <i pButtonIcon class="pi pi-map-marker"></i>
+                  </button>
+                </label>
+              </div>
+              <label class="ml-3">Description <textarea (input)="limitDescriptionLines($event)" formControlName="description"></textarea></label>
+
+              <div class="actions">
+                <button pButton type="submit" class="btn save">Save</button>
+                <button pButton type="button" class="btn cancel" (click)="cancelEditing()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        }
       }
     }
   }
