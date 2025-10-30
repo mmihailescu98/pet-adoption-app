@@ -54,12 +54,8 @@ public class AdoptionServiceImpl implements AdoptionService {
         final Pet finalToBePublished = toBePublished;
 
         if (existingPet) {
-            boolean userAlreadyRequested = adoptionRepository.findAll().stream()
-                .anyMatch(adoption -> 
-                    adoption.getPet().getId().equals(finalToBePublished.getId()) &&
-                    adoption.getPublisher().getId().equals(publisher.getId()) &&
-                    adoption.getAdopter() == null
-                );
+            boolean userAlreadyRequested = adoptionRepository
+                    .existsByPetIdAndPublisherIdAndAdopterIsNull(toBePublished.getId(), publisher.getId());
             
             if (userAlreadyRequested) {
                 throw new RuntimeException("You have already requested adoption for this pet");
@@ -84,19 +80,7 @@ public class AdoptionServiceImpl implements AdoptionService {
 
     @Override
     public boolean hasUserRequestedAdoption(Integer petId, Long userId) {
-        Pet pet = petRepository.findById(petId).orElse(null);
-        User user = userRepository.findById(userId).orElse(null);
-        
-        if (pet == null || user == null) {
-            return false;
-        }
-        
-        return adoptionRepository.findAll().stream()
-                .anyMatch(adoption -> 
-                    adoption.getPet().getId().equals(petId) && 
-                    adoption.getPublisher().getId().equals(userId) &&
-                    adoption.getAdopter() == null
-                );
+        return adoptionRepository.existsByPetIdAndPublisherIdAndAdopterIsNull(petId, userId);
     }
 
 }

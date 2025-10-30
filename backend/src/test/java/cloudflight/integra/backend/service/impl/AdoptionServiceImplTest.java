@@ -3,6 +3,7 @@ package cloudflight.integra.backend.service.impl;
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
+import cloudflight.integra.backend.model.PetStatus;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.repository.AdoptionRepository;
 import cloudflight.integra.backend.repository.PetRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,42 +37,44 @@ class AdoptionServiceImplTest {
     private AdoptionServiceImpl adoptionService;
 
     @Test
-    void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
-        Pet pet = new Pet();
-        pet.setId(1);
+void createAdoption_whenPetDoesNotExist_shouldSavePetAndAdoption() {
+    Pet pet = new Pet();
+    pet.setId(1);
+    pet.setName("Buddy");
+    pet.setStatus(PetStatus.WAITING);
 
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("john");
+    User user = new User();
+    user.setId(1L);
+    user.setUsername("john");
 
-        AdoptionEntry adoptionEntry = new AdoptionEntry();
-        adoptionEntry.setPet(pet);
-        adoptionEntry.setPublisher(user);
+    AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
+            pet,
+            user.getId(),
+            List.of("image1.jpg", "image2.jpg"),
+            "123456789"
+    );
 
-        AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
-                pet,
-                user.getId(),
-                List.of("image1.jpg", "image2.jpg"),
-                "123456789"
-        );
+    when(petRepository.findById(1)).thenReturn(Optional.empty());
+    when(petRepository.save(any(Pet.class))).thenReturn(pet);
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    when(adoptionRepository.save(any(AdoptionEntry.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(petRepository.findById(1)).thenReturn(Optional.empty());
-        when(petRepository.save(any(Pet.class))).thenReturn(pet);
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(adoptionRepository.save(any(AdoptionEntry.class))).thenReturn(adoptionEntry);
+    AdoptionEntry result = adoptionService.createAdoption(request);
 
-        AdoptionEntry result = adoptionService.createAdoption(request);
+    assertNotNull(result);
+    assertEquals(user, result.getPublisher());
 
-        assertEquals(request.pet().getName(), result.getPet().getName());
-        verify(petRepository).save(pet);
-    }
+    verify(petRepository, times(2)).save(any(Pet.class));
+    verify(adoptionRepository).save(any(AdoptionEntry.class));
+}
 
     @Test
-    void createAdoption_whenPetExistsAndAlreadyPending_shouldThrowException() {
+    void createAdoption_whenPetExistsAndUserAlreadyRequested_shouldThrowException() {
         Pet pet = new Pet();
         pet.setId(2);
 
         User user = new User();
+        user.setId(1L);
         user.setUsername("alice");
 
         AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
@@ -81,8 +85,9 @@ class AdoptionServiceImplTest {
         );
 
         when(petRepository.findById(2)).thenReturn(Optional.of(pet));
-        when(adoptionRepository.findByPetAndAdopterIsNull(pet))
-                .thenReturn(Optional.of(new AdoptionEntry()));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(adoptionRepository.existsByPetIdAndPublisherIdAndAdopterIsNull(2, 1L))
+                .thenReturn(true);
 
         assertThrows(RuntimeException.class, () -> adoptionService.createAdoption(request));
     }
@@ -93,6 +98,7 @@ class AdoptionServiceImplTest {
         pet.setId(3);
 
         User user = new User();
+        user.setId(999L);
         user.setUsername("ghost");
 
         AdoptionAddRequestDTO request = new AdoptionAddRequestDTO(
@@ -103,8 +109,7 @@ class AdoptionServiceImplTest {
         );
 
         when(petRepository.findById(3)).thenReturn(Optional.of(pet));
-        when(adoptionRepository.findByPetAndAdopterIsNull(pet)).thenReturn(Optional.empty());
-        when(userRepository.findById(any())).thenReturn(Optional.empty());
+        when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> adoptionService.createAdoption(request));
     }

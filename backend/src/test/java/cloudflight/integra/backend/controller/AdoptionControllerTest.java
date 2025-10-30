@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -57,31 +58,46 @@ class AdoptionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.contactNumber").value("123-456-7890"));
+                .andExpect(jsonPath("$.contactNumber").value("123456789"));
     }
 
     private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
         var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
                 "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
 
-        var publisher = new User(1L, "alice", "password123", Set.of("ROLE_USER"));
+        var publisher = createUser(1L, "alice", "password123", Set.of("ROLE_USER"));
 
         return new AdoptionAddRequestDTO(
                 pet,
                 publisher.getId(),
                 List.of("img1a.jpg", "img1b.jpg"),
-                "123-456-7890"
+                "123456789"
         );
     }
 
     private List<User> mockUsers() {
         return List.of(
-                new User(1L, "alice", "password123", Set.of("ROLE_USER")),
-                new User(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
-                new User(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
-                new User(4L, "diana", "mypassword", Set.of("ROLE_USER")),
-                new User(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
+                createUser(1L, "alice", "password123", Set.of("ROLE_USER")),
+                createUser(2L, "bob", "securePass", Set.of("ROLE_USER", "ROLE_ADMIN")),
+                createUser(3L, "charlie", "qwerty", Set.of("ROLE_USER")),
+                createUser(4L, "diana", "mypassword", Set.of("ROLE_USER")),
+                createUser(5L, "edward", "letmein", Set.of("ROLE_USER", "ROLE_MODERATOR"))
         );
+    }
+
+    private User createUser(Long id, String username, String password, Set<String> roles) {
+        User user = new User();
+        user.setId(id);
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setRoles(roles);
+        user.setName(username); // Use username as name for simplicity
+        user.setEmail(username + "@example.com");
+        user.setPhone("555-0000");
+        user.setLocation("Test Location");
+        user.setBio("Test bio");
+        user.setImgURL("https://example.com/" + username + ".jpg");
+        return user;
     }
 
     private List<Pet> mockPets() {

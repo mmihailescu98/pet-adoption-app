@@ -23,6 +23,7 @@ public interface AdoptionMapper {
      * @return Target
      */
     @Mapping(target = "adopter", ignore = true)
+    @Mapping(target = "publisher", ignore = true)  
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "adoptedAt", ignore = true)
