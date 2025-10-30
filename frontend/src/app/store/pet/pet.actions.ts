@@ -32,6 +32,40 @@ export const loadPetFailure = createAction(
   props<{ error: any }>()
 );
 
+// Favorite pets actions -----------------------------------------------------------------------
+
+export const addFavoritePet = createAction(
+  '[Pet Favorite] Add Favorite Pet',
+  props<{ petId: number,userId: number }>()
+);
+
+export const addFavoritePetSuccess = createAction(
+  '[Pet Favorite] Add Favorite Pet Success',
+);
+
+export const addFavoritePetFailure = createAction(
+  '[Pet Favorite] Add Favorite Pet Failure',
+  props<{ error: any }>()
+);
+
+export const removeFavoritePet = createAction(
+  '[Pet Favorite] Remove Favorite Pet',
+  props<{ petId: number,userId: number }>()
+);
+
+export const removeFavoritePetSuccess = createAction(
+  '[Pet Favorite] Remove Favorite Pet Success',
+);
+
+export const removeFavoritePetFailure = createAction(
+  '[Pet Favorite] Remove Favorite Pet Failure',
+  props<{ error: any }>()
+);
+
+//----------------------------------------------------------------------------------------------------
+
+
+
 export const adoptPet = createAction(
   '[Pet Profile] Adopt Pet',
   props<{ id: number }>()

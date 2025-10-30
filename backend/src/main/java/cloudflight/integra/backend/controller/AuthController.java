@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +49,8 @@ public class AuthController {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());  // password will be encoded in UserService
+        user.setName(request.getFirst_name() + " " + request.getLast_name());
+        user.setEmail(request.getEmail());
 
         return userService.registerUser(user);
     }
@@ -65,6 +66,9 @@ public class AuthController {
     public static class RegisterRequest {
         private String username;
         private String password;
+        private String first_name;
+        private String last_name;
+        private String email;
         private String roles; // example: "ROLE_USER"
     }
 

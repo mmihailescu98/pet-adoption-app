@@ -2,14 +2,16 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataViewModule} from 'primeng/dataview';
 import {Button, ButtonDirective} from 'primeng/button';
 import {Store} from '@ngrx/store';
-import {loadPets, searchPets} from '../../store/pet/pet.actions';
+import {addFavoritePet, loadPets, removeFavoritePet, searchPets} from '../../store/pet/pet.actions';
 import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet/pet.selectors';
 import {PetDTO} from '../../api';
-import {Observable, startWith, Subject, takeUntil, map, switchMap} from 'rxjs';
+import {Observable, startWith, Subject, takeUntil, map, switchMap, take} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
+import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'pet-list-component',
@@ -21,7 +23,7 @@ import {RouterLink} from '@angular/router';
     ButtonDirective,
     NavBar,
     RouterLink,
-    // PetAddComponent,
+    TooltipModule,
   ],
   templateUrl: './pet-list-component.html',
   styleUrl: './pet-list-component.css'
@@ -92,5 +94,18 @@ export class PetListComponent implements OnInit, OnDestroy {
         )
       )
     );
+  }
+
+  toggleFavorite(pet: PetDTO) {
+    this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
+      if (user) {
+        if(pet.isUserFavorite) {
+          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: user.id! }));
+        } else {
+          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: user.id! }));
+        }
+      } else
+        alert("Please log in to manage favorites.");
+    });
   }
 }

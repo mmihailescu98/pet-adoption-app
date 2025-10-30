@@ -86,6 +86,17 @@
             </div>
           </div>
           <div class="buttons-panel">
+            <p-button
+              [icon]="pet.isUserFavorite ? 'pi pi-star-fill' : 'pi pi-star'"
+              styleClass="p-button-text star-btn"
+              [pTooltip]="pet.isUserFavorite ? 'Remove from favorites' : 'Add to favorites'"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              tooltipZIndex="1000"
+              showDelay="750"
+              (onClick)="toggleFavorite(pet)">
+            </p-button>
+            <div class="h-2rem"></div>
             <p-button styleClass="w-full md:w-auto" [routerLink]="['/pet-profile', pet.id]">Details</p-button>
           </div>
         </div>

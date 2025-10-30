@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegisterForm } from './register-form';
+import {provideMockStore} from '@ngrx/store/testing';
+import {initialState} from '../../../store/auth/auth.reducer';
 
 describe('RegisterForm', () => {
   let component: RegisterForm;
@@ -8,7 +10,10 @@ describe('RegisterForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterForm]
+      imports: [RegisterForm],
+      providers: [
+        provideMockStore({ initialState }),
+      ]
     })
     .compileComponents();
 

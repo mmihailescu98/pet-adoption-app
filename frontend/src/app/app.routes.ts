@@ -1,29 +1,52 @@
 import { Routes } from '@angular/router';
 import {PetListComponent} from './component/pet-list/pet-list-component';
 import {UserAuthComponent} from './component/user-authentication/userAuth-component';
-import { PetProfileComponent } from './component/pet-profile/pet-profile';
+import {PetProfileComponent} from './component/pet-profile/pet-profile';
 import {Dashboard} from './component/dashboard/dashboard';
 import {PetAddComponent} from './component/pet-add/pet-add-component';
+import {UserProfileComponent} from './component/user-profile/user-profile-component';
+import {authGuard} from './store/auth/auth.guard';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'authentication',
     component: UserAuthComponent
   },
+
   {
-    path: 'pet-list',
-    component: PetListComponent
+    path: '',
+    canActivateChild: [authGuard],
+    children: [
+      {
+        path: 'pet-list',
+        component: PetListComponent
+      },
+      {
+        path: 'pet-profile/:id',
+        component: PetProfileComponent
+      },
+      {
+        path: 'dashboard',
+        component: Dashboard
+      },
+      {
+        path: 'add-pet',
+        component: PetAddComponent
+      },
+      {
+        path: 'user-profile/:id',
+        component: UserProfileComponent
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'pet-list'
+      }
+      ]
   },
+
   {
-    path: 'pet-profile/:id',
-    component: PetProfileComponent
-  },
-  {
-    path: 'dashboard',
-    component: Dashboard
-  },
-  {
-    path: 'add-pet',
-    component: PetAddComponent
+    path: '**',
+    redirectTo: ''
   }
 ];

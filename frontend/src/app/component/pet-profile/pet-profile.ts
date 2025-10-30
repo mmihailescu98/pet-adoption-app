@@ -1,18 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import { PetDTO } from '../../api';
-import { loadPet, adoptPet } from '../../store/pet/pet.actions';
+import {loadPet, adoptPet, removeFavoritePet, addFavoritePet} from '../../store/pet/pet.actions';
 import { selectSelectedPet, selectPetStatus, selectPetError } from '../../store/pet/pet.selectors';
 import { ActivatedRoute } from '@angular/router';
 import {NavBar} from '../nav-bar/nav-bar';
 import {GoogleMap, MapAdvancedMarker} from '@angular/google-maps';
+import {Button} from 'primeng/button';
+import {Tooltip} from 'primeng/tooltip';
+import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
   selector: 'app-pet-profile',
   standalone: true,
-  imports: [AsyncPipe, NgClass, NavBar, GoogleMap, MapAdvancedMarker],
+  imports: [AsyncPipe, NgClass, NavBar, GoogleMap, MapAdvancedMarker,
+    Button, Tooltip],
   templateUrl: './pet-profile.html',
   styleUrls: ['./pet-profile.css']
 })
@@ -61,7 +65,20 @@ export class PetProfileComponent implements OnInit {
     });
   }
 
+  toggleFavorite(pet: PetDTO) {
+    this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
+      if (user) {
+        if(pet.isUserFavorite) {
+          this.store.dispatch(removeFavoritePet({ petId: pet.id!, userId: user.id! }));
+        } else {
+          this.store.dispatch(addFavoritePet({ petId: pet.id!, userId: user.id! }));
+        }
+      } else
+        alert("Please log in to manage favorites.");
+    });
+  }
+
   adoptPet(id: number): void {
-  this.store.dispatch(adoptPet({ id }));
+    this.store.dispatch(adoptPet({ id }));
   }
 }
