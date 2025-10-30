@@ -2,27 +2,35 @@ package cloudflight.integra.backend.controller;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
+import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
+import cloudflight.integra.backend.model.Location;
 import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.security.CustomUserDetails;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.AdoptionService;
 import cloudflight.integra.backend.service.FavoritePetService;
+import cloudflight.integra.backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +62,9 @@ class AdoptionControllerTest {
     private FavoritePetService favoritePetService;
 
     @MockitoBean
+    UserService userService;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -80,26 +91,44 @@ class AdoptionControllerTest {
 
     @Test
     void createAdoptionListing_success() throws Exception {
-        var requestDto = buildAdoptionAddRequestDTO();
-        when(adoptionService.createAdoption(any()))
-                .thenReturn(AdoptionMapper.INSTANCE.toModelFromAddRequest(requestDto));
+        try (MockedStatic<JwtUtil> jwtUtilMock = mockStatic(JwtUtil.class)) {
+            // Mock authenticated user
+            var mockUser = mock(CustomUserDetails.class);
+            when(mockUser.getId()).thenReturn(1L);
+            jwtUtilMock.when(JwtUtil::getAuthenticatedUser).thenReturn(mockUser);
 
-        mockMvc.perform(post("/api/adoptions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.contactNumber").value("123-456-7890"));
+            // mock Authentication
+            Authentication authentication = Mockito.mock(Authentication.class);
+            Mockito.when(authentication.getName()).thenReturn("alice");
+
+            // mock SecurityContext
+            SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+            Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+
+            // SecurityContextHolder
+            SecurityContextHolder.setContext(securityContext);
+
+            // mock userService
+            var user = buildPublisher();
+            when(userService.findByUsername("alice")).thenReturn(Optional.of(user));
+
+            var requestDto = buildAdoptionAddRequestDTO();
+            var responseService = buildAdoptionEntryResponse();
+            when(adoptionService.createAdoption(any()))
+                    .thenReturn(responseService);
+
+            mockMvc.perform(post("/api/adoptions")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.contactNumber").value("123-456-7890"));
+        }
     }
 
     // --- Helpers ---
 
-    private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
-        var pet = new Pet(
-                1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"
-        );
-
-        var publisher = User.builder()
+    private User buildPublisher(){
+        return User.builder()
                 .id(1L)
                 .username("alice")
                 .password("password123")
@@ -111,10 +140,38 @@ class AdoptionControllerTest {
                 .bio("Animal lover and long-time volunteer at the local shelter.")
                 .roles(Set.of("ROLE_USER"))
                 .build();
+    }
+
+
+    private AdoptionEntry buildAdoptionEntryResponse() {
+        var publisher = buildPublisher();
+        var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy",
+                new Location(1, "street", "city", "country", 22.22,23.32), "3",
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", publisher);
+        var petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
+
+
+        var addRequest = new AdoptionAddRequestDTO(
+                petDTO,
+                publisher.getId(),
+                List.of("img1a.jpg", "img1b.jpg"),
+                publisher.getPhone()
+        );
+
+        return AdoptionMapper.INSTANCE.toModelFromAddRequest(addRequest);
+    }
+
+    private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
+        var publisher = buildPublisher();
+        var pet = new Pet(null, "Dog", "Golden Retriever", "Buddy",
+                new Location(null, "street", "city", "country", 22.22,23.32), "3",
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", publisher);
+        var petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
+
 
         return new AdoptionAddRequestDTO(
-                pet,
-                publisher.getId(),
+                petDTO,
+                null,
                 List.of("img1a.jpg", "img1b.jpg"),
                 publisher.getPhone()
         );
@@ -141,17 +198,24 @@ class AdoptionControllerTest {
     }
 
     private List<Pet> mockPets() {
+        User owner = mockUsers().getFirst();
+
         return List.of(
-                new Pet(1, "Dog", "Golden Retriever", "Buddy", "New York", "3",
-                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"),
-                new Pet(2, "Cat", "Siamese", "Luna", "Los Angeles", "2",
-                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg"),
-                new Pet(3, "Dog", "German Shepherd", "Max", "Chicago", "4",
-                        "Loyal and protective.", "https://example.com/images/dog2.jpg"),
-                new Pet(4, "Rabbit", "Holland Lop", "Snowball", "San Francisco", "1",
-                        "Cute and cuddly rabbit.", "https://example.com/images/rabbit1.jpg"),
-                new Pet(5, "Dog", "Beagle", "Charlie", "Miami", "5",
-                        "Playful beagle.", "https://example.com/images/dog3.jpg")
+                new Pet(1, "Dog", "Golden Retriever", "Buddy",
+                        new Location(1, "street", "New York", "country", 22.22,23.32), "3",
+                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", owner),
+                new Pet(2, "Cat", "Siamese", "Luna",
+                        new Location(1, "street", "Los Angeles", "country", 22.22,23.32), "2",
+                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg", owner),
+                new Pet(3, "Dog", "German Shepherd", "Max",
+                        new Location(1, "street", "Chicago", "country", 22.22,23.32), "4",
+                        "Loyal and protective, trained in basic commands.", "https://example.com/images/dog2.jpg", owner),
+                new Pet(4, "Rabbit", "Holland Lop", "Snowball",
+                        new Location(1, "street", "San Francisco", "country", 22.22,23.32), "1",
+                        "Cute and cuddly rabbit, perfect for small spaces.", "https://example.com/images/rabbit1.jpg", owner),
+                new Pet(5, "Dog", "Beagle", "Charlie",
+                        new Location(1, "street", "Miami", "country", 22.22,23.32), "5",
+                        "Playful beagle who loves outdoor walks.", "https://example.com/images/dog3.jpg", owner)
         );
     }
 

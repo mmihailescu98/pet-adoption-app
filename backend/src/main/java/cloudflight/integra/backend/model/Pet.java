@@ -5,6 +5,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
@@ -15,19 +16,27 @@ public class Pet implements Serializable {
     private String species;
     private String breed;
     private String name;
-    private String location;
     private String age; // to be int
     private String description;
     private String imgURL;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "status_type")
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PetStatus status = PetStatus.WAITING;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
     public Pet() {}
 
-    public Pet(Integer id, String species, String breed, String name, String location, String age, String description, String imgURL) {
+    public Pet(Integer id, String species, String breed, String name, Location location, String age,
+               String description, String imgURL, User owner) {
         this.id = id;
         this.species = species;
         this.breed = breed;
@@ -36,6 +45,7 @@ public class Pet implements Serializable {
         this.age = age;
         this.description = description;
         this.imgURL = imgURL;
+        this.owner = owner;
     }
 
     public Integer getId() {
@@ -70,13 +80,9 @@ public class Pet implements Serializable {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
-    }
+    public Location getLocation() { return location; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public void setLocation(Location location) { this.location = location; }
 
     public String getAge() {
         return age;
@@ -108,5 +114,24 @@ public class Pet implements Serializable {
 
     public void setStatus(PetStatus status) {
         this.status = status;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Pet pet)) { return false; }
+        return Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(breed, pet.breed) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(description, pet.description) && Objects.equals(imgURL, pet.imgURL) && Objects.equals(location, pet.location) && status == pet.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, species, breed, name, age, description, imgURL, location, status);
     }
 }

@@ -26,10 +26,7 @@ export class AuthEffects {
             }
             return AuthActions.loginSuccess({
               token: response.token || '',
-              userModel: {
-                id: response.loggedUser.id ?? 0,
-                username: response.loggedUser.username ?? ''
-              }
+              userModel: response.loggedUser
             });
           }),
           catchError(error => {

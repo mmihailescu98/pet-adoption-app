@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import {UserLoginModel} from '../../api';
 
 export const login = createAction(
   '[Auth] Login',
@@ -8,10 +9,7 @@ export const login = createAction(
 export const loginSuccess = createAction(
   '[Auth] Login Success',
   props<{ token: string;
-      userModel: {
-        id: number;
-        username: string;
-    }
+      userModel: UserLoginModel;
    }>()
 );
 

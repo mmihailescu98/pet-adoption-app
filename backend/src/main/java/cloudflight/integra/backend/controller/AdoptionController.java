@@ -3,29 +3,35 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.dto.AdoptionListItemDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
+import cloudflight.integra.backend.mapper.PetMapper;
+import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.security.JwtUtil;
+import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.service.AdoptionService;
 import cloudflight.integra.backend.service.FavoritePetService;
+import cloudflight.integra.backend.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Optional;
 
 @RequestMapping("/api")
 @RestController()
 public class AdoptionController {
 
+    @Autowired
     AdoptionService adoptionService;
+    @Autowired
+    UserService userService;
+    @Autowired
     FavoritePetService favoritePetService;
 
-    AdoptionController(AdoptionService adoptionService,
-                       FavoritePetService favoritePetService) {
-        this.adoptionService = adoptionService;
-        this.favoritePetService = favoritePetService;
-    }
 
     @GetMapping(value="/adoptions",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AdoptionListItemDTO>> getAdoptions(@RequestParam(required = false) Integer adopterId) {
@@ -42,9 +48,25 @@ public class AdoptionController {
 
     @PostMapping("/adoptions")
     public ResponseEntity<?> createAdoptionListing(@RequestBody AdoptionAddRequestDTO addRequestListing) {
-        try{
-            return ResponseEntity.ok(AdoptionMapper.INSTANCE.toListItemFromModel(adoptionService.createAdoption(addRequestListing)));
-        }catch (Exception e){
+        try {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            Optional<User> user = userService.findByUsername(username);
+            if(user.isPresent() && addRequestListing.publisherId() == null
+                    && addRequestListing.pet() != null)
+            {
+                Pet pet = PetMapper.INSTANCE.petDTOToPet(addRequestListing.pet());
+                pet.setOwner(user.get());
+
+                AdoptionAddRequestDTO aux = new AdoptionAddRequestDTO(
+                        PetMapper.INSTANCE.petToPetDTO(pet),
+                        user.get().getId(),
+                        addRequestListing.additionalImages(),
+                        addRequestListing.contactNumber()
+                );
+                return ResponseEntity.ok(AdoptionMapper.INSTANCE.toListItemFromModel(adoptionService.createAdoption(aux)));
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

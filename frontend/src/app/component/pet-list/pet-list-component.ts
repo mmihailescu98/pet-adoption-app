@@ -4,14 +4,13 @@ import {Button, ButtonDirective} from 'primeng/button';
 import {Store} from '@ngrx/store';
 import {addFavoritePet, loadPets, removeFavoritePet, searchPets} from '../../store/pet/pet.actions';
 import {selectAllPets, selectPetStatus, selectPetError} from '../../store/pet/pet.selectors';
-import {PetDTO} from '../../api/model/petDTO';
+import {PetDTO} from '../../api';
 import {Observable, startWith, Subject, takeUntil, map, switchMap, take} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder} from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import {NavBar} from '../nav-bar/nav-bar';
 import {RouterLink} from '@angular/router';
-import {PetAddComponent} from '../pet-add/pet-add-component';
 import {selectLoggedInUser} from '../../store/auth/auth.selector';
 
 @Component({
@@ -24,7 +23,6 @@ import {selectLoggedInUser} from '../../store/auth/auth.selector';
     ButtonDirective,
     NavBar,
     RouterLink,
-    PetAddComponent,
     TooltipModule,
   ],
   templateUrl: './pet-list-component.html',
@@ -41,7 +39,6 @@ export class PetListComponent implements OnInit, OnDestroy {
   filteredSpecies$: Observable<string[]>;
   filteredBreeds$: Observable<string[]>;
 
-  showAddDialog = false;
   filterForm: FormGroup;
 
   private destroy$ = new Subject<void>();
@@ -70,14 +67,7 @@ export class PetListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  openDialog() {
-    this.showAddDialog = true;
-  }
-
-  saveNewPet(pet: PetDTO) {
-  }
-
-  onReset(event: Event) {
+  onReset(_: Event) {
     this.filterForm.reset({species: '', breed: ''});
   }
 

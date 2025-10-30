@@ -1,12 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import * as PetActions from './pet.actions';
-import { PetDTO } from '../../api';
+import {PetDTO} from '../../api';
 
 export interface PetState {
   pets: PetDTO[];
   selectedPet: PetDTO | null;   // add this
   error: any;
   status: 'pending' | 'loading' | 'error' | 'success';
+  updateStatus: 'pending' | 'loading' | 'error' | 'success';
+  updateError: any;
 
   favoriteError: any;
 }
@@ -16,6 +18,8 @@ export const initialState: PetState = {
   selectedPet: null,
   error: null,
   status: 'pending',
+  updateStatus: 'pending',
+  updateError: null,
 
   favoriteError: null,
 };
@@ -93,10 +97,40 @@ export const petReducer = createReducer(
     // Update the pet in the pets array too
     pets: state.pets.map(p => p.id === pet.id ? pet : p)
   })),
+
   on(PetActions.adoptPetFailure, (state, { error }) => ({
     ...state,
     error,
     status: 'error',
+  })),
+
+  on(PetActions.updatePet,(state) => ({
+    ...state,
+    updateStatus: 'loading',
+  })),
+
+  on(PetActions.updatePetSuccess, (state, {updatedPet}) => ({
+    ...state,
+    updateStatus: 'success',
+    selectedPet: updatedPet.id === state.selectedPet!.id ? updatedPet : state.selectedPet,
+
+    pets: state.pets.map(p => p.id === updatedPet.id ? updatedPet : p),
+  })),
+
+  on(PetActions.updatePetFailure, (state,{ updateError }) => ({
+    ...state,
+    updateStatus: 'error',
+    updateError,
+  })),
+
+  on(PetActions.resetUpdateStatus, (state) => ({
+    ...state,
+    updateStatus: 'pending',
+  })),
+
+  on(PetActions.resetUpdateError, (state) => ({
+    ...state,
+    updateError: null,
   })),
 
   // Favorite Pet reducers ---------------------------------------------------------------
@@ -128,6 +162,26 @@ export const petReducer = createReducer(
   on(PetActions.removeFavoritePetFailure, (state,{ error }) => ({
     ...state,
     favoriteError: error,
-  }))
+  })),
+  // addPet
+  on(PetActions.addPetForAdoption, state => ({
+    ...state,
+    error: null,
+    status: 'loading',
+  })),
+  on(PetActions.addPetForAdoptionSuccess, (state, { adoptionRequest }) => ({
+    ...state,
+    pets: adoptionRequest.pet
+      ? [...state.pets, adoptionRequest.pet]
+      : state.pets,
+    error: null,
+    status: 'success',
+  })),
+  on(PetActions.addPetForAdoptionFailure, (state, { error }) => ({
+    ...state,
+    error,
+    status: 'error',
+  })),
+
 );
 

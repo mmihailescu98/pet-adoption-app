@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {PetMapper.class})
+@Mapper(uses = {PetMapper.class, UserMapper.class})
 public interface AdoptionMapper {
     AdoptionMapper INSTANCE = Mappers.getMapper(AdoptionMapper.class);
 

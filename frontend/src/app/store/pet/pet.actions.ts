@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {AdoptionListItemDTO, PetDTO} from '../../api';
+import {AdoptionListItemDTO, AdoptionAddRequestDTO, PetDTO} from '../../api';
 
 export const loadPets = createAction('[Pet List] Load Pets');
 export const loadPetsSuccess = createAction('[Pet List] Load Pets Success', props<{ pets: PetDTO[] }>());
@@ -7,6 +7,10 @@ export const loadPetsFailure = createAction('[Pet List] Load Pets Failure', prop
 export const addPet = createAction(
   '[Pet] Add Pet',
   props<{ pet: PetDTO }>()
+);
+export const addPetForAdoption = createAction(
+  '[Adoption] Add Pet',
+  props<{ adoptionRequest: AdoptionAddRequestDTO }>()
 );
 
 export const searchPets = createAction('[Pet List] Search Pets', props<{ breed: string; species: string }>());
@@ -74,6 +78,39 @@ export const adoptPetSuccess = createAction(
 
 export const adoptPetFailure = createAction(
   '[Pet Profile] Adopt Pet Failure',
+  props<{ error: any }>()
+);
+
+export const updatePet = createAction(
+  '[Pet Profile] Update Pet',
+  props<{ updatedPet: PetDTO }>()
+)
+
+export const updatePetSuccess = createAction(
+  '[Pet Profile] Update Pet Success',
+  props<{ updatedPet: PetDTO }>()
+)
+
+export const updatePetFailure = createAction(
+  '[Pet Profile] Update Pet Failure',
+  props<{updateError: string}>()
+)
+
+export const resetUpdateStatus = createAction(
+  '[Pet Profile] Reset Update Status',
+)
+
+export const resetUpdateError = createAction(
+  '[Pet Profile] Reset Update Error'
+)
+
+export const addPetForAdoptionSuccess = createAction(
+  '[Adoption] Added pet for adoption Success',
+  props<{ adoptionRequest: AdoptionAddRequestDTO }>()
+);
+
+export const addPetForAdoptionFailure = createAction(
+  '[Adoption] Added pet for adoption Failure',
   props<{ error: any }>()
 );
 

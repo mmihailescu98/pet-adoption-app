@@ -30,8 +30,9 @@ class AdoptionMapperTest {
         List<String> images = List.of("img1.png", "img2.png");
         String contactNumber = "123456789";
 
+        PetDTO petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
         AdoptionAddRequestDTO dto = new AdoptionAddRequestDTO(
-                pet,
+                petDTO,
                 publisher.getId(),
                 images,
                 contactNumber
@@ -85,7 +86,7 @@ class AdoptionMapperTest {
         assertEquals(100L, dto.id());
         assertNotNull(dto.pet());
         assertInstanceOf(PetDTO.class, dto.pet()); // mapped via PetMapper
-        assertEquals("alice", dto.publisher().getUsername());
+        assertEquals("alice", dto.publisher().username());
         assertEquals(images, dto.additionalImages());
         assertEquals(contactNumber, dto.contactNumber());
 
@@ -123,7 +124,7 @@ class AdoptionMapperTest {
         assertEquals(100L, dto.id());
         assertNotNull(dto.pet());
         assertInstanceOf(PetDTO.class, dto.pet()); // mapped via PetMapper
-        assertEquals("alice", dto.publisher().getUsername());
+        assertEquals("alice", dto.publisher().username());
         assertEquals(images, dto.additionalImages());
         assertEquals(contactNumber, dto.contactNumber());
     }
