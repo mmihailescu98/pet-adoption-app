@@ -197,6 +197,8 @@ class AdoptionControllerTest {
     }
 
     private List<Pet> mockPets() {
+        User owner = mockUsers().getFirst();
+
         return List.of(
                 new Pet(1, "Dog", "Golden Retriever", "Buddy",
                         new Location(1, "street", "New York", "country", 22.22,23.32), "3",

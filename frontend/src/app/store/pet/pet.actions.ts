@@ -81,6 +81,29 @@ export const adoptPetFailure = createAction(
   props<{ error: any }>()
 );
 
+export const updatePet = createAction(
+  '[Pet Profile] Update Pet',
+  props<{ updatedPet: PetDTO }>()
+)
+
+export const updatePetSuccess = createAction(
+  '[Pet Profile] Update Pet Success',
+  props<{ updatedPet: PetDTO }>()
+)
+
+export const updatePetFailure = createAction(
+  '[Pet Profile] Update Pet Failure',
+  props<{updateError: string}>()
+)
+
+export const resetUpdateStatus = createAction(
+  '[Pet Profile] Reset Update Status',
+)
+
+export const resetUpdateError = createAction(
+  '[Pet Profile] Reset Update Error'
+)
+
 export const addPetForAdoptionSuccess = createAction(
   '[Adoption] Added pet for adoption Success',
   props<{ adoptionRequest: AdoptionAddRequestDTO }>()

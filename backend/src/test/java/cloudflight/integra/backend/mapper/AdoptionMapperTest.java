@@ -86,7 +86,7 @@ class AdoptionMapperTest {
         assertEquals(100L, dto.id());
         assertNotNull(dto.pet());
         assertInstanceOf(PetDTO.class, dto.pet()); // mapped via PetMapper
-        assertEquals("alice", dto.publisher().getUsername());
+        assertEquals("alice", dto.publisher().username());
         assertEquals(images, dto.additionalImages());
         assertEquals(contactNumber, dto.contactNumber());
 
@@ -124,7 +124,7 @@ class AdoptionMapperTest {
         assertEquals(100L, dto.id());
         assertNotNull(dto.pet());
         assertInstanceOf(PetDTO.class, dto.pet()); // mapped via PetMapper
-        assertEquals("alice", dto.publisher().getUsername());
+        assertEquals("alice", dto.publisher().username());
         assertEquals(images, dto.additionalImages());
         assertEquals(contactNumber, dto.contactNumber());
     }

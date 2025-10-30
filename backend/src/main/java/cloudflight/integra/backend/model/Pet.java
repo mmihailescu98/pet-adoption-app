@@ -27,11 +27,16 @@ public class Pet implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "status_type")
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private PetStatus status = PetStatus.PENDING; 
+    private PetStatus status = PetStatus.PENDING;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     public Pet() {}
 
-    public Pet(Integer id, String species, String breed, String name, Location location, String age, String description, String imgURL) {
+    public Pet(Integer id, String species, String breed, String name, Location location, String age,
+               String description, String imgURL, User owner) {
         this.id = id;
         this.species = species;
         this.breed = breed;
@@ -40,6 +45,7 @@ public class Pet implements Serializable {
         this.age = age;
         this.description = description;
         this.imgURL = imgURL;
+        this.owner = owner;
     }
 
     public Integer getId() {
@@ -108,6 +114,14 @@ public class Pet implements Serializable {
 
     public void setStatus(PetStatus status) {
         this.status = status;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     @Override
