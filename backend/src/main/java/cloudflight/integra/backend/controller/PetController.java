@@ -7,13 +7,14 @@ import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.service.FavoritePetService;
 import cloudflight.integra.backend.service.PetService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
 
 @RequestMapping("/api")
-@RestController()
+@RestController
 public class PetController {
     private final PetService petService;
     private final FavoritePetService favoritePetService;
@@ -28,25 +29,19 @@ public class PetController {
         return List.of("hello", "world");
     }
 
-
     @GetMapping(value = "/pets", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PetDTO> getPets(@RequestParam(required = false) String species, @RequestParam(required = false) String breed) {
         Long userId = JwtUtil.getAuthenticatedUser().getId();
-
         List<Pet> pets = petService.getPets(species, breed);
         Set<Integer> favoritePetIds = favoritePetService.getUserFavoritePetIds(userId);
-
         return PetMapper.INSTANCE.petToPetDTOList(pets, favoritePetIds);
     }
 
     @GetMapping(value = "/pets/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PetDTO getPetById(@PathVariable Integer id) {
         Long userId = JwtUtil.getAuthenticatedUser().getId();
-
-
         Pet pet = petService.getPetById(id);
         Set<Integer> favoritePetIds = favoritePetService.getUserFavoritePetIds(userId);
-
         return PetMapper.INSTANCE.petToPetDTO(pet, favoritePetIds);
     }
 
@@ -57,12 +52,15 @@ public class PetController {
 
     @PostMapping("/pets")
     public PetDTO addPet(@RequestBody Pet pet) {
+        var currentUser = JwtUtil.getAuthenticatedUser();
+        pet.setCreatedBy(currentUser.getUser());
         return PetMapper.INSTANCE.petToPetDTO(petService.savePet(pet));
     }
 
     @DeleteMapping("/pets/{id}")
-    public void deletePet(@PathVariable Integer id) {
+    public ResponseEntity<Void> deletePet(@PathVariable Integer id) {
         petService.deletePetById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/pets")
