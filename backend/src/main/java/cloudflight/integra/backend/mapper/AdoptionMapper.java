@@ -3,14 +3,12 @@ package cloudflight.integra.backend.mapper;
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.dto.AdoptionListItemDTO;
 import cloudflight.integra.backend.model.AdoptionEntry;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Mapper(uses = {PetMapper.class})
 public interface AdoptionMapper {
@@ -48,4 +46,14 @@ public interface AdoptionMapper {
         adoption.setAdoptedAt(null);
         adoption.setAdopter(null);
     }
+
+
+    @Named("toListItemFromModelWithFavorites")
+    @Mapping(target = "pet",source = "pet",qualifiedByName = "petToPetDTOFavorite")
+    AdoptionListItemDTO toListItemFromModel(AdoptionEntry model, @Context Set<Integer> favoritePetIds);
+
+
+    @IterableMapping(qualifiedByName = "toListItemFromModelWithFavorites")
+    @Mapping(target = "pet",source = "pet", qualifiedByName = "petToPetDTOFavorite")
+    List<AdoptionListItemDTO> toListItemsFromModels(List<AdoptionEntry> models, @Context Set<Integer> favoritePetIds);
 }

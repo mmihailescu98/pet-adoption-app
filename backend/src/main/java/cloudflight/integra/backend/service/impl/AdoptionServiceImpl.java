@@ -45,7 +45,6 @@ public class AdoptionServiceImpl implements AdoptionService {
             toBePublished = petRepository.findById(toBePublished.getId()).orElseThrow();
             existingPet = true;
         }catch (Exception _){
-            System.out.println(toBePublished.getStatus());
             toBePublished = petRepository.save(toBePublished);
         }
 

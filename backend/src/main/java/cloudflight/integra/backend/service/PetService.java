@@ -1,8 +1,6 @@
 package cloudflight.integra.backend.service;
 
 import cloudflight.integra.backend.model.Pet;
-import org.springframework.data.domain.Sort;
-
 import java.util.List;
 
 public interface PetService {
