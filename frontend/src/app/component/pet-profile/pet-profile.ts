@@ -55,11 +55,9 @@ export class PetProfileComponent implements OnInit {
 
   checkIfUserRequestedAdoption(petId: number): void {
     this.currentUser$.pipe(take(1)).subscribe(user => {
-      console.log('Current user:', user);
       if (user && user.id) {
         this.adoptionService.hasUserRequestedAdoption(petId, user.id).subscribe(
           hasRequested => {
-            console.log(`User ${user.id} has requested adoption for pet ${petId}:`, hasRequested);
             this.hasRequestedAdoption = hasRequested;
           },
           error => console.error('Error checking adoption request:', error)
