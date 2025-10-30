@@ -126,7 +126,7 @@ public class Pet implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Pet pet)) return false;
+        if (!(o instanceof Pet pet)) { return false; }
         return Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(breed, pet.breed) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(description, pet.description) && Objects.equals(imgURL, pet.imgURL) && Objects.equals(location, pet.location) && status == pet.status;
     }
 

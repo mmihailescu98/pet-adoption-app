@@ -143,12 +143,12 @@ class AdoptionControllerTest {
 
 
     private AdoptionEntry buildAdoptionEntryResponse() {
+        var publisher = buildPublisher();
         var pet = new Pet(1, "Dog", "Golden Retriever", "Buddy",
                 new Location(1, "street", "city", "country", 22.22,23.32), "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", publisher);
         var petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
 
-        var publisher = buildPublisher();
 
         var addRequest = new AdoptionAddRequestDTO(
                 petDTO,
@@ -161,12 +161,12 @@ class AdoptionControllerTest {
     }
 
     private AdoptionAddRequestDTO buildAdoptionAddRequestDTO() {
+        var publisher = buildPublisher();
         var pet = new Pet(null, "Dog", "Golden Retriever", "Buddy",
                 new Location(null, "street", "city", "country", 22.22,23.32), "3",
-                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg");
+                "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", publisher);
         var petDTO = PetMapper.INSTANCE.petToPetDTO(pet);
 
-        var publisher = buildPublisher();
 
         return new AdoptionAddRequestDTO(
                 petDTO,
@@ -202,19 +202,19 @@ class AdoptionControllerTest {
         return List.of(
                 new Pet(1, "Dog", "Golden Retriever", "Buddy",
                         new Location(1, "street", "New York", "country", 22.22,23.32), "3",
-                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg"),
+                        "Friendly and energetic family dog.", "https://example.com/images/dog1.jpg", owner),
                 new Pet(2, "Cat", "Siamese", "Luna",
                         new Location(1, "street", "Los Angeles", "country", 22.22,23.32), "2",
-                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg"),
+                        "Affectionate cat who loves attention.", "https://example.com/images/cat1.jpg", owner),
                 new Pet(3, "Dog", "German Shepherd", "Max",
                         new Location(1, "street", "Chicago", "country", 22.22,23.32), "4",
-                        "Loyal and protective, trained in basic commands.", "https://example.com/images/dog2.jpg"),
+                        "Loyal and protective, trained in basic commands.", "https://example.com/images/dog2.jpg", owner),
                 new Pet(4, "Rabbit", "Holland Lop", "Snowball",
                         new Location(1, "street", "San Francisco", "country", 22.22,23.32), "1",
-                        "Cute and cuddly rabbit, perfect for small spaces.", "https://example.com/images/rabbit1.jpg"),
+                        "Cute and cuddly rabbit, perfect for small spaces.", "https://example.com/images/rabbit1.jpg", owner),
                 new Pet(5, "Dog", "Beagle", "Charlie",
                         new Location(1, "street", "Miami", "country", 22.22,23.32), "5",
-                        "Playful beagle who loves outdoor walks.", "https://example.com/images/dog3.jpg")
+                        "Playful beagle who loves outdoor walks.", "https://example.com/images/dog3.jpg", owner)
         );
     }
 

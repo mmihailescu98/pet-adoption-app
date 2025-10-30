@@ -40,7 +40,7 @@ public class Location {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Location location)) return false;
+        if (!(o instanceof Location location)) { return false; }
         return Objects.equals(id, location.id) && Objects.equals(street, location.street) && Objects.equals(city, location.city) && Objects.equals(state, location.state) && Objects.equals(latitude, location.latitude) && Objects.equals(longitude, location.longitude);
     }
 

@@ -3,6 +3,8 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.dto.AdoptionListItemDTO;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
+import cloudflight.integra.backend.mapper.PetMapper;
+import cloudflight.integra.backend.model.Pet;
 import cloudflight.integra.backend.security.JwtUtil;
 import cloudflight.integra.backend.model.User;
 import cloudflight.integra.backend.service.AdoptionService;
@@ -52,8 +54,11 @@ public class AdoptionController {
             if(user.isPresent() && addRequestListing.publisherId() == null
                     && addRequestListing.pet() != null)
             {
+                Pet pet = PetMapper.INSTANCE.petDTOToPet(addRequestListing.pet());
+                pet.setOwner(user.get());
+
                 AdoptionAddRequestDTO aux = new AdoptionAddRequestDTO(
-                        addRequestListing.pet(),
+                        PetMapper.INSTANCE.petToPetDTO(pet),
                         user.get().getId(),
                         addRequestListing.additionalImages(),
                         addRequestListing.contactNumber()
