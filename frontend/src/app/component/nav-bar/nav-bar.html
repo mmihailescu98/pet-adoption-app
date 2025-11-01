@@ -1,5 +1,62 @@
 <p-menubar [model]="items" class="mb-3">
   <ng-template pTemplate="end">
-    <p-button label="Logout" icon="pi pi-sign-out" (onClick)="onLogout()" styleClass="p-button-danger"></p-button>
+    <div class="flex align-items-center gap-2">
+      <p-button
+        icon="pi pi-bell"
+        [badge]="(unreadCount$ | async)?.toString() || '0'"
+        badgeSeverity="danger"
+        [text]="true"
+        [rounded]="true"
+        (onClick)="showNotifications($event, popover)"
+        styleClass="p-button-text">
+      </p-button>
+
+      <p-button
+        label="Logout"
+        icon="pi pi-sign-out"
+        (onClick)="onLogout()"
+        styleClass="p-button-danger">
+      </p-button>
+    </div>
   </ng-template>
 </p-menubar>
+
+<p-popover #popover>
+  <ng-template pTemplate="content">
+    <div class="flex justify-content-between align-items-center mb-3">
+      <h3 class="m-0">Notifications</h3>
+      <p-button
+        label="Mark all as read"
+        [text]="true"
+        size="small"
+        (onClick)="markAllAsRead()">
+      </p-button>
+    </div>
+
+    <div class="notifications-list" style="max-height: 400px; overflow-y: auto;">
+      @if ((notifications$ | async)?.length === 0) {
+        <p class="text-center text-gray-500">No unread notifications</p>
+      }
+      @for (notification of (notifications$ | async); track notification.id) {
+        <div
+          class="notification-item p-3 mb-2 border-round hover:surface-100 cursor-pointer"
+          [class.surface-50]="!notification.isRead"
+          (click)="navigateToPet(notification.petId, notification.id)">
+          <div class="flex align-items-start gap-2">
+            <i class="pi pi-bell text-primary"></i>
+            <div class="flex-1">
+              <h4 class="m-0 mb-1 text-sm font-semibold">{{ notification.title }}</h4>
+              <p class="m-0 text-sm text-gray-600">{{ notification.message }}</p>
+              @if (notification.petName) {
+                <p class="m-0 mt-1 text-xs text-primary">
+                  <i class="pi pi-arrow-right"></i> {{ notification.petName }} ({{ notification.petSpecies }})
+                </p>
+              }
+              <small class="text-gray-400">{{ notification.timestamp | date: 'short' }}</small>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </ng-template>
+</p-popover>
