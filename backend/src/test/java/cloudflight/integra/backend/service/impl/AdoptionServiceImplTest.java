@@ -2,6 +2,7 @@ package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.dto.PetDTO;
+import cloudflight.integra.backend.listener.PetAddedEvent;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,9 @@ class AdoptionServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private AdoptionServiceImpl adoptionService;
@@ -68,6 +73,7 @@ class AdoptionServiceImplTest {
         // AdoptionAddRequestDTO contains a PetDTO. The service maps it to a new Pet instance,
         // so we verify using any(Pet.class) instead of a specific object reference.
         verify(petRepository).save(any(Pet.class));
+        verify(eventPublisher).publishEvent(any(PetAddedEvent.class));
     }
 
     @Test
