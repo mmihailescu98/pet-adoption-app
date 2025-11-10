@@ -8,4 +8,5 @@ import java.util.List;
 public interface AdoptionService {
     AdoptionEntry createAdoption(AdoptionAddRequestDTO adoptionEntry);
     List<AdoptionEntry> getPendingAdoptions();
+    boolean hasUserRequestedAdoption(Integer petId, Long userId);
 }

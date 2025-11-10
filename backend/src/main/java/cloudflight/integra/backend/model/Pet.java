@@ -27,7 +27,7 @@ public class Pet implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "status_type")
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private PetStatus status = PetStatus.PENDING;
+    private PetStatus status = PetStatus.WAITING;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
