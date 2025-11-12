@@ -77,7 +77,6 @@ public class AdoptionServiceImpl implements AdoptionService {
         toBePublished.setStatus(PetStatus.PENDING);
         petRepository.save(toBePublished);
 
-        return adoptionRepository.save(newEntry);
         AdoptionEntry savedEntry = adoptionRepository.save(newEntry);
 
         if (newPetCreated) {

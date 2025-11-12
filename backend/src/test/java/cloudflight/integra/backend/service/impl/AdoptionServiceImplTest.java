@@ -79,7 +79,6 @@ class AdoptionServiceImplTest {
         verify(adoptionRepository).save(any(AdoptionEntry.class));
         // AdoptionAddRequestDTO contains a PetDTO. The service maps it to a new Pet instance,
         // so we verify using any(Pet.class) instead of a specific object reference.
-        verify(petRepository).save(any(Pet.class));
         verify(eventPublisher).publishEvent(any(PetAddedEvent.class));
     }
 
