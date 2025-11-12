@@ -57,11 +57,16 @@ public class AdoptionController {
                 Pet pet = PetMapper.INSTANCE.petDTOToPet(addRequestListing.pet());
                 pet.setOwner(user.get());
 
+                // Use user's phone if contactNumber is not provided
+                String contactNumber = (addRequestListing.contactNumber() == null || addRequestListing.contactNumber().isEmpty())
+                        ? user.get().getPhone()
+                        : addRequestListing.contactNumber();
+
                 AdoptionAddRequestDTO aux = new AdoptionAddRequestDTO(
                         PetMapper.INSTANCE.petToPetDTO(pet),
                         user.get().getId(),
                         addRequestListing.additionalImages(),
-                        addRequestListing.contactNumber()
+                        contactNumber
                 );
                 return ResponseEntity.ok(AdoptionMapper.INSTANCE.toListItemFromModel(adoptionService.createAdoption(aux)));
             }
@@ -70,4 +75,13 @@ public class AdoptionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping(value = "/adoptions/check", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> hasUserRequestedAdoption(
+            @RequestParam Integer petId,
+            @RequestParam Long userId) {
+        boolean hasRequested = adoptionService.hasUserRequestedAdoption(petId, userId);
+        return ResponseEntity.ok(hasRequested);
+    }
+
 }

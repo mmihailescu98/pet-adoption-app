@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
 import {Observable , take} from 'rxjs';
-import {PetDTO, UserLoginModel} from '../../api';
-import {loadPet, adoptPet, updatePet, resetUpdateStatus, resetUpdateError, removeFavoritePet, addFavoritePet} from '../../store/pet/pet.actions';
+import {AdoptionControllerService, Pet, PetDTO, UserLoginModel} from '../../api';
+import {loadPet, adoptPet, updatePet, resetUpdateStatus, resetUpdateError, removeFavoritePet, addFavoritePet, requestAdoptionForPet} from '../../store/pet/pet.actions';
 import {
   selectSelectedPet,
   selectPetStatus,
@@ -43,10 +43,15 @@ export class PetProfileComponent implements OnInit {
   previewPet : PetDTO | null = null;
   updateError$!: Observable<any>;
   updateStatus$!: Observable<any>;
+  currentUser$!: Observable<any>;
+  hasRequestedAdoption = false;
+
+  PetStatus = Pet.StatusEnum;
 
   constructor(
     private store: Store,
     private route: ActivatedRoute,
+    private adoptionService: AdoptionControllerService,
     private formBuilder: FormBuilder
   ) {}
 
@@ -70,6 +75,7 @@ export class PetProfileComponent implements OnInit {
     this.pet$ = this.store.select(selectSelectedPet);
     this.status$ = this.store.select(selectPetStatus);
     this.error$ = this.store.select(selectPetError);
+    this.currentUser$ = this.store.select(selectLoggedInUser);
     this.user$ = this.store.select(selectLoggedInUser);
     this.updateStatus$ = this.store.select(selectUpdateStatus);
     this.updateError$ = this.store.select(selectUpdateError);
@@ -80,16 +86,17 @@ export class PetProfileComponent implements OnInit {
       if (params['id']) {
         const id = parseInt(params['id'], 10);
         this.store.dispatch(loadPet({ id }));
+        this.checkIfUserRequestedAdoption(id);
       } else if (this.petId) {
         // Fallback to input property if no route param
         this.store.dispatch(loadPet({ id: this.petId }));
+        this.checkIfUserRequestedAdoption(this.petId);
       }
     });
-
     this.user$.subscribe((user) => {
       if(user)
         this.userId = user?.id!
-        this.userIsAdmin = user?.isAdmin!;
+      this.userIsAdmin = user?.isAdmin!;
     });
 
     this.updateStatus$.pipe().subscribe((value) => {
@@ -108,6 +115,19 @@ export class PetProfileComponent implements OnInit {
     })
   }
 
+  checkIfUserRequestedAdoption(petId: number): void {
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (user && user.id) {
+        this.adoptionService.hasUserRequestedAdoption(petId, user.id).subscribe(
+          hasRequested => {
+            this.hasRequestedAdoption = hasRequested;
+          },
+          error => console.error('Error checking adoption request:', error)
+        );
+      }
+    });
+  }
+
   toggleFavorite(pet: PetDTO) {
     this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
       if (user) {
@@ -122,7 +142,14 @@ export class PetProfileComponent implements OnInit {
   }
 
   adoptPet(id: number): void {
-    this.store.dispatch(adoptPet({ id }));
+    this.store.select(selectLoggedInUser).pipe(take(1)).subscribe(user => {
+      if (user && user.id) {
+        this.store.dispatch(requestAdoptionForPet({ petId: id, userId: user.id }));
+        setTimeout(() => {
+          this.checkIfUserRequestedAdoption(id);
+        }, 500);
+      }
+    });
   }
 
   startEditing(pet: PetDTO): void {

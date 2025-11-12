@@ -78,6 +78,35 @@ export class PetEffects {
     )
   );
 
+  requestAdoptionForPet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PetActions.requestAdoptionForPet),
+      mergeMap(({ petId, userId }) =>
+        // Get the current pet details
+        this.petService.getPetById(petId).pipe(
+          switchMap((pet: PetDTO) => {
+            const requestDTO: AdoptionAddRequestDTO = {
+              pet: pet,
+              publisherId: undefined, // Backend will set from authenticated user
+              additionalImages: [],
+              contactNumber: '' // Backend should use user's phone from their profile
+            };
+
+            return this.adoptionService.createAdoptionListing(requestDTO).pipe(
+              map(() => PetActions.loadPet({ id: petId })),
+              catchError(error => {
+                console.error('Adoption request failed:', error);
+                alert('Failed to request adoption. Please make sure your profile has a valid phone number.');
+                return of(PetActions.requestAdoptionForPetFailure({ error }));
+              })
+            );
+          }),
+          catchError(error => of(PetActions.requestAdoptionForPetFailure({ error })))
+        )
+      )
+    )
+  );
+
 
   private initialFavoritesStateMap = new Map<number, boolean>();
 
