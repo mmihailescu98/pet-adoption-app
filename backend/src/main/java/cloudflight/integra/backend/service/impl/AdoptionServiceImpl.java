@@ -1,6 +1,7 @@
 package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
+import cloudflight.integra.backend.listener.PetAddedEvent;
 import cloudflight.integra.backend.mapper.AdoptionMapper;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
@@ -11,6 +12,7 @@ import cloudflight.integra.backend.repository.AdoptionRepository;
 import cloudflight.integra.backend.repository.PetRepository;
 import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.AdoptionService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,15 +22,18 @@ public class AdoptionServiceImpl implements AdoptionService {
     AdoptionRepository adoptionRepository;
     PetRepository petRepository;
     UserRepository userRepository;
+    ApplicationEventPublisher eventPublisher;
 
     AdoptionServiceImpl(
             AdoptionRepository adoptionRepository,
             PetRepository petRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.adoptionRepository = adoptionRepository;
         this.petRepository = petRepository;
         this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -42,11 +47,13 @@ public class AdoptionServiceImpl implements AdoptionService {
         Pet toBePublished = PetMapper.INSTANCE.petDTOToPet(adoptionAddRequest.pet());
 
         boolean existingPet = false;
+        boolean newPetCreated = false;
         try {
             toBePublished = petRepository.findById(toBePublished.getId()).orElseThrow();
             existingPet = true;
         }catch (Exception _){
             toBePublished = petRepository.save(toBePublished);
+            newPetCreated = true;
         }
 
         User publisher = userRepository.findById(adoptionAddRequest.publisherId()).orElseThrow(() -> new RuntimeException("User not found"));
@@ -56,7 +63,7 @@ public class AdoptionServiceImpl implements AdoptionService {
         if (existingPet) {
             boolean userAlreadyRequested = adoptionRepository
                     .existsByPetIdAndPublisherIdAndAdopterIsNull(toBePublished.getId(), publisher.getId());
-            
+
             if (userAlreadyRequested) {
                 throw new RuntimeException("You have already requested adoption for this pet");
             }
@@ -70,7 +77,13 @@ public class AdoptionServiceImpl implements AdoptionService {
         toBePublished.setStatus(PetStatus.PENDING);
         petRepository.save(toBePublished);
 
-        return adoptionRepository.save(newEntry);
+        AdoptionEntry savedEntry = adoptionRepository.save(newEntry);
+
+        if (newPetCreated) {
+            eventPublisher.publishEvent(new PetAddedEvent(toBePublished.getId(), publisher.getId()));
+        }
+
+        return savedEntry;
     }
 
     @Override

@@ -20,6 +20,8 @@ import {authInterceptor} from './store/auth/auth.interceptor';
 import {UserEffects} from './store/user/user.effects';
 import {userReducer} from './store/user/user.reducer';
 import {metaReducers} from './store/meta-reducers';
+import {notificationReducer} from './store/notification/notification.reducer';
+import {NotificationEffects} from './store/notification/notification.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,14 +40,16 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       auth: authReducer,
       pet: petReducer,
-      user: userReducer
+      user: userReducer,
+      notification: notificationReducer
     },
       { metaReducers }
     ),
     provideEffects([
       AuthEffects,
       PetEffects,
-      UserEffects
+      UserEffects,
+      NotificationEffects
     ]),
 
     provideHttpClient(withInterceptors([authInterceptor])),

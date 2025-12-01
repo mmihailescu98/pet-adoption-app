@@ -2,6 +2,7 @@ package cloudflight.integra.backend.service.impl;
 
 import cloudflight.integra.backend.dto.AdoptionAddRequestDTO;
 import cloudflight.integra.backend.dto.PetDTO;
+import cloudflight.integra.backend.listener.PetAddedEvent;
 import cloudflight.integra.backend.mapper.PetMapper;
 import cloudflight.integra.backend.model.AdoptionEntry;
 import cloudflight.integra.backend.model.Pet;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,9 @@ class AdoptionServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private AdoptionServiceImpl adoptionService;
@@ -72,6 +77,9 @@ class AdoptionServiceImplTest {
         // Pet is saved twice: once when it doesn't exist, and once to update status to PENDING
         verify(petRepository, times(2)).save(any(Pet.class));
         verify(adoptionRepository).save(any(AdoptionEntry.class));
+        // AdoptionAddRequestDTO contains a PetDTO. The service maps it to a new Pet instance,
+        // so we verify using any(Pet.class) instead of a specific object reference.
+        verify(eventPublisher).publishEvent(any(PetAddedEvent.class));
     }
 
     @Test
@@ -97,7 +105,7 @@ class AdoptionServiceImplTest {
                 .thenReturn(true);
 
         assertThrows(RuntimeException.class, () -> adoptionService.createAdoption(request));
-        
+
         verify(adoptionRepository).existsByPetIdAndPublisherIdAndAdopterIsNull(pet.getId(), user.getId());
         verify(adoptionRepository, never()).save(any(AdoptionEntry.class));
     }
@@ -119,7 +127,7 @@ class AdoptionServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> adoptionService.createAdoption(request));
-        
+
         verify(userRepository).findById(1L);
         verify(adoptionRepository, never()).save(any(AdoptionEntry.class));
     }
